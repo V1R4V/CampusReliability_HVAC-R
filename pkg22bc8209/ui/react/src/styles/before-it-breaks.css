@@ -59,6 +59,44 @@
   --bib-status-soft: var(--bib-status-offline-soft);
 }
 
+/* ─── Night mode (ThemeToggle flips `dark` on <html>, same hook as styles/tokens.css) ──
+   Each token is selected for the dark surface, not inverted: surfaces are dark grey (never
+   black) so ink, pills and chart marks keep ≥ 3:1; status hues are lifted one step; the
+   series were re-run through the dataviz validator on #1f2937 (lightness band, chroma,
+   CVD ΔE 9.0, contrast — all pass). Light stays the default (FRONTEND §2, projector-first). */
+.dark {
+  color-scheme: dark;
+
+  --bib-status-healthy: #4caf50;
+  --bib-status-watch: #f5b222;
+  --bib-status-due: #f26b6b;
+  --bib-status-failed: #e5e7eb; /* "failed" is ink in light mode → light ink here */
+  --bib-status-offline: #6b7280;
+
+  --bib-status-healthy-soft: #163a1f;
+  --bib-status-watch-soft: #3d2c08;
+  --bib-status-due-soft: #42181b;
+  --bib-status-failed-soft: #374151;
+  --bib-status-offline-soft: #273040;
+
+  --bib-wo: #60a5fa;
+  --bib-wo-soft: #1e3a5f;
+
+  --bib-ink: #f3f4f6;
+  --bib-ink-muted: #9ca3af;
+  --bib-surface: #1f2937;
+  --bib-canvas: #111827;
+  --bib-border: #374151;
+  --bib-grid: #2b3544;
+  --bib-axis: #6b7280;
+
+  --bib-series-1: #2a78d6;
+  --bib-series-2: #e2602d;
+  --bib-series-3: #1baf7a;
+  --bib-series-4: #bd8100;
+  --bib-series-5: #db6693;
+}
+
 [data-status='HEALTHY'] {
   --bib-status-color: var(--bib-status-healthy);
   --bib-status-soft: var(--bib-status-healthy-soft);
