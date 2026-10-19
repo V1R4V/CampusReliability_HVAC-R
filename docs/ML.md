@@ -106,7 +106,11 @@ reference. Each row carries `confidence` (low / medium / high), a one-line `basi
 `trained_on` honesty label for the UI chip.
 
 The default Python runtime has numpy/pandas/scipy but no scikit-learn, so the logistic models are
-fit with `scipy.optimize` (L-BFGS); that is a hackathon trade-off, not a design choice.
+fit with `scipy.optimize` (L-BFGS); that is a hackathon trade-off, not a design choice. Both
+`score_all` and `forecast_all` wipe their table before writing (`removeAll`), because `mergeBatch`
+keeps stale non-null fields from a previous run. Run order after any seed change:
+`upsertSeedData` → `RiskModel.score_all(3.0)` → `RiskModel.forecast_all()` (~10 s) → `Backtest.run(3.0)`.
+Run them one at a time — two concurrent `forecast_all` calls race on the wipe.
 
 **Smoke result, S3-PIPE as of 2026-06-09 (8 days before F4):** heuristic 0.92 · classifier 0.72 ·
 Monte Carlo 0.94 (days to failure p10/p50/p90 = 1/3/11) · Weibull 0.002 → consensus 0.86, spread
