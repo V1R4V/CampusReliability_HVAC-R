@@ -1,3 +1,9 @@
+> ## C3 quickstart (added after the scaffold landed — read this first)
+> **Your paths:** `pkg22bc8209/src/*.c3typ` (all types), `pkg22bc8209/src/{RiskModel,RiskScore,CampusSnapshot,BuildingDashboard,AssetHistory,Backtest,Briefing,FacilitiesAgent,WorkOrder}.py`, `pkg22bc8209/data/{WorkOrder,RiskScore}/`, `docs/`, `contract/`, package manifest, your section of `pkg22bc8209/src/WORKSPACE_SUMMARY.md`.
+> **Already done on `main`:** all types; all 9 API calls implemented and smoke-tested; `RiskModel.score_all(threshold)` written (ML.md §1–2) but **not yet run** — only 31 fixture days of S3-PIPE sensors exist.
+> **Next:** when Devansh's sensor seed lands → `upsertSeedData` → `runJsCode: RiskModel.score_all(3.0)` → `Backtest.run(3.0)`: S3-PIPE first due ≈ Jun 9, decoys ignored. Then LLM briefing (`generated_by: 'llm'`, template fallback) — only after 1:30 if stable.
+> **Verify:** `runJsCode` the call; `gen/cache/Pkg.Issue/` empty; `.c3typ` changes announced (contract).
+
 # Brief: Vibhrav — ML, agent backend, integrator
 
 > Paste everything below the line into your coding agent.

@@ -1,3 +1,10 @@
+> ## C3 quickstart (added after the scaffold landed — read this first)
+> **Your paths (all under `pkg22bc8209/ui/react/src/`):** `App.tsx`, `config/navigation.ts`, `components/{SideNav,TopNav}/`, `contexts/AsOfProvider*` (global as-of date + threshold), `shared/api/index.ts` (+ Anuva adds her own files there), `components/{StatusPill,SystemIcon,KpiTile,Schematic,ProvenanceChip}/`, `styles/` token additions, `pages/{Overview,PlanB,Backtest,Buildings}/`, your section of `../../src/WORKSPACE_SUMMARY.md`. Never touch `components/ui/` (vendored design system — import from it: `@/components/ui/<name>`).
+> **Backend is live.** Every data call is one line — see CONTRACT §5.2. Args are a **positional array**: `c3Action('CampusSnapshot','compute',[asOf])`, `c3Action('PlanB','simulate',[segmentId, tempF, priorityOnly])`, `c3Action('Backtest','run',[threshold])`, `c3Action('FailureEvent','fetch',[{ include: 'this, asset.id', limit: -1 }])` → `.objs` (map `id`→`event_id`, `asset?.id`→`asset_id`). Responses are exactly the fixture shapes. If the server rejects the array form, tell Vibhrav before working around it.
+> **Add a page:** route in `App.tsx` `<Routes>`, nav item in `config/navigation.ts` (lucide icon). Pages render content only — the shell already draws TopNav/SideNav. Reference components: `.claude/skills/c3-frontend/references/examples/` (`DashboardPage`, `ListPage`, `DetailPage`).
+> **Dev outside C3 Code:** `cd pkg22bc8209/ui/react && npm install && VITE_C3_PKG=pkg22bc8209 VITE_USE_FIXTURES=true npm run dev` — `shared/api` reads `contract/fixtures/*.json` when `import.meta.env.VITE_USE_FIXTURES === 'true'`, else calls `c3Action`. Default off; never commit it on.
+> **Verify before merging:** `VITE_C3_PKG=pkg22bc8209 npm run build` (lint + tsc) green; screenshot in PR.
+
 # Brief: Arnav — app shell, Overview, Plan B, Backtest, Buildings index
 
 > Paste everything below the line into your coding agent.

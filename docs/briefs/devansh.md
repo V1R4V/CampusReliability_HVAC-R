@@ -1,3 +1,9 @@
+> ## C3 quickstart (added after the scaffold landed — read this first)
+> **Your paths:** `pkg22bc8209/data/{Plant,LoopSegment,Building,Asset,WeatherDay,SensorReading,FailureEvent}/*.json`, `pkg22bc8209/src/PlanB.py` (formula already implemented — refine), `tools/datagen/` (your generator + real pulls; `tools/datagen/raw/` is git-ignored), your section of `pkg22bc8209/src/WORKSPACE_SUMMARY.md`.
+> **Seed format (replaces the CSVs in CONTRACT §3):** JSON **arrays**, one folder per type, columns = keys exactly as CONTRACT §3 except `Asset.type` → `asset_type`; every row has `id`; references are plain id strings (`"segment": "S3"`, `"asset": "S3-PIPE"`); **omit a key when the value is null** (the loader rejects `null` numbers); `SensorReading`/`RiskScore` ids are `<asset_id>_<date>`; a file with exactly one row must be named `<id>.json`; chunk `SensorReading` by month. Current files are **fixture-derived placeholders** — overwrite them.
+> **First deliverable (by 12:30):** real `Plant`/`LoopSegment`/`Building` (~25, with `source`), ~60 `Asset`, real `WeatherDay` Jan 1–Aug 31 (NOAA GHCN-Daily USW00014837 is reachable from C3 Code), `SensorReading` Jan–Aug for all assets with F4 planted, `FailureEvent` (keep the 10 ids). Then the rest of F1–F5/D1–D4.
+> **Verify:** JSON parses; `upsertSeedData` (ask Vibhrav to run it in C3 Code if you're outside); `runJsCode: CampusSnapshot.compute('2026-06-09')` returns your buildings; `PlanB.simulate('S3', 95, false)` → 9 buildings incl. Bascom, Science Hall, Grainger.
+
 # Brief: Devansh — data pipeline, network, Plan B
 
 > Paste everything below the line into your coding agent.

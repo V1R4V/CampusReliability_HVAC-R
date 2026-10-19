@@ -1,3 +1,10 @@
+> ## C3 quickstart (added after the scaffold landed — read this first)
+> **Your paths (all under `pkg22bc8209/ui/react/src/`):** `pages/{Building,Asset,WorkOrders}/`, `components/{RiskChart,Sparkline,SignalBars,WorkOrderCard,AgentDrawer}/`, your own files in `shared/api/` (e.g. `shared/api/anuva.ts`), your section of `../../src/WORKSPACE_SUMMARY.md`. Routes live in Arnav's `App.tsx` — ask him to add `/building/:id`, `/asset/:id`, `/workorders` (or agree he adds them now). Never touch `components/ui/` (vendored design system — import from it).
+> **Backend is live.** One line per call (CONTRACT §5.2), args as a **positional array**: `c3Action('BuildingDashboard','compute',[buildingId, asOf])`, `c3Action('AssetHistory','get',[assetId])`, `c3Action('Briefing','generate',[assetId, asOf])`, `c3Action('FacilitiesAgent','ask',[question, asOf])`, `c3Action('WorkOrder','fetch',[{ include: 'this, asset.id', limit: -1, order: 'descending(drafted_on)' }])` → `.objs` (map `id`→`wo_id`, `asset.id`→`asset_id`), `c3MemberAction('WorkOrder','approve',{ id: woId },[approver])`, `c3MemberAction('WorkOrder','dismiss',{ id: woId },[reason])`. Responses are exactly the fixture shapes. Demo data today: asset `S3-PIPE`, building `van_vleck_hall`, as-of `2026-06-09`.
+> **Charts:** Recharts and ECharts are already installed. Reference components: `.claude/skills/c3-frontend/references/examples/`.
+> **Dev outside C3 Code:** `cd pkg22bc8209/ui/react && npm install && VITE_C3_PKG=pkg22bc8209 VITE_USE_FIXTURES=true npm run dev`. Default off; never commit it on.
+> **Verify before merging:** `VITE_C3_PKG=pkg22bc8209 npm run build` green; screenshot in PR; Approve flips the pill and persists (reload shows APPROVED).
+
 # Brief: Anuva — Building dashboard, Asset detail, Work Orders, Agent drawer
 
 > Paste everything below the line into your coding agent.
