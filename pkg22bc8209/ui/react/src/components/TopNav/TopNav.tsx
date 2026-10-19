@@ -13,6 +13,7 @@ import { Activity } from 'lucide-react';
 import { TopNavBar } from '@/components/ui/top-nav-bar';
 import AskAgentButton from './AskAgentButton';
 import DateScrubber from './DateScrubber';
+import ThemeToggle from './ThemeToggle';
 import WeatherChip from './WeatherChip';
 
 export interface TopNavProps {
@@ -34,6 +35,7 @@ export default function TopNav({ onAskAgent }: TopNavProps) {
       actions={
         <>
           <WeatherChip />
+          <ThemeToggle />
           <AskAgentButton onOpen={onAskAgent} />
         </>
       }

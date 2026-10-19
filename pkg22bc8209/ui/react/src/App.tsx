@@ -21,6 +21,7 @@ import SideNav from './components/SideNav/SideNav';
 import TopNav from './components/TopNav/TopNav';
 import { AsOfProvider, useAsOf } from './contexts/AsOfProvider';
 import './styles/before-it-breaks.css';
+import './styles/theme-dark.css';
 
 const RELOAD_FLAG_PREFIX = 'bib.chunkReload.';
 

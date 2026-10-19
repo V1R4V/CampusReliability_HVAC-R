@@ -1,0 +1,143 @@
+/*
+ * Before It Breaks — dark theme.
+ *
+ * The C3 design system already ships a `.dark` block for every `--c3-style-*`
+ * token (styles/tokens.css), so the vendored `components/ui/*` primitives flip
+ * on their own. This file does the same job for the app's own `--bib-*` tokens
+ * from styles/before-it-breaks.css, which are defined on `:root` only.
+ *
+ * Loaded after before-it-breaks.css (see App.tsx) and scoped entirely to
+ * `.dark`, so light mode is byte-for-byte unchanged. The class is put on <html>
+ * by hooks/useTheme.ts (and pre-paint in main.tsx); the switch lives in
+ * components/TopNav/ThemeToggle.tsx.
+ *
+ * Because every chart resolves its colours through these same vars at render
+ * time (components/Chart/chartTheme.ts passes `var(--bib-*)` strings straight
+ * to Recharts), the charts re-theme with the tokens — no JS involved.
+ *
+ * Rule carried over from FRONTEND §2: colour still means STATUS and nothing
+ * else. The hues below are the same five status meanings and the same five
+ * chart identities, re-tuned for a dark surface — nothing new is introduced.
+ */
+
+.dark {
+  /* Status palette — same meanings, lifted off a dark surface. FAILED inverts
+     (near-black → near-white): it is the terminal *neutral*, so on dark the
+     most extreme neutral is white, not black. */
+  --bib-status-healthy: #4ec16a;
+  --bib-status-watch: #fbbf24;
+  --bib-status-due: #f87171;
+  --bib-status-failed: #e5e7eb;
+  --bib-status-offline: #8a919c;
+
+  /* Soft tints behind pills and row washes — dark washes of each hue instead of
+     pale ones, so a pill still reads as a tinted chip and not a light hole. */
+  --bib-status-healthy-soft: #16301e;
+  --bib-status-watch-soft: #352709;
+  --bib-status-due-soft: #3a1717;
+  --bib-status-failed-soft: #2b3038;
+  --bib-status-offline-soft: #22262d;
+
+  /* Work orders / the one interactive accent. Split in dark mode because the
+     token does two jobs: --bib-wo is a *fill* that carries white text (solid
+     approved pills, primary buttons) so it has to stay mid-dark, while
+     --bib-accent is drawn as *ink* (links, the risk line, agent affordances)
+     and has to be bright enough to read on the canvas. */
+  --bib-wo: #2f6fe0;
+  --bib-wo-soft: #15253d;
+  --bib-accent: #6aa8f7;
+  --bib-accent-soft: #132236;
+
+  /* Ink and surfaces, inverted. Cards sit a step above the canvas rather than
+     below it, which is how elevation has to work when the page is dark. */
+  --bib-ink: #f2f4f7;
+  --bib-ink-soft: #cdd3dc;
+  --bib-ink-muted: #98a1ae;
+  --bib-ink-faint: #6d7684;
+  --bib-surface: #16191f;
+  --bib-canvas: #0d0f13;
+  --bib-canvas-deep: #080a0d;
+  --bib-border: #272c34;
+  --bib-border-strong: #3a4149;
+  --bib-grid: #22262d;
+  --bib-axis: #6d7684;
+
+  /* Elevation — on dark, shadow alone cannot lift a card off the page, so the
+     drops go much deeper and the hairline border does the rest of the work. */
+  --bib-shadow-card:
+    0 1px 2px rgb(0 0 0 / 0.5),
+    0 2px 6px rgb(0 0 0 / 0.4);
+  --bib-shadow-raised:
+    0 2px 4px rgb(0 0 0 / 0.5),
+    0 10px 24px rgb(0 0 0 / 0.55);
+  --bib-shadow-hero: 0 12px 32px rgb(0 0 0 / 0.6);
+
+  /* Chart series — same five identities in the same fixed order, brightened so
+     a 2px stroke survives on the dark canvas. */
+  --bib-series-1: #5aa6f0;
+  --bib-series-2: #f4845c;
+  --bib-series-3: #3fc795;
+  --bib-series-4: #f2bb3d;
+  --bib-series-5: #f297b9;
+
+  /* Resolved default, mirroring the :root fallback pair. */
+  --bib-status-color: var(--bib-status-offline);
+  --bib-status-soft: var(--bib-status-offline-soft);
+
+  color-scheme: dark;
+}
+
+/* ─── Fixes for light-mode literals ───────────────────────────────────────── */
+
+/* The status dot inside a pill is ringed in 70% white so it reads against a
+   pale tint. On a dark chip that ring becomes a glowing halo — ring it in the
+   surface colour instead, which is what the light ring was approximating. */
+.dark .bib-pill::before {
+  box-shadow: 0 0 0 2px var(--bib-surface);
+}
+
+/* Focal "ink" surfaces — the brand mark, a selected queue chip, the agent
+   avatar and its reply bubble, the plant block in the schematic, the scrubber's
+   as-of flag — are written as `bg-[var(--bib-ink)] text-white` in component
+   markup. Ink inverts above, so that white glyph would be white-on-near-white.
+   Flip anything sitting on an ink fill to the canvas colour: the intent of the
+   pattern (maximum-contrast focal element) is preserved, inverted. Done here
+   rather than in six component files so the inversion stays in one place. */
+.dark .bg-\[var\(--bib-ink\)\],
+.dark .bg-\[var\(--bib-ink\)\] * {
+  color: var(--bib-canvas);
+}
+
+/* The hero is already a dark gradient in light mode, so on a dark canvas it
+   would read as a hole rather than a raised surface. Lift it a couple of steps
+   and give the edge a visible highlight. Its white text stays white. */
+.dark .bib-hero {
+  background:
+    radial-gradient(900px 260px at 0% 0%, rgb(255 255 255 / 0.07), transparent 60%),
+    linear-gradient(135deg, #1b2434 0%, #26303f 55%, #2f3a4b 100%);
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+/* ─── Leaflet (Buildings → Map) ───────────────────────────────────────────── */
+
+/* The basemap is CartoDB `light_all`. Rather than swap the tile URL at runtime,
+   invert the raster: a light street map inverted and hue-rotated back lands on
+   a credible dark basemap, and the vector overlays (campus markers, loop lines)
+   are drawn by Leaflet above the tile pane, so they keep their token colours. */
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.95) saturate(0.85);
+}
+.dark .leaflet-container .leaflet-control-attribution {
+  background: rgb(13 15 19 / 0.82);
+  color: var(--bib-ink-muted);
+}
+.dark .leaflet-container .leaflet-control-attribution a {
+  color: var(--bib-accent);
+}
+.dark .leaflet-container .leaflet-control-zoom a {
+  background: var(--bib-surface);
+  border-color: var(--bib-border);
+}
+.dark .leaflet-container .leaflet-tooltip {
+  background: var(--bib-surface);
+}
