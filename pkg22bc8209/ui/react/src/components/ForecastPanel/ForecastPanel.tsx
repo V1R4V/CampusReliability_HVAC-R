@@ -8,11 +8,15 @@
  */
 
 import React, { useMemo } from 'react';
-import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { TrendingUp } from 'lucide-react';
+import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts';
+
 import { Badge } from '@/components/ui/badge';
-import { Spinner } from '@/components/ui/spinner';
-import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
+import { cn } from '@/lib/utils';
+import ChartTooltip from '@/components/Chart/ChartTooltip';
+import { AXIS_STROKE, AXIS_TICK, GRID_STROKE, shortDate } from '@/components/Chart/chartTheme';
+import { Panel, PanelState } from '@/components/Panel/Panel';
+import { formatDate } from '@/shared/api';
 import type { ForecastMethodRow } from '@/Interfaces';
 import {
   METHOD_COLOR,
@@ -20,6 +24,7 @@ import {
   agreementLabel,
   formatProbability,
   probabilityColor,
+  probabilityStatus,
   useRiskForecast,
 } from './useRiskForecast';
 
@@ -37,19 +42,19 @@ const HORIZONS: { key: 'p_fail_7d' | 'p_fail_14d' | 'p_fail_30d'; label: string 
 function ProbabilityBar({ value, label }: { value: number | null; label: string }) {
   const pct = value == null ? 0 : Math.max(0, Math.min(100, value * 100));
   return (
-    <div className="flex items-center gap-2">
-      <span className="w-8 shrink-0 text-xs text-[#6B7280]">{label}</span>
+    <div className="flex items-center gap-2" data-status={probabilityStatus(value)}>
+      <span className="w-9 shrink-0 text-[13px] text-[var(--bib-ink-muted)]">{label}</span>
       <div
-        className="h-2 flex-1 overflow-hidden rounded bg-[#E5E7EB]"
+        className="h-2 flex-1 overflow-hidden rounded-full bg-[var(--bib-canvas-deep)]"
         role="meter"
         aria-label={`Probability of failure within ${label}`}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(pct)}
       >
-        <div className="h-full rounded" style={{ width: `${pct}%`, backgroundColor: probabilityColor(value) }} />
+        <div className="h-full rounded-full bg-[var(--bib-status-color)]" style={{ width: `${pct}%` }} />
       </div>
-      <span className="w-10 shrink-0 text-right text-xs font-medium tabular-nums text-[#111827]">{formatProbability(value)}</span>
+      <span className="bib-num w-11 shrink-0 text-right text-[14px] font-semibold text-[var(--bib-ink)]">{formatProbability(value)}</span>
     </div>
   );
 }
@@ -62,12 +67,12 @@ function formatDays(d: number | null): string {
 function MethodRow({ row }: { row: ForecastMethodRow }) {
   const dtf = row.days_to_failure;
   return (
-    <div className="flex flex-col gap-2 rounded border border-[#E5E7EB] p-3">
+    <div className="flex flex-col gap-2.5 rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-surface)] p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="inline-block size-2.5 rounded-full" style={{ backgroundColor: METHOD_COLOR[row.method] }} aria-hidden />
-          <span className="text-sm font-medium text-[#111827]">{row.label}</span>
-          {row.method === 'weibull' ? <span className="text-xs text-[#6B7280]">(reference only)</span> : null}
+          <span className="text-[15px] font-semibold text-[var(--bib-ink)]">{row.label}</span>
+          {row.method === 'weibull' ? <span className="text-[13px] text-[var(--bib-ink-muted)]">reference only</span> : null}
         </div>
         <div className="flex items-center gap-2">
           {row.confidence ? (
@@ -76,23 +81,45 @@ function MethodRow({ row }: { row: ForecastMethodRow }) {
             </Badge>
           ) : null}
           {dtf && dtf.p50 != null ? (
-            <span className="text-xs text-[#6B7280]" title="Median (10th–90th percentile) days to failure">
-              fails in ~{formatDays(dtf.p50)}{' '}
-              <span className="tabular-nums">
+            <span className="text-[13px] text-[var(--bib-ink-muted)]" title="Median (10th–90th percentile) days to failure">
+              fails in ~<span className="bib-num font-semibold text-[var(--bib-ink)]">{formatDays(dtf.p50)}</span>{' '}
+              <span className="bib-num">
                 ({formatDays(dtf.p10)}–{formatDays(dtf.p90)})
               </span>
             </span>
           ) : null}
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-1 sm:grid-cols-3 sm:gap-4">
+      <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-3 sm:gap-4">
         {HORIZONS.map((h) => (
           <ProbabilityBar key={h.key} value={row[h.key]} label={h.label} />
         ))}
       </div>
-      {row.basis ? <div className="text-xs text-[#374151]">{row.basis}</div> : null}
-      {row.trained_on ? <div className="text-xs italic text-[#6B7280]">Trained on: {row.trained_on}</div> : null}
+      {row.basis ? <div className="text-[13px] leading-5 text-[var(--bib-ink-soft)]">{row.basis}</div> : null}
+      {row.trained_on ? <div className="text-[13px] leading-5 text-[var(--bib-ink-muted)]">Trained on: {row.trained_on}</div> : null}
     </div>
+  );
+}
+
+interface HistoryTooltipProps {
+  active?: boolean;
+  payload?: ReadonlyArray<{ name?: unknown; value?: unknown; color?: string; dataKey?: unknown }>;
+  label?: unknown;
+}
+
+function HistoryTooltip({ active, payload, label }: HistoryTooltipProps) {
+  if (!active || !payload || payload.length === 0) return null;
+  return (
+    <ChartTooltip
+      title={shortDate(String(label))}
+      rows={payload.map((item, index) => ({
+        key: `${String(item.dataKey ?? item.name)}-${index}`,
+        name: String(item.name),
+        value: `${String(item.value)}%`,
+        color: item.color,
+        dashed: item.dataKey === 'weibull',
+      }))}
+    />
   );
 }
 
@@ -107,7 +134,7 @@ export default function ForecastPanel({ assetId, asOf }: ForecastPanelProps) {
   const historyData = useMemo(
     () =>
       (data?.history ?? []).map((p) => ({
-        date: p.date.slice(5),
+        date: p.date,
         heuristic: p.heuristic == null ? null : Math.round(p.heuristic * 1000) / 10,
         classifier: p.classifier == null ? null : Math.round(p.classifier * 1000) / 10,
         monte_carlo: p.monte_carlo == null ? null : Math.round(p.monte_carlo * 1000) / 10,
@@ -118,88 +145,90 @@ export default function ForecastPanel({ assetId, asOf }: ForecastPanelProps) {
   );
 
   const agreement = agreementLabel(data?.consensus.spread_14d);
+  const consensus = data?.consensus.p_fail_14d ?? null;
 
   return (
-    <Card variant="outlined">
-      <CardHeader>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle>Chance of failure</CardTitle>
-          <ProvenanceChip kind="SYNTHETIC" />
-        </div>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        {loading ? (
-          <div className="flex h-24 items-center justify-center">
-            <Spinner label="Loading forecasts" size="md" />
-          </div>
-        ) : error || !data ? (
-          <div className="text-sm text-[#DC2626]">{error ?? 'No forecast available for this asset.'}</div>
-        ) : data.methods.length === 0 ? (
-          <div className="text-sm text-[#6B7280]">
-            No forecast exists for this date.
-          </div>
-        ) : (
-          <>
-            <div className="flex flex-wrap items-end justify-between gap-4 rounded bg-[#F9FAFB] p-4">
-              <div>
-                <div className="text-xs uppercase tracking-wide text-[#6B7280]">Consensus · fails within 14 days</div>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-4xl font-semibold tabular-nums" style={{ color: probabilityColor(data.consensus.p_fail_14d) }}>
-                    {formatProbability(data.consensus.p_fail_14d)}
-                  </span>
-                  <span className="text-sm text-[#6B7280]">
-                    7 d {formatProbability(data.consensus.p_fail_7d)} · 30 d {formatProbability(data.consensus.p_fail_30d)}
-                  </span>
+    <Panel
+      title="Chance of failure"
+      subtitle={`Four independent methods, as of ${formatDate(asOf)}. The consensus averages the three condition-based ones.`}
+      icon={<TrendingUp />}
+      chip="SYNTHETIC"
+    >
+      {loading ? (
+        <PanelState state="loading" lines={5} />
+      ) : error || !data ? (
+        <PanelState state="error" message={error ?? 'No forecast available for this asset.'} />
+      ) : data.methods.length === 0 ? (
+        <PanelState state="empty" message="No forecast exists for this date." />
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div
+            data-status={probabilityStatus(consensus)}
+            className="relative flex flex-wrap items-end justify-between gap-4 overflow-hidden rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-canvas)] p-4 pl-5"
+          >
+            <span aria-hidden className="absolute inset-y-0 left-0 w-[4px] bg-[var(--bib-status-color)]" />
+            <div>
+              <div className="bib-eyebrow">Consensus · fails within 14 days</div>
+              <div className="mt-1 flex flex-wrap items-baseline gap-3">
+                <span className="bib-kpi" style={{ color: probabilityColor(consensus) }}>
+                  {formatProbability(consensus)}
+                </span>
+                <span className="bib-num text-[15px] text-[var(--bib-ink-muted)]">
+                  7 d <span className="font-semibold text-[var(--bib-ink)]">{formatProbability(data.consensus.p_fail_7d)}</span> · 30 d{' '}
+                  <span className="font-semibold text-[var(--bib-ink)]">{formatProbability(data.consensus.p_fail_30d)}</span>
+                </span>
+              </div>
+              <div className="mt-1 text-[13px] leading-5 text-[var(--bib-ink-muted)]">{data.consensus.note}</div>
+            </div>
+            <div className="flex flex-col items-end gap-1.5 text-right">
+              {agreement ? (
+                <Badge variant="outline" appearance="secondary" size="md">
+                  {agreement} agreement · spread {formatProbability(data.consensus.spread_14d)}
+                </Badge>
+              ) : null}
+              {data.next_failure ? (
+                <div className="text-[13px] leading-5 text-[var(--bib-ink-muted)]">
+                  Planted failure {data.next_failure.event_id} in{' '}
+                  <span className="bib-num font-semibold text-[var(--bib-ink)]">{data.next_failure.days_from_as_of} days</span>
+                  {data.next_failure.synthetic ? ' (synthetic)' : ''}
                 </div>
-                <div className="text-xs text-[#6B7280]">{data.consensus.note}</div>
-              </div>
-              <div className="flex flex-col items-end gap-1 text-right">
-                {agreement ? (
-                  <Badge variant="outline" appearance="secondary" size="sm">
-                    {agreement} agreement · spread {formatProbability(data.consensus.spread_14d)}
-                  </Badge>
-                ) : null}
-                {data.next_failure ? (
-                  <div className="text-xs text-[#6B7280]">
-                    Planted failure {data.next_failure.event_id} in {data.next_failure.days_from_as_of} days
-                    {data.next_failure.synthetic ? ' (synthetic)' : ''}
-                  </div>
-                ) : null}
-                {data.as_of_used && data.as_of_used !== data.as_of ? (
-                  <div className="text-xs text-[#F59E0B]">Showing latest available day: {data.as_of_used}</div>
-                ) : null}
-              </div>
+              ) : null}
+              {data.as_of_used && data.as_of_used !== data.as_of ? (
+                <div className="text-[13px] leading-5 text-[var(--bib-status-watch)]">Showing latest available day: {formatDate(data.as_of_used)}</div>
+              ) : null}
             </div>
+          </div>
 
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-              {data.methods.map((row) => (
-                <MethodRow key={row.method} row={row} />
-              ))}
-            </div>
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {data.methods.map((row) => (
+              <MethodRow key={row.method} row={row} />
+            ))}
+          </div>
 
-            {historyData.length > 1 ? (
-              <div className="flex flex-col gap-1">
-                <div className="text-xs font-medium text-[#111827]">14-day failure probability, trailing 30 days</div>
-                <ResponsiveContainer width="100%" height={200}>
+          {historyData.length > 1 ? (
+            <div className="flex flex-col gap-1">
+              <div className="text-[14px] font-semibold leading-5 text-[var(--bib-ink)]">14-day failure probability, trailing 30 days</div>
+              <div className={cn('h-[220px] w-full')}>
+                <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={historyData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
-                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6B7280' }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#6B7280' }} width={36} unit="%" />
-                    <Tooltip formatter={(v: number | string) => `${v}%`} />
-                    <Legend wrapperStyle={{ fontSize: 11 }} />
-                    <ReferenceLine y={50} stroke="#DC2626" strokeDasharray="4 3" />
+                    <CartesianGrid stroke={GRID_STROKE} vertical={false} />
+                    <XAxis dataKey="date" tickFormatter={shortDate} minTickGap={40} tick={AXIS_TICK} axisLine={{ stroke: AXIS_STROKE }} tickLine={false} />
+                    <YAxis domain={[0, 100]} tick={AXIS_TICK} axisLine={false} tickLine={false} width={40} unit="%" />
+                    <RechartsTooltip content={<HistoryTooltip />} cursor={{ stroke: AXIS_STROKE }} />
+                    <Legend verticalAlign="top" align="left" iconType="plainline" wrapperStyle={{ fontSize: 13, paddingBottom: 8 }} />
+                    <ReferenceLine y={50} stroke="var(--bib-status-due)" strokeDasharray="4 3" />
                     <Line type="monotone" dataKey="consensus" name={METHOD_SHORT.consensus} stroke={METHOD_COLOR.consensus} strokeWidth={2.5} dot={false} isAnimationActive={false} connectNulls />
                     <Line type="monotone" dataKey="heuristic" name={METHOD_SHORT.heuristic} stroke={METHOD_COLOR.heuristic} strokeWidth={1.5} dot={false} isAnimationActive={false} connectNulls />
                     <Line type="monotone" dataKey="classifier" name={METHOD_SHORT.classifier} stroke={METHOD_COLOR.classifier} strokeWidth={1.5} dot={false} isAnimationActive={false} connectNulls />
                     <Line type="monotone" dataKey="monte_carlo" name={METHOD_SHORT.monte_carlo} stroke={METHOD_COLOR.monte_carlo} strokeWidth={1.5} dot={false} isAnimationActive={false} connectNulls />
-                    <Line type="monotone" dataKey="weibull" name={METHOD_SHORT.weibull} stroke={METHOD_COLOR.weibull} strokeWidth={1} strokeDasharray="3 3" dot={false} isAnimationActive={false} connectNulls />
+                    <Line type="monotone" dataKey="weibull" name={METHOD_SHORT.weibull} stroke={METHOD_COLOR.weibull} strokeWidth={1.5} strokeDasharray="3 3" dot={false} isAnimationActive={false} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            ) : null}
-          </>
-        )}
-      </CardContent>
-    </Card>
+            </div>
+          ) : null}
+        </div>
+      )}
+    </Panel>
   );
 }

@@ -27,12 +27,12 @@ export default function RiskBar({ risk, threshold, status, className }: RiskBarP
       <span
         role="img"
         aria-label={`Risk ${formatRisk(risk)} of ${RISK_SCALE_MAX}`}
-        className="relative block h-2 w-[112px] rounded-full bg-[var(--bib-border)]"
+        className="relative block h-2 w-[120px] rounded-full bg-[var(--bib-canvas-deep)]"
       >
         <span className="block h-full rounded-full bg-[var(--bib-status-color)]" style={{ width: `${fill}%` }} />
-        <span aria-hidden className="absolute -top-[3px] h-[14px] w-px bg-[var(--bib-ink)]" style={{ left: `${tick}%` }} />
+        <span aria-hidden className="absolute -top-[3px] h-[14px] w-[2px] rounded-full bg-[var(--bib-ink)]" style={{ left: `${tick}%` }} />
       </span>
-      <span className="text-[14px] font-semibold tabular-nums leading-5 text-[var(--bib-ink)]">{formatRisk(risk)}</span>
+      <span className="bib-num text-[14px] font-semibold leading-5 text-[var(--bib-ink)]">{formatRisk(risk)}</span>
     </span>
   );
 }

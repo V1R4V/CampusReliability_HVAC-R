@@ -7,15 +7,17 @@
  * This material may be covered by one or more patents or pending patent applications.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
-import { SidePanel } from '@/components/ui/side-panel';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { ArrowRight, SendHorizonal, Sparkles } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { SidePanel } from '@/components/ui/side-panel';
+import { Textarea } from '@/components/ui/textarea';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
-import { askAgent, approveWorkOrder, dismissWorkOrder } from '@/shared/api/anuva';
+import { formatDate } from '@/shared/api';
+import { approveWorkOrder, askAgent, dismissWorkOrder } from '@/shared/api/anuva';
 import type { AskEntity, AskProposedAction } from '@/Interfaces';
 import WorkOrderCard from '../WorkOrderCard/WorkOrderCard';
 
@@ -48,6 +50,14 @@ export interface AgentDrawerProps {
   onOpenChange: (open: boolean) => void;
 }
 
+function AgentAvatar() {
+  return (
+    <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--bib-ink)] text-white [&_svg]:size-4">
+      <Sparkles aria-hidden />
+    </span>
+  );
+}
+
 /**
  * "Ask the agent" (FRONTEND §5.8): a right-hand slide-over with suggested prompts, the
  * agent's answers, entity chips that navigate, and any proposed work orders (always
@@ -60,6 +70,11 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
   const [turns, setTurns] = useState<Turn[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const endRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: 'end' });
+  }, [turns.length, loading]);
 
   const ask = async (q: string) => {
     const trimmed = q.trim();
@@ -88,70 +103,110 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
     }
   };
 
+  if (!open) return null;
+
   return (
-    <>
-      {open ? (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/20" onClick={() => setOpen(false)}>
-          <div className="h-full w-[420px] max-w-full" onClick={(e) => e.stopPropagation()}>
-            <SidePanel
-              behavior="overlay"
-              title="Ask the agent"
-              subtitle={`As of ${asOf}`}
-              onClose={() => setOpen(false)}
-              className="w-[420px]"
-              footer={
-                <form
-                  className="flex w-full flex-col gap-2"
-                  onSubmit={(e) => {
+    <div className="fixed inset-0 z-50 flex justify-end bg-[rgb(17_24_39_/_0.35)] backdrop-blur-[2px]" onClick={() => setOpen(false)}>
+      <div className="h-full w-[460px] max-w-full bib-rise" onClick={(e) => e.stopPropagation()}>
+        <SidePanel
+          behavior="overlay"
+          title="Ask the agent"
+          subtitle={`Answers use the campus state as of ${formatDate(asOf)}`}
+          onClose={() => setOpen(false)}
+          className="w-[460px] max-w-full"
+          footer={
+            <form
+              className="flex w-full items-end gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                ask(question);
+              }}
+            >
+              <Textarea
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="Ask about what to inspect, energy waste, or a what-if…"
+                rows={2}
+                className="w-full text-[15px]"
+                aria-label="Your question"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     ask(question);
-                  }}
-                >
-                  <Textarea
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Ask a question…"
-                    rows={2}
-                    className="w-full"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        ask(question);
-                      }
-                    }}
-                  />
-                  <Button type="submit" loading={loading} disabled={!question.trim()} className="w-full">
-                    Ask
-                  </Button>
-                </form>
-              }
-            >
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap gap-2">
-                  {SUGGESTED_PROMPTS.map((prompt) => (
-                    <Badge key={prompt} variant="outline" appearance="secondary" onClick={() => ask(prompt)}>
-                      {prompt}
-                    </Badge>
-                  ))}
+                  }
+                }}
+              />
+              <Button type="submit" size="lg" loading={loading} disabled={!question.trim()} leadingIcon={<SendHorizonal />} aria-label="Ask">
+                Ask
+              </Button>
+            </form>
+          }
+        >
+          <div className="flex flex-col gap-5">
+            {turns.length === 0 ? (
+              <div className="flex flex-col gap-3">
+                <div className="bib-hero p-4">
+                  <div className="flex items-start gap-3">
+                    <span className="bib-hero-tile size-9 shrink-0 [&_svg]:size-4">
+                      <Sparkles aria-hidden />
+                    </span>
+                    <div>
+                      <div className="text-[16px] font-semibold leading-6 text-white">Ask about today’s campus</div>
+                      <p className="bib-hero-muted mt-1 text-[14px] leading-5">
+                        The agent reads the same ranked queue, asset histories and outage plans you see here. It drafts work orders; it never
+                        approves or runs anything.
+                      </p>
+                    </div>
+                  </div>
                 </div>
+                <div className="bib-eyebrow">Suggested questions</div>
+                <ul className="flex flex-col gap-2">
+                  {SUGGESTED_PROMPTS.map((prompt) => (
+                    <li key={prompt}>
+                      <button
+                        type="button"
+                        onClick={() => ask(prompt)}
+                        className="bib-card bib-card-interactive flex w-full items-center justify-between gap-3 px-3.5 py-3 text-left text-[15px] leading-5 text-[var(--bib-ink)] outline-none focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]"
+                      >
+                        <span>{prompt}</span>
+                        <ArrowRight className="size-4 shrink-0 text-[var(--bib-ink-muted)]" aria-hidden />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {SUGGESTED_PROMPTS.map((prompt) => (
+                  <Button key={prompt} size="sm" variant="outline" appearance="secondary" onClick={() => ask(prompt)} disabled={loading}>
+                    {prompt}
+                  </Button>
+                ))}
+              </div>
+            )}
 
-                <div className="flex flex-col gap-4">
-                  {turns.map((turn, i) => (
-                    <div key={`${turn.question}-${i}`} className="flex flex-col gap-2">
-                      <div className="text-sm font-medium text-[#111827]">{turn.question}</div>
-                      <div className="text-sm text-[#111827]">{turn.answer}</div>
+            <div className="flex flex-col gap-5">
+              {turns.map((turn, i) => (
+                <div key={`${turn.question}-${i}`} className="flex flex-col gap-3">
+                  <div className="ml-10 self-end rounded-[6px] rounded-tr-[2px] bg-[var(--bib-ink)] px-3.5 py-2.5 text-[15px] leading-5 text-white shadow-[var(--bib-shadow-card)]">
+                    {turn.question}
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <AgentAvatar />
+                    <div className="flex min-w-0 flex-1 flex-col gap-3">
+                      <p className="text-[15px] leading-6 text-[var(--bib-ink)]">{turn.answer}</p>
                       {turn.entities.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {turn.entities.map((entity) => {
                             const href = entityHref(entity);
                             return href ? (
                               <Link key={`${entity.kind}-${entity.id}`} to={href} onClick={() => setOpen(false)}>
-                                <Badge variant="soft" appearance="accent" size="sm">
+                                <Badge variant="soft" appearance="accent" size="md" trailingIcon={<ArrowRight />}>
                                   {entity.label}
                                 </Badge>
                               </Link>
                             ) : (
-                              <Badge key={`${entity.kind}-${entity.id}`} variant="soft" appearance="secondary" size="sm">
+                              <Badge key={`${entity.kind}-${entity.id}`} variant="soft" appearance="secondary" size="md">
                                 {entity.label}
                               </Badge>
                             );
@@ -167,24 +222,26 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                         />
                       ))}
                     </div>
-                  ))}
-                  {loading ? (
-                    <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-                      <Loader2 className="size-4 animate-spin" /> Thinking…
-                    </div>
-                  ) : null}
-                  {error ? <div className="text-sm font-medium text-[#DC2626]">{error}</div> : null}
-                  {turns.length === 0 && !loading ? (
-                    <div className="text-sm text-[#6B7280]">
-                      Ask about what to inspect, energy waste, or a what-if scenario.
-                    </div>
-                  ) : null}
+                  </div>
                 </div>
-              </div>
-            </SidePanel>
+              ))}
+              {loading ? (
+                <div className="flex items-center gap-3 text-[14px] text-[var(--bib-ink-muted)]" aria-live="polite">
+                  <AgentAvatar />
+                  <span className="inline-flex items-center gap-1" aria-hidden>
+                    <span className="size-1.5 animate-bounce rounded-full bg-[var(--bib-ink-muted)] [animation-delay:-0.2s]" />
+                    <span className="size-1.5 animate-bounce rounded-full bg-[var(--bib-ink-muted)] [animation-delay:-0.1s]" />
+                    <span className="size-1.5 animate-bounce rounded-full bg-[var(--bib-ink-muted)]" />
+                  </span>
+                  Thinking…
+                </div>
+              ) : null}
+              {error ? <div className="text-[14px] font-medium text-[var(--bib-status-due)]">{error}</div> : null}
+              <div ref={endRef} />
+            </div>
           </div>
-        </div>
-      ) : null}
-    </>
+        </SidePanel>
+      </div>
+    </div>
   );
 }

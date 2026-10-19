@@ -8,9 +8,10 @@
  */
 
 import React from 'react';
-import { Line, LineChart, ReferenceLine, ResponsiveContainer } from 'recharts';
+import { Line, LineChart, ReferenceLine, ResponsiveContainer, YAxis } from 'recharts';
+
+import { RISK_STROKE, STATUS_STROKE } from '@/components/Chart/chartTheme';
 import type { RiskPoint } from '@/Interfaces';
-import { STATUS_COLOR } from '../RiskChart/statusColors';
 
 export interface SparklineProps {
   points: RiskPoint[];
@@ -18,26 +19,24 @@ export interface SparklineProps {
   height?: number;
 }
 
-/** Tiny trend line for a building's system card — no axes, just shape + threshold. */
-export default function Sparkline({ points, threshold, height = 36 }: SparklineProps) {
+/**
+ * Tiny trend line for a building's system card — no axes, just shape + threshold. The line
+ * wears the accent; it turns the status red only once the latest point is over the threshold.
+ */
+export default function Sparkline({ points, threshold, height = 40 }: SparklineProps) {
   if (!points || points.length === 0) {
-    return <div className="text-xs text-[#6B7280]">No trend data.</div>;
+    return <div className="text-[13px] text-[var(--bib-ink-muted)]">No trend data.</div>;
   }
   const last = points[points.length - 1];
-  const stroke = last.risk >= threshold ? STATUS_COLOR.INSPECTION_DUE : STATUS_COLOR.HEALTHY;
+  const stroke = last.risk >= threshold ? STATUS_STROKE.INSPECTION_DUE : RISK_STROKE;
+  const yMax = Math.max(threshold + 0.5, ...points.map((p) => p.risk));
 
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <LineChart data={points} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
-        <ReferenceLine y={threshold} stroke={STATUS_COLOR.INSPECTION_DUE} strokeDasharray="2 2" strokeOpacity={0.5} />
-        <Line
-          type="monotone"
-          dataKey="risk"
-          stroke={stroke}
-          strokeWidth={2}
-          dot={false}
-          isAnimationActive={false}
-        />
+      <LineChart data={points} margin={{ top: 4, right: 2, left: 2, bottom: 2 }}>
+        <YAxis hide domain={[0, yMax]} />
+        <ReferenceLine y={threshold} stroke={STATUS_STROKE.INSPECTION_DUE} strokeDasharray="3 3" strokeOpacity={0.6} />
+        <Line type="monotone" dataKey="risk" stroke={stroke} strokeWidth={2} dot={false} isAnimationActive={false} />
       </LineChart>
     </ResponsiveContainer>
   );

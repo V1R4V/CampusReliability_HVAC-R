@@ -16,6 +16,8 @@ export interface NavigationItem {
   iconActive?: LucideIcon;
   label: string;
   tooltip: string;
+  /** Group heading in the side nav (items with the same section are listed together). */
+  section?: string;
   badge?: number;
   disabled?: boolean;
 }

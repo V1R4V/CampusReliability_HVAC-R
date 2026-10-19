@@ -19,17 +19,34 @@ import {
   YAxis,
 } from 'recharts';
 
+import ChartTooltip from '@/components/Chart/ChartTooltip';
+import { AXIS_STROKE, AXIS_TICK, GRID_STROKE, INK, SERIES_COLORS } from '@/components/Chart/chartTheme';
 import { Panel } from '@/components/Panel/Panel';
 import { formatThreshold, type BacktestSweepPoint } from '@/shared/api';
 
-const AXIS_TICK = { fontSize: 13, fill: 'var(--bib-ink-muted)' };
 const TICKS = [2, 2.5, 3, 3.5, 4];
-const TOOLTIP_STYLE = {
-  borderRadius: 6,
-  border: '1px solid var(--bib-border)',
-  fontSize: 13,
-  color: 'var(--bib-ink)',
-};
+
+interface SweepTooltipProps {
+  active?: boolean;
+  payload?: ReadonlyArray<{ name?: unknown; value?: unknown; color?: string; fill?: string }>;
+  label?: unknown;
+  unit: string;
+}
+
+function SweepTooltip({ active, payload, label, unit }: SweepTooltipProps) {
+  if (!active || !payload || payload.length === 0) return null;
+  return (
+    <ChartTooltip
+      title={`Threshold ${formatThreshold(Number(label))}`}
+      rows={payload.map((item, index) => ({
+        key: `${String(item.name)}-${index}`,
+        name: String(item.name),
+        value: `${String(item.value)} ${unit}`,
+        color: item.color ?? item.fill,
+      }))}
+    />
+  );
+}
 
 export interface SweepChartsProps {
   sweep: BacktestSweepPoint[];
@@ -41,12 +58,12 @@ export default function SweepCharts({ sweep, threshold }: SweepChartsProps) {
   if (data.length === 0) return null;
 
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
+    <div className="grid gap-5 xl:grid-cols-2">
       <Panel title="Warning vs threshold" subtitle="Days between the first ‘inspection due’ and the failure" chip="SYNTHETIC">
         <div className="h-[220px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
-              <CartesianGrid stroke="var(--bib-grid)" vertical={false} />
+              <CartesianGrid stroke={GRID_STROKE} vertical={false} />
               <XAxis
                 dataKey="threshold"
                 type="number"
@@ -54,33 +71,31 @@ export default function SweepCharts({ sweep, threshold }: SweepChartsProps) {
                 ticks={TICKS}
                 tickFormatter={(value: number) => formatThreshold(value)}
                 tick={AXIS_TICK}
-                axisLine={{ stroke: 'var(--bib-axis)' }}
+                axisLine={{ stroke: AXIS_STROKE }}
                 tickLine={false}
               />
               <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={28} allowDecimals={false} />
-              <RechartsTooltip
-                formatter={(value) => [`${value} days`, '']}
-                labelFormatter={(value) => `Threshold ${formatThreshold(Number(value))}`}
-                contentStyle={TOOLTIP_STYLE}
-              />
+              <RechartsTooltip content={<SweepTooltip unit="days" />} cursor={{ stroke: AXIS_STROKE }} />
               <Legend verticalAlign="top" align="left" iconType="plainline" wrapperStyle={{ fontSize: 13, paddingBottom: 8 }} />
-              <ReferenceLine x={threshold} stroke="var(--bib-ink)" strokeWidth={1} />
+              <ReferenceLine x={threshold} stroke={INK} strokeWidth={1} strokeDasharray="3 3" />
               <Line
                 type="monotone"
                 dataKey="mean_lead_days"
                 name="Mean lead days"
-                stroke="var(--bib-series-1)"
+                stroke={SERIES_COLORS[0]}
                 strokeWidth={2}
                 dot={{ r: 3, strokeWidth: 0 }}
+                activeDot={{ r: 5, strokeWidth: 2, stroke: 'var(--bib-surface)' }}
                 isAnimationActive={false}
               />
               <Line
                 type="monotone"
                 dataKey="min_lead_days"
                 name="Minimum lead days"
-                stroke="var(--bib-series-2)"
+                stroke={SERIES_COLORS[1]}
                 strokeWidth={2}
                 dot={{ r: 3, strokeWidth: 0 }}
+                activeDot={{ r: 5, strokeWidth: 2, stroke: 'var(--bib-surface)' }}
                 isAnimationActive={false}
               />
             </LineChart>
@@ -92,26 +107,21 @@ export default function SweepCharts({ sweep, threshold }: SweepChartsProps) {
         <div className="h-[220px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 8, right: 16, bottom: 4, left: 0 }} barCategoryGap="30%">
-              <CartesianGrid stroke="var(--bib-grid)" vertical={false} />
+              <CartesianGrid stroke={GRID_STROKE} vertical={false} />
               <XAxis
                 dataKey="threshold"
                 tickFormatter={(value: number) => formatThreshold(value)}
                 tick={AXIS_TICK}
-                axisLine={{ stroke: 'var(--bib-axis)' }}
+                axisLine={{ stroke: AXIS_STROKE }}
                 tickLine={false}
               />
               <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={28} allowDecimals={false} />
-              <RechartsTooltip
-                formatter={(value) => [`${value} asset-days`, 'False alarms']}
-                labelFormatter={(value) => `Threshold ${formatThreshold(Number(value))}`}
-                contentStyle={TOOLTIP_STYLE}
-                cursor={{ fill: 'var(--c3-style-basic-bg-hover)' }}
-              />
-              <ReferenceLine x={threshold} stroke="var(--bib-ink)" strokeWidth={1} />
+              <RechartsTooltip content={<SweepTooltip unit="asset-days" />} cursor={{ fill: 'var(--c3-style-basic-bg-hover)' }} />
+              <ReferenceLine x={threshold} stroke={INK} strokeWidth={1} strokeDasharray="3 3" />
               <Bar
                 dataKey="false_alarm_days"
                 name="False-alarm days"
-                fill="var(--bib-series-1)"
+                fill={SERIES_COLORS[0]}
                 radius={[4, 4, 0, 0]}
                 maxBarSize={22}
                 isAnimationActive={false}

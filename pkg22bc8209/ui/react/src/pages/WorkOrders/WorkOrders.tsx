@@ -6,9 +6,11 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
+import { ClipboardList } from 'lucide-react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
+import PageHeader from '@/components/PageHeader/PageHeader';
 import { PanelState } from '@/components/Panel/Panel';
 import Reorderable from '@/components/Reorderable/Reorderable';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
@@ -66,74 +68,86 @@ export default function WorkOrders() {
   }, [refreshKey, reportError]);
 
   const assetName = useMemo(() => new Map((snapshot?.queue ?? []).map((q) => [q.asset_id, q.name] as const)), [snapshot]);
-
-  if (loading) {
-    return (
-      <div className="p-6">
-        <PanelState state="loading" lines={6} />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-6">
-        <PanelState state="error" message={error} onRetry={() => setRefreshKey((k) => k + 1)} />
-      </div>
-    );
-  }
+  const counts = useMemo(
+    () => Object.fromEntries(TABS.map((tab) => [tab.value, workOrders.filter((wo) => wo.status === tab.value).length])) as Record<WorkOrderStatus, number>,
+    [workOrders],
+  );
 
   return (
-    <div className="flex min-h-full flex-col gap-4 p-6">
-      <header>
-        <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Work orders</h1>
-        <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
-          Drafted by the agent. Nothing is scheduled until you approve it.
-        </p>
-      </header>
+    <div className="flex min-h-full flex-col gap-5 p-6 xl:px-8">
+      <PageHeader
+        eyebrow="What did the agent draft?"
+        title="Work orders"
+        icon={<ClipboardList />}
+        description="Every work order here was drafted by the agent from a briefing. Nothing is scheduled until a person approves it; dismissals need a reason."
+        meta={
+          loading
+            ? []
+            : [
+                <>
+                  <span className="bib-num font-semibold text-[var(--bib-ink)]">{counts.PENDING_APPROVAL}</span> awaiting approval
+                </>,
+                <>
+                  <span className="bib-num font-semibold text-[var(--bib-ink)]">{counts.APPROVED}</span> approved
+                </>,
+                <>
+                  <span className="bib-num font-semibold text-[var(--bib-ink)]">{counts.DISMISSED}</span> dismissed
+                </>,
+              ]
+        }
+      />
 
-      <Tabs defaultValue="PENDING_APPROVAL">
-        <TabsList>
-          {TABS.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
-              {tab.label} ({workOrders.filter((wo) => wo.status === tab.value).length})
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {TABS.map((tab) => {
-          const rows = workOrders.filter((wo) => wo.status === tab.value).slice(0, 100);
-          return (
-            <TabsContent key={tab.value} value={tab.value} className="mt-4">
-              {rows.length === 0 ? (
-                <PanelState state="empty" message={tab.empty} />
-              ) : (
-                <Reorderable
-                  storageKey={`workorders.${tab.value}`}
-                  className="grid gap-4 xl:grid-cols-2"
-                  items={rows.map((wo) => ({
-                    id: wo.wo_id,
-                    node: (
-                      <WorkOrderCard
-                        workOrder={wo}
-                        context={assetName.get(wo.asset_id) ?? wo.asset_id}
-                        className="h-full"
-                        onApprove={async () => {
-                          await approveWorkOrder(wo.wo_id, 'Facilities manager');
-                          setRefreshKey((k) => k + 1);
-                        }}
-                        onDismiss={async (reason) => {
-                          await dismissWorkOrder(wo.wo_id, reason);
-                          setRefreshKey((k) => k + 1);
-                        }}
-                      />
-                    ),
-                  }))}
-                />
-              )}
-            </TabsContent>
-          );
-        })}
-      </Tabs>
+      {loading ? (
+        <PanelState state="loading" lines={6} />
+      ) : error ? (
+        <PanelState state="error" message={error} onRetry={() => setRefreshKey((k) => k + 1)} />
+      ) : (
+        <Tabs defaultValue="PENDING_APPROVAL" variant="bordered" size="lg">
+          <TabsList>
+            {TABS.map((tab) => (
+              <TabsTrigger key={tab.value} value={tab.value} className="gap-2 px-4 text-[15px]">
+                {tab.label}
+                <span className="bib-num inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--bib-canvas-deep)] px-1.5 text-[12px] font-semibold text-[var(--bib-ink)]">
+                  {counts[tab.value]}
+                </span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {TABS.map((tab) => {
+            const rows = workOrders.filter((wo) => wo.status === tab.value).slice(0, 100);
+            return (
+              <TabsContent key={tab.value} value={tab.value} className="mt-5">
+                {rows.length === 0 ? (
+                  <PanelState state="empty" message={tab.empty} />
+                ) : (
+                  <Reorderable
+                    storageKey={`workorders.${tab.value}`}
+                    className="grid gap-4 xl:grid-cols-2"
+                    items={rows.map((wo) => ({
+                      id: wo.wo_id,
+                      node: (
+                        <WorkOrderCard
+                          workOrder={wo}
+                          context={assetName.get(wo.asset_id) ?? wo.asset_id}
+                          className="h-full"
+                          onApprove={async () => {
+                            await approveWorkOrder(wo.wo_id, 'Facilities manager');
+                            setRefreshKey((k) => k + 1);
+                          }}
+                          onDismiss={async (reason) => {
+                            await dismissWorkOrder(wo.wo_id, reason);
+                            setRefreshKey((k) => k + 1);
+                          }}
+                        />
+                      ),
+                    }))}
+                  />
+                )}
+              </TabsContent>
+            );
+          })}
+        </Tabs>
+      )}
     </div>
   );
 }

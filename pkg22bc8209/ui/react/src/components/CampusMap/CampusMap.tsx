@@ -1,8 +1,11 @@
 /*
- * CampusMap: the real campus on OpenStreetMap tiles, one dot per building coloured by its
- * worst system status (the same four status colours used everywhere), plants as grey
- * squares, and a thin line from each plant to the buildings on its loops. Click a dot to
- * open the building dashboard. Colour means status only (FRONTEND §2).
+ * CampusMap: the real campus on OpenStreetMap tiles (muted by a CSS filter so the status
+ * dots carry the only colour), one dot per building coloured by its worst system status
+ * (the same four status colours used everywhere), plants as ink squares, and a thin line
+ * from each plant to the buildings on its loops. Click a dot to open the building
+ * dashboard. Colour means status only (FRONTEND §2). Tiles need the browser to reach
+ * tile.openstreetmap.org; dots and tooltips still render without them. (CARTO's raster
+ * basemaps were tried first — they now watermark "API key required" without a key.)
  */
 
 import 'leaflet/dist/leaflet.css';
@@ -20,6 +23,11 @@ const STATUS_HEX: Record<Status, string> = {
   INSPECTION_DUE: '#DC2626',
   FAILED: '#111827',
 };
+const INK_HEX = '#111827';
+const INK_MUTED_HEX = '#6B7280';
+
+const TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const TILE_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 export interface MapBuilding {
   building_id: string;
@@ -69,19 +77,22 @@ export default function CampusMap({ buildings, plants, onSelect, className }: Ca
       .filter((line): line is LatLngExpression[] => line !== null);
   }, [buildings, plants]);
 
+  // Draw healthy dots first so the ones that need attention sit on top.
+  const ordered = useMemo(
+    () => [...buildings].sort((a, b) => (a.status === 'HEALTHY' ? -1 : 0) - (b.status === 'HEALTHY' ? -1 : 0)),
+    [buildings],
+  );
+
   if (!bounds) {
     return <div className={className}>No building coordinates available.</div>;
   }
 
   return (
     <div className={className}>
-      <MapContainer bounds={bounds} scrollWheelZoom className="h-full w-full rounded-[var(--c3-style-border-radius-6)]">
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+      <MapContainer bounds={bounds} scrollWheelZoom className="h-full w-full">
+        <TileLayer attribution={TILE_ATTRIBUTION} url={TILE_URL} maxZoom={19} />
         {feeds.map((line, i) => (
-          <Polyline key={i} positions={line} pathOptions={{ color: '#6B7280', weight: 1, opacity: 0.35 }} />
+          <Polyline key={i} positions={line} pathOptions={{ color: INK_MUTED_HEX, weight: 1.2, opacity: 0.35, dashArray: '4 4' }} />
         ))}
         {plants.map((plant) => (
           <Rectangle
@@ -90,35 +101,39 @@ export default function CampusMap({ buildings, plants, onSelect, className }: Ca
               [plant.lat - PLANT_HALF_DEG, plant.lon - PLANT_HALF_DEG * 1.3],
               [plant.lat + PLANT_HALF_DEG, plant.lon + PLANT_HALF_DEG * 1.3],
             ]}
-            pathOptions={{ color: '#374151', weight: 1.5, fillColor: '#6B7280', fillOpacity: 0.6 }}
+            pathOptions={{ color: '#FFFFFF', weight: 2, fillColor: INK_HEX, fillOpacity: 0.92 }}
           >
             <Tooltip direction="top" offset={[0, -6]}>
               <span className="text-[13px] font-semibold">{plant.name}</span>
+              <span className="block text-[12px] text-[var(--bib-ink-muted)]">Plant</span>
             </Tooltip>
           </Rectangle>
         ))}
-        {buildings.map((b) => (
-          <CircleMarker
-            key={b.building_id}
-            center={[b.lat, b.lon]}
-            radius={b.status === 'HEALTHY' ? 8 : 10}
-            pathOptions={{
-              color: '#FFFFFF',
-              weight: 2,
-              fillColor: STATUS_HEX[b.status] ?? STATUS_HEX.HEALTHY,
-              fillOpacity: 0.95,
-            }}
-            eventHandlers={onSelect ? { click: () => onSelect(b.building_id) } : undefined}
-          >
-            <Tooltip direction="top" offset={[0, -8]}>
-              <div className="text-[13px] leading-4">
-                <div className="font-semibold">{b.name}</div>
-                <div>{STATUS_LABEL[b.status] ?? b.status}</div>
-                {b.subtitle ? <div className="text-[#6B7280]">{b.subtitle}</div> : null}
-              </div>
-            </Tooltip>
-          </CircleMarker>
-        ))}
+        {ordered.map((b) => {
+          const attention = b.status !== 'HEALTHY';
+          return (
+            <CircleMarker
+              key={b.building_id}
+              center={[b.lat, b.lon]}
+              radius={attention ? 11 : 8}
+              pathOptions={{
+                color: '#FFFFFF',
+                weight: 2.5,
+                fillColor: STATUS_HEX[b.status] ?? STATUS_HEX.HEALTHY,
+                fillOpacity: attention ? 1 : 0.85,
+              }}
+              eventHandlers={onSelect ? { click: () => onSelect(b.building_id) } : undefined}
+            >
+              <Tooltip direction="top" offset={[0, -8]}>
+                <div className="text-[13px] leading-4">
+                  <div className="font-semibold">{b.name}</div>
+                  <div>{STATUS_LABEL[b.status] ?? b.status}</div>
+                  {b.subtitle ? <div className="text-[var(--bib-ink-muted)]">{b.subtitle}</div> : null}
+                </div>
+              </Tooltip>
+            </CircleMarker>
+          );
+        })}
       </MapContainer>
     </div>
   );

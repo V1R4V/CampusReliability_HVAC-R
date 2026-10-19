@@ -4,6 +4,10 @@
  * Every panel in the app handles loading (skeleton), empty and error (one-line message
  * with Retry) — never a blank card (FRONTEND §6). Pages compose `<Panel>` for the frame
  * and `<PanelState>` for the three non-content states.
+ *
+ * The frame is the shared `.bib-card` surface (white, hairline, soft lift). An optional
+ * `icon` sits in a tile beside the title; `tone="hero"` swaps the surface for the dark
+ * ink hero used by the morning brief and the Plan B punchline.
  */
 
 import React from 'react';
@@ -17,7 +21,6 @@ import {
   AlertDescription,
   AlertTitle,
 } from '@/components/ui/alert';
-import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import type { Provenance } from '@/shared/api';
@@ -25,34 +28,93 @@ import type { Provenance } from '@/shared/api';
 export interface PanelProps {
   title?: React.ReactNode;
   subtitle?: React.ReactNode;
-  /** Honesty label shown next to the title. */
+  /** Honesty label shown next to the title (currently renders nothing — owner's call). */
   chip?: Provenance;
   chipTitle?: string;
+  /** Lucide icon (or any node) shown in a tile beside the title. */
+  icon?: React.ReactNode;
   /** Right-aligned header controls (filters, buttons). */
   actions?: React.ReactNode;
+  /** Optional footer row below the content, separated by a hairline. */
+  footer?: React.ReactNode;
+  tone?: 'default' | 'hero';
+  /** Padding density. */
+  size?: 'md' | 'lg';
   children: React.ReactNode;
   className?: string;
   contentClassName?: string;
 }
 
-export function Panel({ title, subtitle, chip, chipTitle, actions, children, className, contentClassName }: PanelProps) {
-  const hasHeader = Boolean(title || subtitle || actions || chip);
+export function Panel({
+  title,
+  subtitle,
+  chip,
+  chipTitle,
+  icon,
+  actions,
+  footer,
+  tone = 'default',
+  size = 'md',
+  children,
+  className,
+  contentClassName,
+}: PanelProps) {
+  const hasHeader = Boolean(title || subtitle || actions || chip || icon);
+  const hero = tone === 'hero';
   return (
-    <Card variant="outlined" size="md" className={cn('min-w-0 gap-3', className)}>
+    <section
+      className={cn(
+        'flex min-w-0 flex-col',
+        hero ? 'bib-hero' : 'bib-card',
+        size === 'lg' ? 'gap-4 p-6' : 'gap-3 p-4',
+        className,
+      )}
+    >
       {hasHeader ? (
-        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              {title ? <h2 className="text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{title}</h2> : null}
-              {chip ? <ProvenanceChip kind={chip} size="sm" title={chipTitle} /> : null}
+        <header className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+          <div className="flex min-w-0 items-start gap-3">
+            {icon ? (
+              <span
+                className={cn(
+                  'size-9 [&_svg]:size-5',
+                  hero ? 'bib-hero-tile' : 'bib-icon-tile',
+                )}
+                aria-hidden
+              >
+                {icon}
+              </span>
+            ) : null}
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                {title ? (
+                  <h2 className={cn('text-[18px] font-semibold leading-6', hero ? 'text-white' : 'text-[var(--bib-ink)]')}>
+                    {title}
+                  </h2>
+                ) : null}
+                {chip ? <ProvenanceChip kind={chip} size="sm" title={chipTitle} /> : null}
+              </div>
+              {subtitle ? (
+                <p className={cn('mt-0.5 text-[14px] leading-5', hero ? 'bib-hero-muted' : 'text-[var(--bib-ink-muted)]')}>
+                  {subtitle}
+                </p>
+              ) : null}
             </div>
-            {subtitle ? <p className="mt-0.5 text-[14px] leading-5 text-[var(--bib-ink-muted)]">{subtitle}</p> : null}
           </div>
           {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
-        </div>
+        </header>
       ) : null}
-      <div className={cn('min-w-0', contentClassName)}>{children}</div>
-    </Card>
+      <div className={cn('min-w-0 flex-1', contentClassName)}>{children}</div>
+      {footer ? (
+        <footer
+          className={cn(
+            'flex flex-wrap items-center gap-3 border-t pt-3 text-[14px] leading-5',
+            hero ? 'border-white/10 bib-hero-muted' : 'border-[var(--bib-border)] text-[var(--bib-ink-muted)]',
+          )}
+        >
+          {footer}
+        </footer>
+      ) : null}
+    </section>
   );
 }
 
@@ -101,7 +163,7 @@ export function PanelState({ state, message, title, onRetry, lines = 3, classNam
   return (
     <div
       className={cn(
-        'flex items-center gap-3 rounded-md border border-dashed border-[var(--bib-border)] px-4 py-5 text-[15px] text-[var(--bib-ink-muted)]',
+        'flex items-center gap-3 rounded-md border border-dashed border-[var(--bib-border-strong)] bg-[var(--bib-canvas)] px-4 py-5 text-[15px] text-[var(--bib-ink-muted)]',
         className,
       )}
     >

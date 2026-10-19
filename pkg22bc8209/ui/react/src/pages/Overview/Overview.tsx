@@ -8,9 +8,11 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ListOrdered, Network } from 'lucide-react';
 
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
+import PageHeader from '@/components/PageHeader/PageHeader';
 import { Panel, PanelState } from '@/components/Panel/Panel';
 import SnapshotBanner from '@/components/Panel/SnapshotBanner';
 import Schematic from '@/components/Schematic/Schematic';
@@ -38,35 +40,39 @@ export default function Overview() {
   const hardError = !snapshot && !snapshotLoading ? snapshotError : null;
 
   return (
-    <div className="flex min-h-full flex-col gap-4 p-6">
-      <header className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Campus health</h1>
-          <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
-            What needs attention as of <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>
-            {snapshot
-              ? ` · ${snapshot.buildings.length} buildings · ${snapshot.segments.length} loops · ${snapshot.plants.length} plants`
-              : ''}
-          </p>
-        </div>
-        {snapshotLoading && snapshot ? (
-          <span className="inline-flex items-center gap-2 text-[13px] leading-4 text-[var(--bib-ink-muted)]">
-            <Spinner size="sm" label="Updating" /> Updating…
-          </span>
-        ) : null}
-      </header>
+    <div className="flex min-h-full flex-col gap-5 p-6 xl:px-8">
+      <PageHeader
+        eyebrow="What needs attention today?"
+        title="Campus health"
+        meta={[
+          <>
+            As of <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>
+          </>,
+          snapshot ? `${snapshot.buildings.length} buildings` : null,
+          snapshot ? `${snapshot.segments.length} chilled-water loops` : null,
+          snapshot ? `${snapshot.plants.length} plants` : null,
+        ]}
+        actions={
+          snapshotLoading && snapshot ? (
+            <span className="inline-flex items-center gap-2 text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+              <Spinner size="sm" label="Updating" /> Updating…
+            </span>
+          ) : undefined
+        }
+      />
 
       <SnapshotBanner />
 
-      <div className={cn('flex flex-col gap-4 transition-opacity', snapshotLoading && snapshot ? 'opacity-70' : 'opacity-100')}>
+      <div className={cn('flex flex-col gap-5 transition-opacity', snapshotLoading && snapshot ? 'opacity-70' : 'opacity-100')}>
         <MorningBrief brief={snapshot?.morning_brief ?? null} asOf={asOf} loading={firstLoad} />
 
         <KpiRow kpis={snapshot?.kpis ?? null} pendingWorkOrders={pendingWorkOrders} loading={firstLoad} error={hardError} />
 
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
           <Panel
             title="Campus network"
             subtitle="Plants feed chilled-water loops that serve buildings. Click a loop for its outage plan, a building for its dashboard."
+            icon={<Network />}
             chip="SYNTHETIC"
             chipTitle="Loop topology is synthetic; plants and buildings are real."
           >
@@ -94,6 +100,7 @@ export default function Overview() {
             loading={firstLoad}
             error={hardError}
             onRetry={refreshSnapshot}
+            icon={<ListOrdered />}
           />
         </div>
       </div>

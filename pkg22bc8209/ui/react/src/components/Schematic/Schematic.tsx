@@ -95,13 +95,17 @@ type Geometry = (typeof GEOMETRY)[keyof typeof GEOMETRY];
 
 const LEGEND_STATUSES: Status[] = ['HEALTHY', 'WATCH', 'INSPECTION_DUE', 'FAILED'];
 
-/** Label width by how crowded the loop is: sparse loops can spell names out. */
+/**
+ * Label width by how crowded the loop is: sparse loops can spell names out. Crowded loops
+ * alternate labels above/below the line, so a label may span almost two slots (190% of its
+ * own node) before it would touch the next label on the same side.
+ */
 function labelWidthClass(count: number): string {
   if (count <= 1) return 'max-w-[220px]';
   if (count === 2) return 'max-w-[180px]';
   if (count === 3) return 'max-w-[130px]';
   if (count === 4) return 'max-w-[100px]';
-  return '';
+  return 'max-w-[196%]';
 }
 
 /** "Chemistry Building" → "Chemistry"; long multi-word names → initials ("WIMR"). */
@@ -132,9 +136,9 @@ function BuildingNode({ building, geometry, labelOnTop, labelWidth, dark, onClic
   const dot = (
     <span
       className={cn(
-        'relative block rounded-full bg-[var(--bib-status-color)] ring-2 ring-[var(--bib-surface)]',
+        'relative block rounded-full bg-[var(--bib-status-color)] ring-2 ring-[var(--bib-surface)] shadow-[0_1px_3px_rgb(17_24_39_/_0.25)]',
         geometry.inner,
-        status === 'HEALTHY' && 'opacity-70',
+        status === 'HEALTHY' && 'opacity-75',
       )}
     >
       {due ? <span aria-hidden className="bib-pulse absolute inset-0 rounded-full" /> : null}
@@ -284,10 +288,7 @@ function Legend() {
         <span className="inline-block h-[3px] w-6 rounded-full bg-[var(--bib-ink-muted)]" aria-hidden />
         line = loop status · dot = building status
       </span>
-      <span className="inline-flex items-center gap-1.5">
-        <ProvenanceChip kind="SYNTHETIC" size="sm" title="The loop topology is synthetic; plants and buildings are real." />
-        loop layout
-      </span>
+      <ProvenanceChip kind="SYNTHETIC" size="sm" title="The loop topology is synthetic; plants and buildings are real." />
     </div>
   );
 }
@@ -343,12 +344,12 @@ export default function Schematic({
         {groups.map((group) => (
           <React.Fragment key={group.plant.plant_id}>
             <div className="relative flex items-center" style={{ gridRow: `span ${group.rows.length}` }}>
-              <div className="mr-[18px] flex w-full flex-col items-center gap-1 rounded-md border border-[var(--bib-border)] bg-[var(--bib-canvas)] px-2 py-3 text-center">
-                <Factory className="size-5 text-[var(--bib-ink-muted)]" aria-hidden />
-                <span className="text-[13px] font-semibold leading-[17px] text-[var(--bib-ink)]">{group.plant.name}</span>
+              <div className="mr-[18px] flex w-full flex-col items-center gap-1.5 rounded-[6px] bg-[var(--bib-ink)] px-2 py-3 text-center text-white shadow-[0_2px_8px_rgb(17_24_39_/_0.25)]">
+                <Factory className="size-5 text-white/80" aria-hidden />
+                <span className="text-[13px] font-semibold leading-[17px]">{group.plant.name}</span>
               </div>
-              <span aria-hidden className="absolute right-0 top-1/2 h-[3px] w-[18px] -translate-y-1/2 bg-[var(--bib-border)]" />
-              <span aria-hidden className={cn('absolute right-0 w-[3px] bg-[var(--bib-border)]', geometry.trunk)} />
+              <span aria-hidden className="absolute right-0 top-1/2 h-[3px] w-[18px] -translate-y-1/2 bg-[var(--bib-border-strong)]" />
+              <span aria-hidden className={cn('absolute right-0 w-[3px] bg-[var(--bib-border-strong)]', geometry.trunk)} />
             </div>
             {group.rows.map((row) => (
               <SegmentRow

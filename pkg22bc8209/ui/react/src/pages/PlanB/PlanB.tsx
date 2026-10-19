@@ -1,5 +1,5 @@
 /*
- * Plan B — simulate a chilled-water loop failure (FRONTEND §5.5).
+ * Outage plan (Plan B) — simulate a chilled-water loop failure (FRONTEND §5.5).
  *
  * `simulatePlanB(segment, tempF, priorityOnly)` answers "what happens if I don't?":
  * who loses cooling, in what order, how many rental chillers, $/day — beside the real
@@ -10,13 +10,13 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Play, RotateCcw } from 'lucide-react';
+import { Building2, Network, Play, RotateCcw, ShieldAlert, Thermometer } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
+import PageHeader from '@/components/PageHeader/PageHeader';
 import { Panel, PanelState } from '@/components/Panel/Panel';
 import SnapshotBanner from '@/components/Panel/SnapshotBanner';
 import Reorderable from '@/components/Reorderable/Reorderable';
@@ -145,52 +145,59 @@ export default function PlanB() {
     };
   }, [result, shown]);
 
+  const tempFill = ((tempF - TEMP_MIN_F) / (TEMP_MAX_F - TEMP_MIN_F)) * 100;
+
   return (
-    <div className="flex min-h-full flex-col gap-4 p-6">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Outage plan</h1>
-          <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
-            If a chilled-water loop fails: who loses cooling, in what order, how many rental chillers, what it costs
-            per day. As of <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Loop segment">
-          {segmentIds.map((id) => {
-            const seg = snapshot?.segments.find((s) => s.segment_id === id);
-            const active = id === segmentId;
-            return (
-              <Button
-                key={id}
-                variant={active ? 'solid' : 'outline'}
-                appearance="secondary"
-                size="md"
-                aria-pressed={active}
-                onClick={() => navigate(`/planb/${id}`)}
-                className="gap-2"
-              >
-                {id}
-                {seg ? (
-                  <span className={cn('text-[13px] font-normal', active ? 'opacity-80' : 'text-[var(--bib-ink-muted)]')}>
-                    {seg.name}
-                  </span>
-                ) : null}
-              </Button>
-            );
-          })}
-        </div>
-      </header>
+    <div className="flex min-h-full flex-col gap-5 p-6 xl:px-8">
+      <PageHeader
+        eyebrow="What happens if I don’t?"
+        title="Outage plan"
+        icon={<ShieldAlert />}
+        description="If a chilled-water loop fails: who loses cooling, in what order, how many rental chillers, and what it costs per day — next to what the real June 2026 outage cost."
+        meta={[
+          <>
+            As of <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>
+          </>,
+          plant ? `${segmentLabel} fed from ${plant.name}` : segmentLabel,
+        ]}
+        actions={
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Loop segment">
+            {segmentIds.map((id) => {
+              const seg = snapshot?.segments.find((s) => s.segment_id === id);
+              const active = id === segmentId;
+              return (
+                <Button
+                  key={id}
+                  variant={active ? 'solid' : 'outline'}
+                  appearance="secondary"
+                  size="md"
+                  aria-pressed={active}
+                  onClick={() => navigate(`/planb/${id}`)}
+                  className="gap-2"
+                >
+                  {seg ? (
+                    <span data-status={seg.worst_status} className="inline-block size-2 rounded-full bg-[var(--bib-status-color)]" aria-hidden />
+                  ) : null}
+                  {id}
+                  {seg ? (
+                    <span className={cn('text-[13px] font-normal', active ? 'opacity-80' : 'text-[var(--bib-ink-muted)]')}>
+                      {seg.name}
+                    </span>
+                  ) : null}
+                </Button>
+              );
+            })}
+          </div>
+        }
+      />
 
       <SnapshotBanner />
 
-      <Card variant="outlined" size="md" className="gap-4">
+      <div className="bib-card p-4 md:p-5">
         <div className="grid items-end gap-6 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="bib-temp"
-              className="text-[13px] font-semibold uppercase leading-4 tracking-[0.06em] text-[var(--bib-ink-muted)]"
-            >
-              Outdoor temperature
+            <label htmlFor="bib-temp" className="bib-eyebrow inline-flex items-center gap-1.5">
+              <Thermometer className="size-3.5" aria-hidden /> Outdoor temperature
             </label>
             <div className="flex items-center gap-4">
               <input
@@ -202,11 +209,10 @@ export default function PlanB() {
                 value={tempF}
                 onChange={(event) => pickTemp(Number(event.target.value))}
                 aria-valuetext={`${tempF}°F`}
+                style={{ '--bib-range-fill': `${tempFill}%` } as React.CSSProperties}
                 className="bib-range flex-1"
               />
-              <span className="w-[84px] text-right text-[28px] font-semibold leading-8 tabular-nums text-[var(--bib-ink)]">
-                {tempF}°F
-              </span>
+              <span className="bib-num w-[92px] text-right text-[32px] font-semibold leading-9 text-[var(--bib-ink)]">{tempF}°F</span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {realHigh != null ? (
@@ -217,7 +223,7 @@ export default function PlanB() {
                   onClick={() => pickTemp(realHigh)}
                   className="gap-1.5"
                 >
-                  Today&apos;s high · {realHigh}°F
+                  Today&apos;s real high · {realHigh}°F
                 </Button>
               ) : null}
               <Button
@@ -230,13 +236,13 @@ export default function PlanB() {
               </Button>
               {result ? (
                 <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
-                  load factor {result.load_factor.toFixed(2)} · one 400-ton chiller per 400 tons of load
+                  load factor {result.load_factor.toFixed(2)} · one 400-ton rental chiller per 400 tons of load
                 </span>
               ) : null}
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-canvas)] px-4 py-3">
             <Switch id="bib-priority" size="lg" checked={priorityOnly} onCheckedChange={setPriorityOnly} />
             <label htmlFor="bib-priority" className="cursor-pointer text-[16px] leading-5 text-[var(--bib-ink)]">
               Stage priority buildings only
@@ -253,11 +259,12 @@ export default function PlanB() {
             leadingIcon={animating ? <RotateCcw className="animate-spin" /> : <Play />}
             onClick={simulate}
             disabled={!result || animating}
+            className="min-w-[200px]"
           >
             {animating ? 'Dispatching…' : 'Simulate failure'}
           </Button>
         </div>
-      </Card>
+      </div>
 
       {error && !result ? (
         <PanelState state="error" message={error} onRetry={() => load(segmentId, tempF, priorityOnly)} />
@@ -266,7 +273,7 @@ export default function PlanB() {
       <div className={cn('transition-opacity', loading && result ? 'opacity-70' : 'opacity-100')}>
         <Reorderable
           storageKey="planb"
-          className="grid gap-4 xl:grid-cols-2"
+          className="grid gap-5 xl:grid-cols-2"
           items={[
             {
               id: 'comparison',
@@ -285,10 +292,12 @@ export default function PlanB() {
             },
             {
               id: 'loop',
+              className: 'xl:col-span-2',
               node: (
                 <Panel
                   title={segmentLabel}
                   subtitle={plant ? `Fed from ${plant.name}. Dots go dark as buildings lose cooling.` : 'Buildings lose cooling in dispatch order'}
+                  icon={<Network />}
                   actions={segment ? <StatusPill status={segment.worst_status} size="sm" /> : undefined}
                   className="h-full"
                 >
@@ -311,12 +320,21 @@ export default function PlanB() {
             },
             {
               id: 'who',
+              className: 'xl:col-span-2',
               node: (
-                <Panel title="Who loses cooling" subtitle="Labs and patient care first, then by peak load" className="h-full">
+                <Panel
+                  title="Who loses cooling"
+                  subtitle="Dispatch order: labs and patient care first, then by peak load"
+                  icon={<Building2 />}
+                  className="h-full"
+                  contentClassName="-mx-4 -mb-4 overflow-x-auto"
+                >
                   {result ? (
                     <LoadShedTable rows={result.buildings} shown={shown} totals={result.totals} priorityOnly={result.priority_only} />
                   ) : (
-                    <PanelState state="loading" lines={6} />
+                    <div className="px-4 pb-4">
+                      <PanelState state="loading" lines={6} />
+                    </div>
                   )}
                 </Panel>
               ),

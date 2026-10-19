@@ -7,17 +7,17 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Check, Pencil, X as XIcon } from 'lucide-react';
+import { Check, Clock3, Hash, Pencil, Users, X as XIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalTitle } from '@/components/ui/modal';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
+import { Skeleton } from '@/components/Panel/Panel';
+import WorkOrderPill from '@/components/StatusPill/WorkOrderPill';
 import { formatDate } from '@/shared/api';
 import type { WorkOrder, WorkOrderStatus } from '@/Interfaces';
-import { WorkOrderStatusTag } from '../RiskChart/Tags';
 
 export interface WorkOrderCardProps {
   workOrder: WorkOrder | null | undefined;
@@ -48,17 +48,19 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
 
   if (loading) {
     return (
-      <Card variant="outlined" size="md" className={className}>
-        <div className="h-20 animate-pulse rounded bg-[var(--bib-canvas)]" />
-      </Card>
+      <div className={cn('bib-card flex flex-col gap-3 p-4', className)}>
+        <Skeleton className="h-6 w-2/3" />
+        <Skeleton className="h-5 w-full" />
+        <Skeleton className="h-5 w-1/2" />
+      </div>
     );
   }
 
   if (!workOrder) {
     return (
-      <Card variant="outlined" size="md" className={className}>
+      <div className={cn('bib-card p-4', className)}>
         <p className="text-[15px] text-[var(--bib-ink-muted)]">No work order drafted.</p>
-      </Card>
+      </div>
     );
   }
 
@@ -100,7 +102,15 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
   const urgent = workOrder.priority === 1;
 
   return (
-    <Card variant="outlined" size="md" className={cn('gap-3', className)} data-wo-status={effectiveStatus}>
+    <article
+      className={cn(
+        'bib-card relative flex flex-col gap-3 overflow-hidden p-4',
+        effectiveStatus === 'DISMISSED' && 'bg-[var(--bib-canvas)]',
+        className,
+      )}
+      data-wo-status={effectiveStatus}
+    >
+      {pending ? <span aria-hidden className="absolute inset-y-0 left-0 w-[4px] bg-[var(--bib-wo)]" /> : null}
       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 pr-7">
         <div className="min-w-0">
           <h3 className="text-[17px] font-semibold leading-6 text-[var(--bib-ink)]">{workOrder.title}</h3>
@@ -109,30 +119,33 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
         <div className="flex shrink-0 flex-wrap items-center gap-2">
           <span
             className={cn(
-              'rounded-[3px] border px-1.5 text-[12px] font-semibold uppercase leading-5 tracking-[0.04em]',
-              urgent ? 'border-[var(--bib-ink)] text-[var(--bib-ink)]' : 'border-[var(--bib-border)] text-[var(--bib-ink-muted)]',
+              'rounded-[4px] border px-1.5 text-[12px] font-semibold uppercase leading-5 tracking-[0.04em]',
+              urgent ? 'border-[var(--bib-ink)] bg-[var(--bib-ink)] text-white' : 'border-[var(--bib-border)] text-[var(--bib-ink-muted)]',
             )}
           >
             {PRIORITY_LABEL[workOrder.priority] ?? `Priority ${workOrder.priority}`}
           </span>
-          <WorkOrderStatusTag status={effectiveStatus} size="sm" />
+          <WorkOrderPill status={effectiveStatus} size="sm" />
         </div>
       </div>
 
-      <p className="text-[15px] leading-6 text-[var(--bib-ink)]">{workOrder.description}</p>
+      <p className="text-[15px] leading-6 text-[var(--bib-ink-soft)]">{workOrder.description}</p>
 
-      <dl className="flex flex-wrap gap-x-5 gap-y-1 text-[13px] leading-5 text-[var(--bib-ink-muted)]">
-        <div>
+      <dl className="flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] leading-5 text-[var(--bib-ink-muted)]">
+        <div className="inline-flex items-center gap-1.5">
+          <Hash className="size-3.5" aria-hidden />
           <dt className="sr-only">Work order</dt>
-          <dd className="font-medium text-[var(--bib-ink)]">{workOrder.wo_id}</dd>
+          <dd className="bib-num font-semibold text-[var(--bib-ink)]">{workOrder.wo_id}</dd>
         </div>
-        <div>
+        <div className="inline-flex items-center gap-1.5">
+          <Users className="size-3.5" aria-hidden />
           <dt className="sr-only">Crew</dt>
           <dd>{workOrder.crew}</dd>
         </div>
-        <div>
+        <div className="inline-flex items-center gap-1.5">
+          <Clock3 className="size-3.5" aria-hidden />
           <dt className="sr-only">Estimate</dt>
-          <dd>{workOrder.est_hours} h</dd>
+          <dd className="bib-num">{workOrder.est_hours} h</dd>
         </div>
         <div>
           <dt className="sr-only">Drafted</dt>
@@ -156,8 +169,8 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
       </dl>
 
       {justApproved ? (
-        <div className="rounded px-2 py-1 text-[13px] font-medium text-[var(--bib-status-healthy)] bg-[color-mix(in_srgb,var(--bib-status-healthy)_10%,transparent)]">
-          Work order approved
+        <div className="inline-flex items-center gap-2 rounded-[6px] bg-[var(--bib-status-healthy-soft)] px-3 py-1.5 text-[13px] font-medium text-[var(--bib-status-healthy)]">
+          <Check className="size-4" aria-hidden /> Work order approved
         </div>
       ) : null}
       {actionError ? <div className="text-[13px] font-medium text-[var(--bib-status-due)]">{actionError}</div> : null}
@@ -215,6 +228,6 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Card>
+    </article>
   );
 }

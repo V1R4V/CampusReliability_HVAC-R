@@ -1,10 +1,12 @@
 /*
- * Before It Breaks — app-level design tokens + the handful of styles Tailwind
- * cannot express cleanly (range sliders, status→colour resolution, motion).
- * Layered on top of the C3 design system (styles/tokens.css). Owner: Arnav.
+ * Before It Breaks — application design tokens + the handful of styles Tailwind
+ * cannot express cleanly (cards, hero surfaces, range sliders, status→colour
+ * resolution, motion, Leaflet skin). Layered on top of the C3 design system
+ * (styles/tokens.css). Owner: Arnav; polish pass by Vibhrav (integrator).
  *
  * Rule (docs/FRONTEND.md §2): colour means STATUS and nothing else. Equipment
- * systems are told apart by icons (SystemIcon), never by colour.
+ * systems are told apart by icons (SystemIcon), never by colour. The only other
+ * colour in the app is the single accent used for interactive/agent affordances.
  */
 
 :root {
@@ -22,22 +24,34 @@
   --bib-status-failed-soft: #e5e7eb;
   --bib-status-offline-soft: #f3f4f6;
 
-  /* Work orders: outline = pending approval, solid = approved */
+  /* Work orders: outline = pending approval, solid = approved. Doubles as the
+     one interactive accent (buttons, links, the agent). */
   --bib-wo: #2563eb;
   --bib-wo-soft: #dbeafe;
+  --bib-accent: var(--bib-wo);
+  --bib-accent-soft: #eff6ff;
 
   /* Ink and surfaces */
   --bib-ink: #111827;
+  --bib-ink-soft: #374151;
   --bib-ink-muted: #6b7280;
+  --bib-ink-faint: #9ca3af;
   --bib-surface: #ffffff;
-  --bib-canvas: #f7f7f5;
+  --bib-canvas: #f4f4f1;
+  --bib-canvas-deep: #ebebe7;
   --bib-border: #e5e7eb;
+  --bib-border-strong: #d1d5db;
   --bib-grid: #ececea;
   --bib-axis: #9ca3af;
 
-  /* Chart series — identity only (Backtest aligned curves). Validated with the
-     dataviz palette checker on a white surface: all hard gates pass; the
-     contrast WARN on slots 3–5 is relieved by the legend + failures table. */
+  /* Elevation — soft, warm-neutral shadows so white cards lift off the canvas */
+  --bib-shadow-card: 0 1px 2px rgb(17 24 39 / 0.04), 0 2px 6px rgb(17 24 39 / 0.05);
+  --bib-shadow-raised: 0 2px 4px rgb(17 24 39 / 0.06), 0 10px 24px rgb(17 24 39 / 0.1);
+  --bib-shadow-hero: 0 12px 32px rgb(17 24 39 / 0.22);
+
+  /* Chart series — identity only (Backtest aligned curves, forecast methods).
+     Validated with the dataviz palette checker on a white surface: all hard
+     gates pass; the contrast WARN on slots 3–5 is relieved by legends + tables. */
   --bib-series-1: #2a78d6;
   --bib-series-2: #eb6834;
   --bib-series-3: #1baf7a;
@@ -49,6 +63,7 @@
   --bib-text-body: 16px;
   --bib-text-lead: 18px;
   --bib-text-title: 22px;
+  --bib-text-page: 26px;
   --bib-text-kpi: 40px;
   --bib-text-hero: 48px;
 
@@ -80,6 +95,109 @@
   --bib-status-soft: var(--bib-status-offline-soft);
 }
 
+/* ─── Surfaces ────────────────────────────────────────────────────────────── */
+/* The card every panel, tile and list is built on: white, hairline, soft lift. */
+.bib-card {
+  background: var(--bib-surface);
+  border: 1px solid var(--bib-border);
+  border-radius: var(--c3-style-border-radius-6, 6px);
+  box-shadow: var(--bib-shadow-card);
+}
+.bib-card-interactive {
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.bib-card-interactive:hover {
+  border-color: var(--bib-border-strong);
+  box-shadow: var(--bib-shadow-raised);
+  transform: translateY(-1px);
+}
+
+/* Dark ink hero surface (morning brief, scenario punchlines). Ink is neutral —
+   it carries no status meaning — so it is allowed as a focal surface. */
+.bib-hero {
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+  background:
+    radial-gradient(900px 260px at 0% 0%, rgb(255 255 255 / 0.1), transparent 60%),
+    linear-gradient(135deg, #0f172a 0%, #1f2937 55%, #273449 100%);
+  border: 1px solid rgb(255 255 255 / 0.06);
+  border-radius: var(--c3-style-border-radius-6, 6px);
+  box-shadow: var(--bib-shadow-hero);
+}
+.bib-hero::after {
+  /* faint grid texture so the surface reads as "control room", not a flat block */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.9), transparent 70%);
+}
+.bib-hero > * {
+  position: relative;
+  z-index: 1;
+}
+.bib-hero-muted {
+  color: rgb(255 255 255 / 0.66);
+}
+/* Type helpers inside a hero keep their size but switch to the hero's inks. */
+.bib-hero .bib-kpi {
+  color: #ffffff;
+}
+.bib-hero .bib-eyebrow {
+  color: rgb(255 255 255 / 0.7);
+}
+.bib-hero-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.12);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  color: #ffffff;
+}
+
+/* ─── Type helpers ────────────────────────────────────────────────────────── */
+.bib-eyebrow {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bib-ink-muted);
+}
+.bib-num {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+.bib-kpi {
+  font-size: var(--bib-text-kpi);
+  line-height: 44px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+  color: var(--bib-ink);
+}
+
+/* Icon tile beside a title (panels, page headers, KPI tiles) */
+.bib-icon-tile {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--c3-style-border-radius-6, 6px);
+  background: var(--bib-canvas);
+  border: 1px solid var(--bib-border);
+  color: var(--bib-ink-soft);
+}
+
 /* ─── StatusPill ──────────────────────────────────────────────────────────── */
 .bib-pill {
   display: inline-flex;
@@ -99,6 +217,7 @@
   height: 8px;
   border-radius: 9999px;
   background: var(--bib-status-color);
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 0.7);
 }
 .bib-pill[data-size='sm'] {
   height: 22px;
@@ -117,6 +236,8 @@
 }
 
 /* ─── Range slider (date scrubber, temperature, threshold) ────────────────── */
+/* The filled part of the track is driven by --bib-range-fill (a percentage) set
+   by the component; Firefox gets it natively from ::-moz-range-progress. */
 .bib-range {
   appearance: none;
   -webkit-appearance: none;
@@ -125,6 +246,8 @@
   margin: 0;
   background: transparent;
   cursor: pointer;
+  --bib-range-fill: 0%;
+  --bib-range-fill-color: var(--bib-ink);
 }
 .bib-range:focus {
   outline: none;
@@ -132,12 +255,23 @@
 .bib-range::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 9999px;
-  background: var(--bib-border);
+  background: linear-gradient(
+    to right,
+    var(--bib-range-fill-color) 0,
+    var(--bib-range-fill-color) var(--bib-range-fill),
+    var(--bib-border) var(--bib-range-fill),
+    var(--bib-border) 100%
+  );
 }
 .bib-range::-moz-range-track {
   height: 6px;
   border-radius: 9999px;
   background: var(--bib-border);
+}
+.bib-range::-moz-range-progress {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--bib-range-fill-color);
 }
 .bib-range::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -148,7 +282,10 @@
   border-radius: 9999px;
   background: var(--bib-ink);
   border: 3px solid var(--bib-surface);
-  box-shadow: 0 0 0 1.5px var(--bib-ink);
+  box-shadow:
+    0 0 0 1.5px var(--bib-ink),
+    0 2px 6px rgb(17 24 39 / 0.25);
+  transition: transform 0.12s ease;
 }
 .bib-range::-moz-range-thumb {
   width: 14px;
@@ -156,7 +293,13 @@
   border-radius: 9999px;
   background: var(--bib-ink);
   border: 3px solid var(--bib-surface);
-  box-shadow: 0 0 0 1.5px var(--bib-ink);
+  box-shadow:
+    0 0 0 1.5px var(--bib-ink),
+    0 2px 6px rgb(17 24 39 / 0.25);
+}
+.bib-range:hover::-webkit-slider-thumb,
+.bib-range:active::-webkit-slider-thumb {
+  transform: scale(1.1);
 }
 .bib-range:focus-visible::-webkit-slider-thumb {
   box-shadow:
@@ -171,6 +314,14 @@
 .bib-range:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* ─── Rows ────────────────────────────────────────────────────────────────── */
+.bib-row-link {
+  transition: background-color 0.12s ease;
+}
+.bib-row-link:hover {
+  background: var(--c3-style-basic-bg-hover, #f3f4f6);
 }
 
 /* ─── Motion ──────────────────────────────────────────────────────────────── */
@@ -215,10 +366,40 @@
   animation: bib-skeleton 1.2s ease-in-out infinite;
 }
 
+/* ─── Leaflet skin (Buildings → Map) ──────────────────────────────────────── */
+.leaflet-container {
+  font-family: inherit;
+  background: var(--bib-canvas-deep);
+}
+/* Mute the OpenStreetMap raster so the status dots carry the only colour. */
+.leaflet-tile-pane {
+  filter: saturate(0.35) contrast(0.92) brightness(1.04);
+}
+.leaflet-container .leaflet-tooltip {
+  border: 1px solid var(--bib-border);
+  border-radius: var(--c3-style-border-radius-6, 6px);
+  box-shadow: var(--bib-shadow-raised);
+  padding: 6px 10px;
+  color: var(--bib-ink);
+}
+.leaflet-container .leaflet-control-zoom a {
+  color: var(--bib-ink);
+}
+.leaflet-container .leaflet-control-attribution {
+  font-size: 11px;
+  color: var(--bib-ink-muted);
+  background: rgb(255 255 255 / 0.8);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bib-pulse,
   .bib-rise,
   .bib-skeleton {
     animation: none;
+  }
+  .bib-card-interactive,
+  .bib-card-interactive:hover {
+    transition: none;
+    transform: none;
   }
 }

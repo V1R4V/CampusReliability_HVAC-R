@@ -12,13 +12,17 @@ import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
 import { fetchRiskForecast } from '@/shared/api/forecast';
 import type { ForecastMethod, RiskForecastCompare } from '@/Interfaces';
 
-/** Colours per forecasting method — shared by the asset panel, the system badge and the Predictions page. */
+/**
+ * Colours per forecasting method — identity only, from the validated categorical slots in
+ * styles/before-it-breaks.css; shared by the asset panel, the system badge and Predictions.
+ * The age baseline is reference-only, so it wears the axis grey; the consensus wears ink.
+ */
 export const METHOD_COLOR: Record<ForecastMethod | 'consensus', string> = {
-  heuristic: '#2563EB',
-  classifier: '#7C3AED',
-  monte_carlo: '#EA580C',
-  weibull: '#6B7280',
-  consensus: '#111827',
+  heuristic: 'var(--bib-series-1)',
+  classifier: 'var(--bib-series-3)',
+  monte_carlo: 'var(--bib-series-2)',
+  weibull: 'var(--bib-axis)',
+  consensus: 'var(--bib-ink)',
 };
 
 export const METHOD_SHORT: Record<ForecastMethod | 'consensus', string> = {
@@ -29,12 +33,28 @@ export const METHOD_SHORT: Record<ForecastMethod | 'consensus', string> = {
   consensus: 'Consensus',
 };
 
-/** Traffic-light colour for a probability (same hex values as the status tokens in RiskChart/statusColors). */
+export type ProbabilityStatus = 'HEALTHY' | 'WATCH' | 'INSPECTION_DUE' | 'OFFLINE';
+
+/** A probability read as a status band (≥50% due, ≥20% watch) so it can drive data-status. */
+export function probabilityStatus(p: number | null | undefined): ProbabilityStatus {
+  if (p == null) return 'OFFLINE';
+  if (p >= 0.5) return 'INSPECTION_DUE';
+  if (p >= 0.2) return 'WATCH';
+  return 'HEALTHY';
+}
+
+/** Status colour token for a probability (status meaning, not decoration). */
 export function probabilityColor(p: number | null | undefined): string {
-  if (p == null) return '#9CA3AF';
-  if (p >= 0.5) return '#DC2626';
-  if (p >= 0.2) return '#F59E0B';
-  return '#2E7D32';
+  switch (probabilityStatus(p)) {
+    case 'INSPECTION_DUE':
+      return 'var(--bib-status-due)';
+    case 'WATCH':
+      return 'var(--bib-status-watch)';
+    case 'HEALTHY':
+      return 'var(--bib-status-healthy)';
+    default:
+      return 'var(--bib-ink-faint)';
+  }
 }
 
 export function formatProbability(p: number | null | undefined): string {

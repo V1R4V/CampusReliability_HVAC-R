@@ -9,6 +9,7 @@
 
 import React, { useMemo } from 'react';
 import {
+  Area,
   CartesianGrid,
   ComposedChart,
   Line,
@@ -19,10 +20,12 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-  type TooltipProps,
 } from 'recharts';
+
+import ChartTooltip from '@/components/Chart/ChartTooltip';
+import { AXIS_STROKE, AXIS_TICK, GRID_STROKE, INK, INK_MUTED, RISK_STROKE, STATUS_STROKE, shortDate } from '@/components/Chart/chartTheme';
+import { STATUS_LABEL, formatRisk } from '@/shared/api';
 import type { AssetEvent, AssetStatus, RiskSeriesPoint } from '@/Interfaces';
-import { BORDER, INK, INK_MUTED, STATUS_COLOR, STATUS_LABEL } from './statusColors';
 
 export interface RiskChartProps {
   series: RiskSeriesPoint[];
@@ -37,25 +40,20 @@ interface ChartPoint {
   date: string;
   risk: number;
   status: AssetStatus;
+  driver: string;
   riskKnown: number | null;
   riskFuture: number | null;
-}
-
-/** Parses an ISO `yyyy-mm-dd` as local midnight (avoids the UTC-parse off-by-one-day shift). */
-function formatShortDate(iso: string): string {
-  const d = new Date(`${iso}T00:00:00`);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 function CrossMark({ cx, cy, label }: { cx?: number; cy?: number; label?: string }) {
   if (cx == null || cy == null) return null;
   return (
     <g>
-      <line x1={cx - 5} y1={cy - 5} x2={cx + 5} y2={cy + 5} stroke={STATUS_COLOR.FAILED} strokeWidth={2} />
-      <line x1={cx - 5} y1={cy + 5} x2={cx + 5} y2={cy - 5} stroke={STATUS_COLOR.FAILED} strokeWidth={2} />
+      <circle cx={cx} cy={cy} r={9} fill="var(--bib-surface)" stroke={STATUS_STROKE.FAILED} strokeWidth={1.5} />
+      <line x1={cx - 4} y1={cy - 4} x2={cx + 4} y2={cy + 4} stroke={STATUS_STROKE.FAILED} strokeWidth={2} />
+      <line x1={cx - 4} y1={cy + 4} x2={cx + 4} y2={cy - 4} stroke={STATUS_STROKE.FAILED} strokeWidth={2} />
       {label ? (
-        <text x={cx + 8} y={cy - 8} fontSize={11} fill={STATUS_COLOR.FAILED}>
+        <text x={cx + 12} y={cy - 10} fontSize={12} fontWeight={600} fill={INK} stroke="var(--bib-surface)" strokeWidth={3} paintOrder="stroke">
           {label}
         </text>
       ) : null}
@@ -63,30 +61,50 @@ function CrossMark({ cx, cy, label }: { cx?: number; cy?: number; label?: string
   );
 }
 
+/** Decoy annotation: hollow dot + the short form of its label ("Heat wave … · ignored"), haloed so it stays legible over lines. */
 function DecoyMark({ cx, cy, label }: { cx?: number; cy?: number; label?: string }) {
   if (cx == null || cy == null) return null;
+  const short = label ? `${label.split(/[:(—]/)[0].trim()} · ignored` : '';
   return (
     <g>
-      <circle cx={cx} cy={cy} r={4} fill="none" stroke={INK_MUTED} strokeWidth={1.5} />
-      {label ? (
-        <text x={cx} y={cy - 10} fontSize={10} fill={INK_MUTED} textAnchor="middle">
-          {`▲ ${label}`}
+      <circle cx={cx} cy={cy} r={5} fill="var(--bib-surface)" stroke={INK_MUTED} strokeWidth={1.5} />
+      {short ? (
+        <text
+          x={cx}
+          y={cy - 12}
+          fontSize={11}
+          fill={INK_MUTED}
+          textAnchor="middle"
+          stroke="var(--bib-surface)"
+          strokeWidth={3}
+          paintOrder="stroke"
+        >
+          {short}
         </text>
       ) : null}
     </g>
   );
 }
 
-function RiskTooltip({ active, payload, label }: TooltipProps<number, string>) {
+interface RiskTooltipProps {
+  active?: boolean;
+  payload?: ReadonlyArray<{ payload?: ChartPoint }>;
+  label?: unknown;
+}
+
+function RiskTooltip({ active, payload, label }: RiskTooltipProps) {
   if (!active || !payload || payload.length === 0) return null;
-  const point = payload[0]?.payload as ChartPoint | undefined;
+  const point = payload[0]?.payload;
   if (!point) return null;
   return (
-    <div className="rounded-md border bg-white px-2.5 py-1.5 text-xs shadow-sm" style={{ borderColor: BORDER }}>
-      <div className="font-medium text-[#111827]">{formatShortDate(String(label))}</div>
-      <div className="text-[#111827]">Risk: {point.risk.toFixed(1)}</div>
-      <div style={{ color: STATUS_COLOR[point.status] }}>{STATUS_LABEL[point.status]}</div>
-    </div>
+    <ChartTooltip
+      title={shortDate(String(label))}
+      rows={[
+        { key: 'risk', name: 'Risk', value: formatRisk(point.risk), color: RISK_STROKE },
+        { key: 'status', name: 'Status', value: STATUS_LABEL[point.status] ?? point.status, color: STATUS_STROKE[point.status] },
+      ]}
+      footer={point.driver ? `Driving signal: ${point.driver.replace(/_/g, ' ')}` : undefined}
+    />
   );
 }
 
@@ -96,13 +114,14 @@ function RiskTooltip({ active, payload, label }: TooltipProps<number, string>) {
  * annotations, an as-of cursor, and data after `asOf` rendered grey/dashed
  * (we only "know" up to as-of).
  */
-export default function RiskChart({ series, threshold, events, asOf, height = 280 }: RiskChartProps) {
+export default function RiskChart({ series, threshold, events, asOf, height = 300 }: RiskChartProps) {
   const chartData = useMemo<ChartPoint[]>(
     () =>
       (series ?? []).map((p) => ({
         date: p.date,
         risk: p.risk,
         status: p.status,
+        driver: p.driver,
         riskKnown: p.date <= asOf ? p.risk : null,
         riskFuture: p.date >= asOf ? p.risk : null,
       })),
@@ -138,7 +157,7 @@ export default function RiskChart({ series, threshold, events, asOf, height = 28
 
   if (chartData.length === 0) {
     return (
-      <div className="flex h-[200px] items-center justify-center text-sm text-[#6B7280]">
+      <div className="flex h-[200px] items-center justify-center text-[15px] text-[var(--bib-ink-muted)]">
         No risk history available for this asset.
       </div>
     );
@@ -146,24 +165,24 @@ export default function RiskChart({ series, threshold, events, asOf, height = 28
 
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <ComposedChart data={chartData} margin={{ top: 24, right: 24, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
+      <ComposedChart data={chartData} margin={{ top: 28, right: 24, left: 0, bottom: 0 }}>
+        <defs>
+          <linearGradient id="bib-risk-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--bib-accent)" stopOpacity={0.22} />
+            <stop offset="100%" stopColor="var(--bib-accent)" stopOpacity={0.02} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid stroke={GRID_STROKE} vertical={false} />
         <XAxis
           dataKey="date"
-          tickFormatter={formatShortDate}
+          tickFormatter={shortDate}
           minTickGap={48}
-          tick={{ fontSize: 12, fill: INK_MUTED }}
-          axisLine={{ stroke: BORDER }}
+          tick={AXIS_TICK}
+          axisLine={{ stroke: AXIS_STROKE }}
           tickLine={false}
         />
-        <YAxis
-          domain={[0, yMax]}
-          tick={{ fontSize: 12, fill: INK_MUTED }}
-          width={28}
-          axisLine={{ stroke: BORDER }}
-          tickLine={false}
-        />
-        <Tooltip content={<RiskTooltip />} />
+        <YAxis domain={[0, yMax]} tick={AXIS_TICK} width={28} axisLine={false} tickLine={false} />
+        <Tooltip content={<RiskTooltip />} cursor={{ stroke: AXIS_STROKE }} />
 
         {inspectionDueSpans.map((span) => (
           <ReferenceArea
@@ -172,7 +191,7 @@ export default function RiskChart({ series, threshold, events, asOf, height = 28
             x2={span.x2}
             y1={0}
             y2={yMax}
-            fill={STATUS_COLOR.INSPECTION_DUE}
+            fill={STATUS_STROKE.INSPECTION_DUE}
             fillOpacity={0.08}
             stroke="none"
           />
@@ -180,15 +199,16 @@ export default function RiskChart({ series, threshold, events, asOf, height = 28
 
         <ReferenceLine
           y={threshold}
-          stroke={STATUS_COLOR.INSPECTION_DUE}
+          stroke={STATUS_STROKE.INSPECTION_DUE}
           strokeDasharray="4 4"
-          label={{ value: 'threshold', position: 'insideTopRight', fill: STATUS_COLOR.INSPECTION_DUE, fontSize: 11 }}
+          strokeWidth={1.5}
+          label={{ value: `Inspection threshold ${formatRisk(threshold)}`, position: 'insideTopRight', fill: STATUS_STROKE.INSPECTION_DUE, fontSize: 12 }}
         />
         <ReferenceLine
           x={asOf}
           stroke={INK}
-          strokeDasharray="2 2"
-          label={{ value: 'as-of', position: 'top', fill: INK, fontSize: 11 }}
+          strokeDasharray="2 3"
+          label={{ value: `As of ${shortDate(asOf)}`, position: 'top', fill: INK, fontSize: 12, fontWeight: 600 }}
         />
 
         {decoyEvents.map((e) => (
@@ -197,7 +217,7 @@ export default function RiskChart({ series, threshold, events, asOf, height = 28
             x={e.date}
             y={riskByDate.get(e.date) ?? 0}
             r={4}
-            shape={(p: { cx?: number; cy?: number }) => <DecoyMark cx={p.cx} cy={p.cy} label={`${e.label}: ignored`} />}
+            shape={(p: { cx?: number; cy?: number }) => <DecoyMark cx={p.cx} cy={p.cy} label={e.label} />}
           />
         ))}
 
@@ -207,16 +227,27 @@ export default function RiskChart({ series, threshold, events, asOf, height = 28
             x={e.date}
             stroke={INK}
             strokeWidth={1}
-            label={{ value: 'Real break', position: 'insideBottomLeft', fill: INK, fontSize: 11 }}
+            label={{ value: 'Real break', position: 'insideBottomLeft', fill: INK, fontSize: 12 }}
           />
         ))}
 
+        <Area
+          type="monotone"
+          dataKey="riskKnown"
+          stroke="none"
+          fill="url(#bib-risk-fill)"
+          isAnimationActive={false}
+          connectNulls
+          legendType="none"
+          tooltipType="none"
+        />
         <Line
           type="monotone"
           dataKey="riskKnown"
-          stroke="#2563EB"
-          strokeWidth={2}
+          stroke={RISK_STROKE}
+          strokeWidth={2.25}
           dot={false}
+          activeDot={{ r: 5, strokeWidth: 2, stroke: 'var(--bib-surface)' }}
           isAnimationActive={false}
           connectNulls
           name="Risk"
@@ -228,6 +259,7 @@ export default function RiskChart({ series, threshold, events, asOf, height = 28
           strokeWidth={2}
           strokeDasharray="4 3"
           dot={false}
+          activeDot={false}
           isAnimationActive={false}
           connectNulls
           name="Risk (future)"

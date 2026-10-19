@@ -4,19 +4,18 @@
  * `backtest(threshold)` replays five planted failures and four decoys through the same
  * pipeline the Overview uses. The slider (2.0–4.0, step 0.25) sets the global threshold
  * and re-queries; headline numbers come from the `sweep` row for that threshold.
- * The provenance panel says plainly what is real and what is synthetic.
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, RotateCcw, TriangleAlert } from 'lucide-react';
+import { BellRing, CheckCircle2, EyeOff, Gauge, History, RotateCcw, ShieldCheck, Timer, TriangleAlert } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
 import KpiTile from '@/components/KpiTile/KpiTile';
+import PageHeader from '@/components/PageHeader/PageHeader';
 import { Panel, PanelState } from '@/components/Panel/Panel';
 import Reorderable from '@/components/Reorderable/Reorderable';
 import SystemIcon from '@/components/SystemIcon/SystemIcon';
@@ -49,13 +48,13 @@ function FailuresTable({ failures, asOf }: { failures: BacktestFailure[]; asOf: 
     <Table size="sm">
       <TableHeader>
         <TableRow>
-          <TableHead>Event</TableHead>
+          <TableHead className="pl-4">Event</TableHead>
           <TableHead>Asset</TableHead>
           <TableHead>System</TableHead>
           <TableHead>Failed on</TableHead>
           <TableHead>First inspection due</TableHead>
           <TableHead className="text-right">Lead days</TableHead>
-          <TableHead className="text-right">Energy over normal at flag</TableHead>
+          <TableHead className="pr-4 text-right">Energy over normal at flag</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -63,7 +62,7 @@ function FailuresTable({ failures, asOf }: { failures: BacktestFailure[]; asOf: 
           const missed = failure.lead_days == null || failure.first_due_date == null;
           return (
             <TableRow key={failure.event_id}>
-              <TableCell className="font-semibold text-[var(--bib-ink)]">{failure.event_id}</TableCell>
+              <TableCell className="pl-4 font-semibold text-[var(--bib-ink)]">{failure.event_id}</TableCell>
               <TableCell>
                 <Link
                   to={withAsOf(`/asset/${failure.asset_id}`, asOf)}
@@ -77,12 +76,12 @@ function FailuresTable({ failures, asOf }: { failures: BacktestFailure[]; asOf: 
               </TableCell>
               <TableCell className="whitespace-nowrap">{formatDate(failure.failure_date)}</TableCell>
               <TableCell className="whitespace-nowrap">
-                {missed ? <span className="text-[var(--bib-status-due)]">Missed</span> : formatDate(failure.first_due_date)}
+                {missed ? <span className="font-medium text-[var(--bib-status-due)]">Missed</span> : formatDate(failure.first_due_date)}
               </TableCell>
-              <TableCell className="text-right font-semibold tabular-nums text-[var(--bib-ink)]">
+              <TableCell className="bib-num text-right text-[16px] font-semibold text-[var(--bib-ink)]">
                 {missed ? '—' : failure.lead_days}
               </TableCell>
-              <TableCell className="text-right tabular-nums">
+              <TableCell className="bib-num pr-4 text-right">
                 {failure.energy_over_expected_pct_at_flag == null ? '—' : formatPct(failure.energy_over_expected_pct_at_flag)}
               </TableCell>
             </TableRow>
@@ -152,24 +151,26 @@ export default function Backtest() {
   }, [result, threshold]);
 
   const firstLoad = loading && !result;
+  const thresholdFill = ((pending - THRESHOLD_MIN) / (THRESHOLD_MAX - THRESHOLD_MIN)) * 100;
 
   return (
-    <div className="flex min-h-full flex-col gap-4 p-6">
-      <header>
-        <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Backtest</h1>
-        <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
-          Five planted failures and four decoys, replayed through the same pipeline. Move the threshold to trade
-          warning time against false alarms.
-        </p>
-      </header>
+    <div className="flex min-h-full flex-col gap-5 p-6 xl:px-8">
+      <PageHeader
+        eyebrow="How we know"
+        title="Backtest"
+        icon={<History />}
+        description="Five planted failures and four decoys, replayed through the same pipeline the Overview uses. Move the threshold to trade warning time against false alarms."
+        meta={[
+          `Inspection due = risk ≥ threshold on 2 consecutive days`,
+          `Watch from ${formatThreshold(WATCH_THRESHOLD)}`,
+          result ? `${result.failures.length} planted failures · ${result.decoys.length} decoys` : null,
+        ]}
+      />
 
-      <Card variant="outlined" size="md" className="gap-3">
-        <div className="flex flex-wrap items-center gap-4">
-          <label
-            htmlFor="bib-threshold"
-            className="text-[13px] font-semibold uppercase leading-4 tracking-[0.06em] text-[var(--bib-ink-muted)]"
-          >
-            Inspection threshold
+      <div className="bib-card p-4 md:p-5">
+        <div className="flex flex-wrap items-center gap-5">
+          <label htmlFor="bib-threshold" className="bib-eyebrow inline-flex items-center gap-1.5">
+            <Gauge className="size-3.5" aria-hidden /> Inspection threshold
           </label>
           <input
             id="bib-threshold"
@@ -180,11 +181,10 @@ export default function Backtest() {
             value={pending}
             onChange={(event) => setPending(Number(event.target.value))}
             aria-valuetext={formatThreshold(pending)}
-            className="bib-range min-w-[240px] flex-1"
+            style={{ '--bib-range-fill': `${thresholdFill}%`, '--bib-range-fill-color': 'var(--bib-status-due)' } as React.CSSProperties}
+            className="bib-range min-w-[280px] flex-1"
           />
-          <span className="w-[72px] text-[28px] font-semibold leading-8 tabular-nums text-[var(--bib-ink)]">
-            {formatThreshold(pending)}
-          </span>
+          <span className="bib-num w-[72px] text-[32px] font-semibold leading-9 text-[var(--bib-ink)]">{formatThreshold(pending)}</span>
           <Button
             variant="ghost"
             appearance="secondary"
@@ -196,19 +196,20 @@ export default function Backtest() {
             Reset to {formatThreshold(DEFAULT_THRESHOLD)}
           </Button>
           <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
-            Inspection due = risk ≥ threshold on 2 consecutive days · watch from {formatThreshold(WATCH_THRESHOLD)}
+            Lower = earlier warning, more false alarms · higher = quieter, later
           </span>
         </div>
-      </Card>
+      </div>
 
       {error && !result ? <PanelState state="error" message={error} onRetry={() => load(threshold)} /> : null}
 
-      <div className={cn('flex flex-col gap-4 transition-opacity', loading && result ? 'opacity-70' : 'opacity-100')}>
+      <div className={cn('flex flex-col gap-5 transition-opacity', loading && result ? 'opacity-70' : 'opacity-100')}>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <KpiTile
             label="Minimum warning"
             value={stats?.min ?? '—'}
             unit="days"
+            icon={<Timer />}
             sub="Shortest lead time across the planted failures"
             loading={firstLoad}
           />
@@ -216,18 +217,23 @@ export default function Backtest() {
             label="Mean warning"
             value={stats && stats.mean != null ? stats.mean.toFixed(1) : '—'}
             unit="days"
+            icon={<ShieldCheck />}
             sub="Average days from first inspection due to failure"
             loading={firstLoad}
           />
           <KpiTile
             label="False-alarm days"
             value={stats?.falseAlarms ?? '—'}
+            icon={<BellRing />}
+            tone={stats && stats.falseAlarms > 0 ? 'WATCH' : 'neutral'}
             sub={result ? `${result.healthy_assets} assets never flagged` : undefined}
             loading={firstLoad}
           />
           <KpiTile
             label="Missed failures"
             value={stats?.missed ?? '—'}
+            icon={<EyeOff />}
+            tone={stats && stats.missed > 0 ? 'INSPECTION_DUE' : 'neutral'}
             sub={result ? `of ${result.failures.length} planted` : undefined}
             loading={firstLoad}
           />
@@ -235,78 +241,96 @@ export default function Backtest() {
 
         <Reorderable
           storageKey="backtest"
-          className="grid gap-4 xl:grid-cols-12"
+          className="grid gap-5 xl:grid-cols-12"
           items={[
             {
               id: 'curves',
               className: 'xl:col-span-7',
               node: (
-          <Panel
-            title="Risk in the 21 days before each failure"
-            subtitle="All failures aligned on their failure day. The red line is the current threshold."
-            className="h-full"
-          >
-            {result ? (
-              <AlignedCurvesChart curves={result.aligned_curves} threshold={threshold} />
-            ) : (
-              <PanelState state="loading" lines={6} />
-            )}
-          </Panel>
+                <Panel
+                  title="Risk in the 21 days before each failure"
+                  subtitle="All failures aligned on their failure day. The red line is the current threshold."
+                  className="h-full"
+                >
+                  {result ? (
+                    <AlignedCurvesChart curves={result.aligned_curves} threshold={threshold} />
+                  ) : (
+                    <PanelState state="loading" lines={6} />
+                  )}
+                </Panel>
               ),
             },
             {
               id: 'decoys',
               className: 'xl:col-span-5',
               node: (
-          <Panel title="Decoys ignored" subtitle="What a plain threshold alarm would have flagged" className="h-full">
-            {!result ? (
-              <PanelState state="loading" lines={4} />
-            ) : result.decoys.length === 0 ? (
-              <PanelState state="empty" message="No decoys in this run." />
-            ) : (
-              <ul className="flex flex-col divide-y divide-[var(--bib-border)]">
-                {result.decoys.map((decoy) => {
-                  const Icon = decoy.ignored ? CheckCircle2 : TriangleAlert;
-                  return (
-                    <li key={decoy.event_id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
-                      <Icon
-                        className={cn(
-                          'mt-0.5 size-5 shrink-0',
-                          decoy.ignored ? 'text-[var(--bib-status-healthy)]' : 'text-[var(--bib-status-due)]',
-                        )}
-                        role="img"
-                        aria-label={decoy.ignored ? 'Ignored' : 'Flagged'}
-                      />
-                      <div className="min-w-0">
-                        <div className="text-[16px] font-medium leading-6 text-[var(--bib-ink)]">
-                          {decoy.label}{' '}
-                          <span className="text-[13px] font-normal text-[var(--bib-ink-muted)]">{decoy.event_id}</span>
-                        </div>
-                        <div className="text-[14px] leading-5 text-[var(--bib-ink-muted)]">
-                          {decoy.ignored ? 'Ignored: ' : 'Flagged: '}
-                          {decoy.reason}
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </Panel>
+                <Panel title="Decoys ignored" subtitle="What a plain threshold alarm would have flagged" className="h-full">
+                  {!result ? (
+                    <PanelState state="loading" lines={4} />
+                  ) : result.decoys.length === 0 ? (
+                    <PanelState state="empty" message="No decoys in this run." />
+                  ) : (
+                    <ul className="flex flex-col divide-y divide-[var(--bib-border)]">
+                      {result.decoys.map((decoy) => {
+                        const Icon = decoy.ignored ? CheckCircle2 : TriangleAlert;
+                        return (
+                          <li key={decoy.event_id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+                            <span
+                              className={cn(
+                                'mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full',
+                                decoy.ignored
+                                  ? 'bg-[var(--bib-status-healthy-soft)] text-[var(--bib-status-healthy)]'
+                                  : 'bg-[var(--bib-status-due-soft)] text-[var(--bib-status-due)]',
+                              )}
+                            >
+                              <Icon className="size-4" role="img" aria-label={decoy.ignored ? 'Ignored' : 'Flagged'} />
+                            </span>
+                            <div className="min-w-0">
+                              <div className="text-[16px] font-medium leading-6 text-[var(--bib-ink)]">
+                                {decoy.label}{' '}
+                                <span className="text-[13px] font-normal text-[var(--bib-ink-muted)]">{decoy.event_id}</span>
+                              </div>
+                              <div className="text-[14px] leading-5 text-[var(--bib-ink-muted)]">
+                                {decoy.ignored ? 'Ignored: ' : 'Flagged: '}
+                                {decoy.reason}
+                              </div>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </Panel>
               ),
             },
             {
               id: 'sweep',
               className: 'xl:col-span-12',
-              node: result ? <SweepCharts sweep={result.sweep} threshold={threshold} /> : <Panel><PanelState state="loading" lines={4} /></Panel>,
+              node: result ? (
+                <SweepCharts sweep={result.sweep} threshold={threshold} />
+              ) : (
+                <Panel>
+                  <PanelState state="loading" lines={4} />
+                </Panel>
+              ),
             },
             {
               id: 'failures',
               className: 'xl:col-span-12',
               node: (
-        <Panel title="Planted failures" subtitle={`At threshold ${formatThreshold(threshold)}`}>
-          {result ? <FailuresTable failures={result.failures} asOf={asOf} /> : <PanelState state="loading" lines={5} />}
-        </Panel>
+                <Panel
+                  title="Planted failures"
+                  subtitle={`At threshold ${formatThreshold(threshold)}`}
+                  contentClassName="-mx-4 -mb-4 overflow-x-auto"
+                >
+                  {result ? (
+                    <FailuresTable failures={result.failures} asOf={asOf} />
+                  ) : (
+                    <div className="px-4 pb-4">
+                      <PanelState state="loading" lines={5} />
+                    </div>
+                  )}
+                </Panel>
               ),
             },
           ]}

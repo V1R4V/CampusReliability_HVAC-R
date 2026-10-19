@@ -23,7 +23,7 @@ export interface LoadShedTableProps {
 
 export default function LoadShedTable({ rows, shown, totals, priorityOnly }: LoadShedTableProps) {
   if (rows.length === 0) {
-    return <p className="text-[15px] text-[var(--bib-ink-muted)]">No buildings on this loop.</p>;
+    return <p className="px-4 pb-4 text-[15px] text-[var(--bib-ink-muted)]">No buildings on this loop.</p>;
   }
   const complete = shown >= rows.length;
 
@@ -31,12 +31,12 @@ export default function LoadShedTable({ rows, shown, totals, priorityOnly }: Loa
     <Table size="sm">
       <TableHeader>
         <TableRow>
-          <TableHead className="w-10">#</TableHead>
+          <TableHead className="w-12 pl-4">#</TableHead>
           <TableHead>Building</TableHead>
           <TableHead className="text-right">Peak load</TableHead>
           <TableHead className="text-right">Chillers</TableHead>
           <TableHead className="text-right">$/day</TableHead>
-          <TableHead className="text-right">Staged</TableHead>
+          <TableHead className="pr-4 text-right">Staged</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -49,7 +49,7 @@ export default function LoadShedTable({ rows, shown, totals, priorityOnly }: Loa
               className={cn(visible ? 'bib-rise' : 'invisible', muted && 'text-[var(--bib-ink-muted)]')}
               aria-hidden={!visible}
             >
-              <TableCell className="tabular-nums">{row.order}</TableCell>
+              <TableCell className="bib-num pl-4 text-[14px] text-[var(--bib-ink-muted)]">{row.order}</TableCell>
               <TableCell>
                 <div className="flex flex-wrap items-center gap-2">
                   <span
@@ -63,10 +63,10 @@ export default function LoadShedTable({ rows, shown, totals, priorityOnly }: Loa
                   <CriticalityBadge criticality={row.criticality} />
                 </div>
               </TableCell>
-              <TableCell className="text-right tabular-nums">{formatNumber(row.peak_load_tons)} t</TableCell>
-              <TableCell className="text-right tabular-nums">{muted ? '—' : row.chillers_needed}</TableCell>
-              <TableCell className="text-right tabular-nums">{muted ? '—' : formatUsd(row.cost_per_day_usd)}</TableCell>
-              <TableCell className="text-right">
+              <TableCell className="bib-num text-right text-[15px]">{formatNumber(row.peak_load_tons)} t</TableCell>
+              <TableCell className="bib-num text-right text-[15px] font-medium text-[var(--bib-ink)]">{muted ? '—' : row.chillers_needed}</TableCell>
+              <TableCell className="bib-num text-right text-[15px] font-medium text-[var(--bib-ink)]">{muted ? '—' : formatUsd(row.cost_per_day_usd)}</TableCell>
+              <TableCell className="pr-4 text-right">
                 {row.staged ? (
                   <Check className="ml-auto size-4 text-[var(--bib-status-healthy)]" role="img" aria-label="Staged" />
                 ) : (
@@ -88,11 +88,11 @@ export default function LoadShedTable({ rows, shown, totals, priorityOnly }: Loa
             {priorityOnly ? ` of ${rows.length}` : ''}
           </TableCell>
           <TableCell />
-          <TableCell className="text-right font-semibold tabular-nums text-[var(--bib-ink)]">{totals.chillers}</TableCell>
-          <TableCell className="text-right font-semibold tabular-nums text-[var(--bib-ink)]">
+          <TableCell className="bib-num text-right text-[15px] font-semibold text-[var(--bib-ink)]">{totals.chillers}</TableCell>
+          <TableCell className="bib-num text-right text-[15px] font-semibold text-[var(--bib-ink)]">
             {formatUsd(totals.cost_per_day_usd)}
           </TableCell>
-          <TableCell className="whitespace-nowrap text-right text-[13px] text-[var(--bib-ink-muted)]">
+          <TableCell className="bib-num whitespace-nowrap pr-4 text-right text-[13px] text-[var(--bib-ink-muted)]">
             {formatUsd(totals.cost_per_week_usd)}/week
           </TableCell>
         </TableRow>

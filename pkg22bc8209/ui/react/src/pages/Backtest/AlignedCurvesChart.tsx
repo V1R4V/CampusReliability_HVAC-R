@@ -18,17 +18,10 @@ import {
   YAxis,
 } from 'recharts';
 
+import { AXIS_STROKE, AXIS_TICK, GRID_STROKE, SERIES_COLORS } from '@/components/Chart/chartTheme';
 import { formatRisk, formatThreshold, type AlignedCurve } from '@/shared/api';
 
-export const SERIES_COLORS = [
-  'var(--bib-series-1)',
-  'var(--bib-series-2)',
-  'var(--bib-series-3)',
-  'var(--bib-series-4)',
-  'var(--bib-series-5)',
-];
-
-const AXIS_TICK = { fontSize: 13, fill: 'var(--bib-ink-muted)' };
+export { SERIES_COLORS };
 
 interface TooltipPayloadItem {
   name?: unknown;
@@ -46,7 +39,7 @@ function CurveTooltip({ active, payload, label }: CurveTooltipProps) {
   if (!active || !payload || payload.length === 0) return null;
   const day = Number(label);
   return (
-    <div className="rounded-md border border-[var(--bib-border)] bg-[var(--bib-surface)] px-3 py-2 text-[13px] shadow-sm">
+    <div className="bib-card px-3 py-2 text-[13px] shadow-[var(--bib-shadow-raised)]">
       <div className="mb-1 font-semibold leading-5 text-[var(--bib-ink)]">
         {day === 0 ? 'Day of failure' : `${Math.abs(day)} days before failure`}
       </div>
@@ -96,7 +89,7 @@ export default function AlignedCurvesChart({ curves, threshold, height = 300 }: 
     <div style={{ height }} className="w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 24, bottom: 4, left: 0 }}>
-          <CartesianGrid stroke="var(--bib-grid)" vertical={false} />
+          <CartesianGrid stroke={GRID_STROKE} vertical={false} />
           <XAxis
             dataKey="days_before"
             type="number"
@@ -104,11 +97,11 @@ export default function AlignedCurvesChart({ curves, threshold, height = 300 }: 
             ticks={[-21, -14, -7, 0]}
             tickFormatter={(value: number) => (value === 0 ? 'failure' : `${value} d`)}
             tick={AXIS_TICK}
-            axisLine={{ stroke: 'var(--bib-axis)' }}
+            axisLine={{ stroke: AXIS_STROKE }}
             tickLine={false}
           />
           <YAxis domain={[0, yMax]} tick={AXIS_TICK} axisLine={false} tickLine={false} width={28} />
-          <RechartsTooltip content={<CurveTooltip />} cursor={{ stroke: 'var(--bib-axis)' }} />
+          <RechartsTooltip content={<CurveTooltip />} cursor={{ stroke: AXIS_STROKE }} />
           <Legend verticalAlign="top" align="left" iconType="plainline" wrapperStyle={{ fontSize: 13, paddingBottom: 8 }} />
           <ReferenceLine
             y={threshold}

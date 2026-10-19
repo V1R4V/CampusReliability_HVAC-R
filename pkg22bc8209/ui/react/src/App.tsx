@@ -11,7 +11,7 @@
  * fails to load or render fails on its own route with a Retry — never a blank app.
  */
 
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import ErrorReporterProvider from './components/ErrorBoundary/ErrorBoundary';
@@ -21,6 +21,7 @@ import SideNav from './components/SideNav/SideNav';
 import TopNav from './components/TopNav/TopNav';
 import { AsOfProvider, useAsOf } from './contexts/AsOfProvider';
 import './styles/before-it-breaks.css';
+import './styles/theme-dark.css';
 
 const RELOAD_FLAG_PREFIX = 'bib.chunkReload.';
 
@@ -131,18 +132,15 @@ function AppRoutes() {
 }
 
 export default function App() {
-  // Light theme only (FRONTEND §2): the projector build never flips to dark, even if an
-  // earlier session stored a dark preference.
-  useEffect(() => {
-    document.documentElement.classList.remove('dark');
-  }, []);
-
+  // Theme: hooks/useTheme (via TopNav/ThemeToggle) owns the `dark` class on <html>, and
+  // main.tsx re-applies the stored choice before first paint. Light stays the default
+  // (FRONTEND §2); nothing here should strip the class or the toggle and the page disagree.
   const [agentOpen, setAgentOpen] = useState(false);
 
   return (
     <ErrorReporterProvider>
       <AsOfProvider>
-        <div className="flex h-screen max-w-full flex-col overflow-hidden">
+        <div className="flex h-screen max-w-full flex-col overflow-hidden bg-[var(--bib-canvas)] text-[var(--bib-ink)]">
           <TopNav
             onAskAgent={() => {
               setAgentOpen(true);
@@ -152,7 +150,7 @@ export default function App() {
           <div className="flex min-h-0 flex-1">
             <SideNav />
             <div className="flex min-w-0 flex-1 flex-col">
-              <main className="flex-1 overflow-auto bg-[var(--c3-style-basic-bg-page)]">
+              <main className="flex-1 overflow-auto bg-[var(--bib-canvas)]">
                 <AppRoutes />
               </main>
             </div>

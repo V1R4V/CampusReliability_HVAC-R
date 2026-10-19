@@ -64,10 +64,38 @@ drives every page); Anuva's temporary `StatusTag`/`ProvenanceTag` replaced by Ar
 
 **UI cleanup pass (owner's call, 2026-10-19 evening):** provenance chips/legend/panel removed (said in the pitch instead); one agent button (TopNav opens a controlled `AgentDrawer`); scrubber 'Real break' as a flag above its tick; `Plan B` renamed **Outage plan**; em dashes removed from UI copy; `WorkOrderCard` redesigned and duplicates collapsed (`Briefing.generate` now reuses any draft for the asset on that day); Predictions decluttered (one number per asset, methods behind a switch); Buildings gets a **Map** view (`components/CampusMap`, react-leaflet on OSM tiles, real lat/lon via `shared/api/geo.ts`, status-coloured dots); `components/Reorderable` lets cards on Buildings, Outage plan, Work orders, Predictions and Backtest be dragged into a remembered order.
 
+**UI polish pass (Vibhrav, 2026-10-19 night) — one design system across all 8 pages:**
+- Tokens (`styles/before-it-breaks.css`): warm canvas `#f4f4f1`, `--bib-ink-soft/-faint`, `--bib-border-strong`,
+  `--bib-accent(-soft)`, three shadow levels, `.bib-card` (white hairline card with soft lift, `.bib-card-interactive`
+  hover), `.bib-hero` (ink gradient focal surface with grid texture), `.bib-eyebrow`, `.bib-num`/`.bib-kpi`
+  (tabular numerals), `.bib-icon-tile`, range tracks that fill to the thumb (`--bib-range-fill`), Leaflet skin.
+- Shared: `components/PageHeader/PageHeader` (eyebrow = the manager's question, 26px title, inline badges,
+  dot-separated meta facts, back link, actions, filter row) opens every page; `Panel` gained `icon`, `footer`,
+  `tone="hero"`, `size`; `KpiTile` gained `icon` + `tone` (status-coloured left edge only when the number is a
+  status count); `StatusPill/WorkOrderPill` (outline pending / solid approved / grey dismissed) replaces the
+  temporary `RiskChart/Tags.tsx`; `components/Chart/chartTheme.ts` + `ChartTooltip` give every Recharts chart
+  the same axes, grid and tooltip card; `RiskChart/statusColors.ts` deleted (all hex → tokens).
+- Shell: tab title + inline SVG favicon; TopNav brand mark, boxed "As of" date, scrubber fill; SideNav grouped
+  Today · Act · Evidence (`NavigationItem.section`), detail routes light up their list page.
+- Pages: Overview (hero morning brief, KPI icons/tones, ranked rows with status edge); Buildings (status-count
+  filter chips, status-edged cards, OSM map muted by CSS filter — CARTO raster tiles now watermark "API key
+  required", so they were reverted); Outage plan (controls card, scenario vs hero "what actually happened");
+  Asset (header with risk chip, chart legend, driver bars + sensor small multiples with band, briefing card
+  with facts strip + draft work order, forecast panel, buildings-served chips); Building (status-edged system
+  cards with sparkline + forecast, energy chart with shaded excess band and $ footer, assets table, outage card);
+  Work orders (bordered tabs with counts); Predictions (per-system headline cards); Backtest (threshold card,
+  KPI icons); agent drawer (hero intro, prompt buttons, chat bubbles, entity chips, WO cards).
+- Verified: `VITE_C3_PKG=pkg22bc8209 npm run build` green; screenshots of all pages with real backend payloads
+  via a Playwright route-interception harness (`.playwright/extract-payload.js` builds `payloads.json` from
+  `runJsCode` results; the dev proxy has no auth fallback, so the browser cannot call the API directly).
+  Screenshots in `.playwright/shots/` (gitignored); `ui/react/playwright-payloads.tmp.json` is the untracked
+  payload file the harness fetches through Vite.
+
 **Open items:** Devansh's generator replaces the interim seed by overwriting the same file names / ids
-(rerun `score_all` → `forecast_all` after). `RiskChart`/`Sparkline` still read hex from
-`RiskChart/statusColors.ts` (same values as the `--bib-*` tokens; cosmetic). The map view needs the
-browser to reach `tile.openstreetmap.org`; dots and tooltips still render without tiles.
+(rerun `score_all` → `forecast_all` after). The map view needs the browser to reach `tile.openstreetmap.org`;
+dots and tooltips still render without tiles. A dark theme (`styles/theme-dark.css`, `TopNav/ThemeToggle`,
+pre-paint class in `main.tsx`) landed in parallel with this pass; `App.tsx` still strips `.dark` on mount
+(FRONTEND §2 "light only"), so the toggle and the page can disagree after a reload until that effect is removed.
 
 **Key decisions:** one package; contract snake_case kept; API methods return `json` (keeps the `type`
 key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precomputed; merge-not-rebase.
@@ -180,3 +208,14 @@ All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint +
   call — the Asset page calls it on every mount/asOf change, so repeated visits/demo runs will draft
   duplicate work orders for the same asset. Worth a dedup check (e.g. skip drafting if a pending WO
   for that asset already exists) before the demo.
+- **Light/dark mode** (branch `anuva/theme-toggle`, not yet merged): `components/TopNav/ThemeToggle.tsx`
+  (design-system `Switch` between a sun and a moon) driving the template's existing `hooks/useTheme.ts`,
+  plus `styles/theme-dark.css` giving the `--bib-*` tokens their dark values — the C3 `.dark` block in
+  `tokens.css` already covers `--c3-style-*`, and charts re-theme for free because `chartTheme.ts` passes
+  `var(--bib-*)` straight to Recharts. Status meanings are unchanged; FAILED inverts near-black to
+  near-white, and `--bib-wo` (fill, carries white text) splits from `--bib-accent` (ink, must stay
+  readable on dark).
+- **Cross-boundary edit (flagged, not silent):** the toggle needs three one-line additions in Arnav's
+  shell — `TopNav.tsx` (import + `<ThemeToggle />` in `actions`), `App.tsx` (import the stylesheet) and
+  `main.tsx` (re-apply the stored theme before first paint, so a dark reload doesn't flash white).
+  Nothing else of his is touched. Arnav/Vibhrav: needs your OK per `AGENTS.md` §2 before it merges.

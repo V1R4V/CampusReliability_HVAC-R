@@ -3,8 +3,9 @@
  *
  * A day-step slider over the replay window (Jan 1 → Aug 31 2026) with ◀ ▶ steppers,
  * Play, and event markers from `events()`: planted failures as red ticks, the real
- * June 17 break as a black tick labelled "Real break". Clicking a marker lands
+ * June 17 break as a black flag labelled "Real break". Clicking a marker lands
  * MARKER_LEAD_DAYS before the event, so the demo shows the warning, not the failure.
+ * The track fills up to the thumb (elapsed replay) via the --bib-range-fill token.
  */
 
 import React, { useMemo } from 'react';
@@ -49,6 +50,7 @@ export default function DateScrubber() {
   const index = dayIndexOf(asOf);
   const atStart = index <= 0;
   const atEnd = index >= REPLAY_DAYS - 1;
+  const fillPct = (index / (REPLAY_DAYS - 1)) * 100;
 
   // Failures and the real reference share a date (F4 + R1 on Jun 17) — merge per day.
   const markers = useMemo<Marker[]>(() => {
@@ -70,7 +72,7 @@ export default function DateScrubber() {
   }, [events]);
 
   return (
-    <div className="flex w-full max-w-[980px] items-center gap-2">
+    <div className="flex w-full max-w-[1040px] items-center gap-2">
       <Button
         variant="ghost"
         appearance="secondary"
@@ -106,7 +108,7 @@ export default function DateScrubber() {
                     {real ? (
                       <span
                         aria-hidden
-                        className="mb-0.5 whitespace-nowrap rounded-[3px] bg-[var(--bib-ink)] px-1.5 text-[10px] font-semibold uppercase leading-4 tracking-[0.06em] text-white"
+                        className="mb-0.5 whitespace-nowrap rounded-[3px] bg-[var(--bib-ink)] px-1.5 text-[10px] font-semibold uppercase leading-4 tracking-[0.06em] text-white shadow-sm"
                       >
                         Real break
                       </span>
@@ -147,6 +149,7 @@ export default function DateScrubber() {
           value={index}
           onChange={(event) => setAsOf(isoFromDayIndex(Number(event.target.value)))}
           aria-valuetext={formatDate(asOf)}
+          style={{ '--bib-range-fill': `${fillPct}%` } as React.CSSProperties}
           className="bib-range relative z-10 block"
         />
 
@@ -155,7 +158,7 @@ export default function DateScrubber() {
             <span
               key={tick.iso}
               style={{ left: positionOf(tick.index) }}
-              className="absolute -translate-x-1/2 whitespace-nowrap text-[12px] leading-4 text-[var(--bib-ink-muted)] max-xl:even:hidden"
+              className="absolute -translate-x-1/2 whitespace-nowrap text-[12px] font-medium leading-4 text-[var(--bib-ink-muted)] max-xl:even:hidden"
             >
               {tick.label}
             </span>
@@ -167,9 +170,9 @@ export default function DateScrubber() {
         <ChevronRight />
       </Button>
 
-      <div className="min-w-[128px] text-right">
-        <div className="text-[12px] font-semibold uppercase leading-4 tracking-[0.06em] text-[var(--bib-ink-muted)]">As of</div>
-        <div className="text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{formatDate(asOf)}</div>
+      <div className="min-w-[136px] rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-canvas)] px-3 py-1.5 text-right">
+        <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.08em] text-[var(--bib-ink-muted)]">As of</div>
+        <div className="bib-num text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{formatDate(asOf)}</div>
       </div>
 
       <Button

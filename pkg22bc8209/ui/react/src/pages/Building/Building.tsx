@@ -9,77 +9,115 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Flame, Snowflake, Wind } from 'lucide-react';
-import { Line, LineChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { ArrowRight, Building2, ClipboardList, Cpu, ShieldAlert, Zap } from 'lucide-react';
+import {
+  Area,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
+import ChartTooltip from '@/components/Chart/ChartTooltip';
+import { AXIS_STROKE, AXIS_TICK, GRID_STROKE, INK_MUTED, RISK_STROKE, shortDate } from '@/components/Chart/chartTheme';
+import ForecastBadge from '@/components/ForecastPanel/ForecastBadge';
+import PageHeader from '@/components/PageHeader/PageHeader';
+import { Panel, PanelState } from '@/components/Panel/Panel';
+import Sparkline from '@/components/Sparkline/Sparkline';
+import CriticalityBadge from '@/components/StatusPill/CriticalityBadge';
+import StatusPill from '@/components/StatusPill/StatusPill';
+import SystemIcon, { systemLabel } from '@/components/SystemIcon/SystemIcon';
+import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
+import { useAsOf } from '@/contexts/AsOfProvider';
+import {
+  ENERGY_USD_PER_KWH,
+  formatCompact,
+  formatDate,
+  formatNumber,
+  formatPct,
+  formatRisk,
+  formatUsd,
+  worstStatus,
+  type Status,
+} from '@/shared/api';
 import { approveWorkOrder, dismissWorkOrder, fetchBuildingDashboard } from '@/shared/api/anuva';
 import type { BuildingDashboard, SystemCard as SystemCardData, SystemType } from '@/Interfaces';
-import StatusPill from '@/components/StatusPill/StatusPill';
-import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
-import Sparkline from '@/components/Sparkline/Sparkline';
-import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
-// Vibhrav's per-system failure probability (RiskForecast.compare, ML.md §8) — embedded by owner request.
-import ForecastBadge from '@/components/ForecastPanel/ForecastBadge';
-// Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
-import { useAsOf } from '@/contexts/AsOfProvider';
-import { formatDate } from '@/shared/api';
 
-const DEFAULT_THRESHOLD = 3.0;
+const SYSTEMS: SystemType[] = ['cooling', 'heating', 'air'];
 
-const SYSTEM_LABEL: Record<SystemType, string> = {
-  cooling: 'Cooling',
-  heating: 'Heating',
-  air: 'Air handling',
-};
-
-const SYSTEM_ICON: Record<SystemType, React.ComponentType<{ className?: string }>> = {
-  cooling: Snowflake,
-  heating: Flame,
-  air: Wind,
-};
-
-function SystemPanel({ system, card, asOf }: { system: SystemType; card: SystemCardData | null; asOf: string }) {
-  const Icon = SYSTEM_ICON[system];
+function SystemCard({ system, card, asOf, threshold }: { system: SystemType; card: SystemCardData | null; asOf: string; threshold: number }) {
   return (
-    <Card variant="outlined" size="sm" className="flex-1">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-sm">
-          <Icon className="size-4 text-[#6B7280]" /> {SYSTEM_LABEL[system]}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-2">
-        {!card ? (
-          <div className="text-sm text-[#6B7280]">Not tracked</div>
-        ) : (
-          <>
-            <div className="flex items-center justify-between">
-              <StatusPill status={card.status} size="sm" />
-              <Link to={`/asset/${card.via_asset_id}`} className="text-xs text-[#2563EB] hover:underline">
-                risk {card.risk.toFixed(1)}
-              </Link>
+    <article data-status={card?.status ?? 'OFFLINE'} className="bib-card relative flex flex-col gap-3 overflow-hidden p-4 pt-5">
+      <span aria-hidden className={cn('absolute inset-x-0 top-0 h-[4px] bg-[var(--bib-status-color)]', !card && 'opacity-40')} />
+      <div className="flex items-center justify-between gap-3">
+        <span className="inline-flex items-center gap-2 text-[16px] font-semibold text-[var(--bib-ink)]">
+          <SystemIcon system={system} size="md" />
+          {systemLabel(system)}
+        </span>
+        {card ? <StatusPill status={card.status} size="sm" /> : <span className="text-[14px] text-[var(--bib-ink-muted)]">Not tracked</span>}
+      </div>
+      {card ? (
+        <>
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <div className="bib-eyebrow">Risk</div>
+              <div className="bib-num text-[32px] font-semibold leading-9 text-[var(--bib-ink)]">{formatRisk(card.risk)}</div>
             </div>
-            <Sparkline points={card.sparkline} threshold={DEFAULT_THRESHOLD} />
-            <div className="text-xs text-[#6B7280]">
-              energy {card.energy_over_expected_pct >= 0 ? '+' : ''}
-              {card.energy_over_expected_pct}%
+            <div className="text-right text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+              <div className="bib-num text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{formatPct(card.energy_over_expected_pct)}</div>
+              energy vs weather-expected
             </div>
-            <ForecastBadge assetId={card.via_asset_id} asOf={asOf} />
-          </>
-        )}
-      </CardContent>
-    </Card>
+          </div>
+          <Sparkline points={card.sparkline} threshold={threshold} height={44} />
+          <ForecastBadge assetId={card.via_asset_id} asOf={asOf} />
+          <Link
+            to={`/asset/${card.via_asset_id}`}
+            className="group mt-auto inline-flex items-center gap-1 text-[14px] font-medium leading-5 text-[var(--bib-ink-muted)] hover:text-[var(--bib-ink)]"
+          >
+            Open <span className="bib-num">{card.via_asset_id}</span>
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+          </Link>
+        </>
+      ) : (
+        <p className="text-[15px] leading-6 text-[var(--bib-ink-muted)]">No asset of this system serves the building.</p>
+      )}
+    </article>
+  );
+}
+
+interface EnergyTooltipProps {
+  active?: boolean;
+  payload?: ReadonlyArray<{ payload?: { date: string; actual: number; expected: number; excess: number } }>;
+  label?: unknown;
+}
+
+function EnergyTooltip({ active, payload, label }: EnergyTooltipProps) {
+  if (!active || !payload || payload.length === 0) return null;
+  const point = payload[0]?.payload;
+  if (!point) return null;
+  return (
+    <ChartTooltip
+      title={shortDate(String(label))}
+      rows={[
+        { key: 'actual', name: 'Actual', value: `${formatNumber(point.actual)} kWh`, color: RISK_STROKE },
+        { key: 'expected', name: 'Weather-expected', value: `${formatNumber(point.expected)} kWh`, color: INK_MUTED, dashed: true },
+        { key: 'excess', name: 'Excess', value: point.excess > 0 ? `+${formatNumber(point.excess)} kWh` : '—' },
+      ]}
+    />
   );
 }
 
 /** Building dashboard (FRONTEND §5.3). */
 export default function Building() {
   const { buildingId } = useParams<{ buildingId: string }>();
-  const { asOf } = useAsOf();
+  const { asOf, threshold } = useAsOf();
   const { reportError } = useErrorReporter();
 
   const [dashboard, setDashboard] = useState<BuildingDashboard | null>(null);
@@ -110,163 +148,227 @@ export default function Building() {
     };
   }, [buildingId, asOf, refreshKey, reportError]);
 
-  const excessKwh = useMemo(() => {
-    if (!dashboard) return 0;
-    return dashboard.energy_series.reduce((sum, p) => sum + (p.actual_kwh - p.expected_kwh), 0);
+  const energyData = useMemo(
+    () =>
+      (dashboard?.energy_series ?? []).map((p) => ({
+        date: p.date,
+        actual: p.actual_kwh,
+        expected: p.expected_kwh,
+        excess: Math.max(0, p.actual_kwh - p.expected_kwh),
+      })),
+    [dashboard],
+  );
+  const excessKwh = useMemo(() => energyData.reduce((sum, p) => sum + p.excess, 0), [energyData]);
+
+  const worst = useMemo<Status | null>(() => {
+    if (!dashboard) return null;
+    const statuses = SYSTEMS.map((s) => dashboard.systems[s]?.status).filter((s): s is Status => Boolean(s));
+    return statuses.length ? worstStatus(statuses) : null;
   }, [dashboard]);
 
   if (!buildingId) {
-    return <div className="p-6 text-sm text-[#DC2626]">No building selected.</div>;
+    return (
+      <div className="p-6">
+        <PanelState state="error" title="No building selected" message="Pick a building from the Buildings page." />
+      </div>
+    );
   }
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <Spinner label="Loading building" size="lg" />
+      <div className="flex flex-col gap-5 p-6 xl:px-8">
+        <PanelState state="loading" lines={3} />
+        <div className="grid gap-4 md:grid-cols-3">
+          {SYSTEMS.map((s) => (
+            <div key={s} className="bib-card p-4">
+              <PanelState state="loading" lines={4} />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   if (!dashboard) {
-    return <div className="p-6 text-sm text-[#DC2626]">{error ?? 'This building could not be loaded.'}</div>;
+    return (
+      <div className="p-6">
+        <PanelState state="error" title="This building could not be loaded" message={error ?? undefined} onRetry={() => setRefreshKey((k) => k + 1)} />
+      </div>
+    );
   }
 
   const { building, served_by, systems, assets, work_orders, plan_b } = dashboard;
 
   return (
-    <div className="flex flex-col gap-4 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold text-[#111827]">{building.name}</h1>
-            <Badge variant="outline" appearance="secondary" size="sm">
-              {building.criticality}
-            </Badge>
-            <ProvenanceChip kind="REAL" />
+    <div className="flex min-h-full flex-col gap-5 p-6 xl:px-8">
+      <PageHeader
+        backTo={{ to: '/buildings', label: 'All buildings' }}
+        eyebrow="Building dashboard"
+        icon={<Building2 />}
+        title={building.name}
+        badges={
+          <>
+            <CriticalityBadge criticality={building.criticality} size="md" />
+            {worst ? <StatusPill status={worst} size="lg" /> : null}
+          </>
+        }
+        meta={[
+          `Built ${building.year_built}`,
+          `${formatCompact(building.gsf)} GSF`,
+          `${formatNumber(building.peak_load_tons)} tons peak cooling load`,
+          <>
+            Served by <span className="font-medium text-[var(--bib-ink)]">{served_by.plant_name}</span> → loop{' '}
+            <Link to={`/planb/${served_by.segment_id}`} className="font-medium text-[var(--bib-ink)] underline-offset-2 hover:underline">
+              {served_by.segment_id} · {served_by.segment_name}
+            </Link>
+          </>,
+        ]}
+        actions={
+          <div className="rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-canvas)] px-3 py-1.5 text-right">
+            <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.08em] text-[var(--bib-ink-muted)]">As of</div>
+            <div className="bib-num text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{formatDate(asOf)}</div>
           </div>
-          <div className="text-sm text-[#6B7280]">
-            Built {building.year_built} · {building.gsf.toLocaleString()} GSF · Served by {served_by.plant_name} →
-            Segment {served_by.segment_id}
-          </div>
-        </div>
-        <div className="text-sm text-[#6B7280]">As of {formatDate(asOf)}</div>
+        }
+      />
+
+      <div className="grid gap-4 md:grid-cols-3">
+        {SYSTEMS.map((system) => (
+          <SystemCard key={system} system={system} card={systems[system]} asOf={asOf} threshold={threshold} />
+        ))}
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <SystemPanel system="cooling" card={systems.cooling} asOf={asOf} />
-        <SystemPanel system="heating" card={systems.heating} asOf={asOf} />
-        <SystemPanel system="air" card={systems.air} asOf={asOf} />
-      </div>
-
-      <Card variant="outlined">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Energy: actual vs. weather-expected</CardTitle>
-            <ProvenanceChip kind="SYNTHETIC" />
+      <Panel
+        title="Energy: actual vs weather-expected"
+        subtitle="Daily kWh against the weather-normalised baseline. The shaded band is energy the building used beyond what the weather explains."
+        icon={<Zap />}
+        chip="SYNTHETIC"
+        footer={
+          energyData.length > 0 ? (
+            <span>
+              Excess over the period shown ≈ <span className="bib-num font-semibold text-[var(--bib-ink)]">{formatNumber(excessKwh)} kWh</span> ·{' '}
+              <span className="bib-num font-semibold text-[var(--bib-ink)]">{formatUsd(excessKwh * ENERGY_USD_PER_KWH)}</span> at $
+              {ENERGY_USD_PER_KWH.toFixed(2)}/kWh (estimate)
+            </span>
+          ) : undefined
+        }
+      >
+        {energyData.length === 0 ? (
+          <PanelState state="empty" message="No energy data available for this building." />
+        ) : (
+          <div className="h-[240px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={energyData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="bib-energy-excess" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--bib-accent)" stopOpacity={0.32} />
+                    <stop offset="100%" stopColor="var(--bib-accent)" stopOpacity={0.1} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke={GRID_STROKE} vertical={false} />
+                <XAxis dataKey="date" tickFormatter={shortDate} minTickGap={48} tick={AXIS_TICK} axisLine={{ stroke: AXIS_STROKE }} tickLine={false} />
+                <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} width={48} tickFormatter={(v: number) => formatCompact(v)} />
+                <RechartsTooltip content={<EnergyTooltip />} cursor={{ stroke: AXIS_STROKE }} />
+                <Area type="monotone" dataKey="expected" stackId="kwh" stroke="none" fill="transparent" isAnimationActive={false} legendType="none" />
+                <Area type="monotone" dataKey="excess" stackId="kwh" stroke="none" fill="url(#bib-energy-excess)" isAnimationActive={false} legendType="none" />
+                <Line type="monotone" dataKey="expected" name="Weather-expected" stroke={INK_MUTED} strokeDasharray="4 3" strokeWidth={2} dot={false} isAnimationActive={false} />
+                <Line type="monotone" dataKey="actual" name="Actual" stroke={RISK_STROKE} strokeWidth={2.25} dot={false} isAnimationActive={false} />
+              </ComposedChart>
+            </ResponsiveContainer>
           </div>
-        </CardHeader>
-        <CardContent>
-          {dashboard.energy_series.length === 0 ? (
-            <div className="text-sm text-[#6B7280]">No energy data available.</div>
+        )}
+      </Panel>
+
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <Panel
+          title="Assets serving this building"
+          subtitle="Loop-level assets (mains, chillers) are included because the building depends on them"
+          icon={<Cpu />}
+          contentClassName="-mx-4 -mb-4 overflow-x-auto"
+        >
+          {assets.length === 0 ? (
+            <div className="px-4 pb-4">
+              <PanelState state="empty" message="No assets found." />
+            </div>
           ) : (
-            <>
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={dashboard.energy_series} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
-                  <XAxis dataKey="date" tick={{ fontSize: 12, fill: '#6B7280' }} />
-                  <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} width={48} />
-                  <Tooltip />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="actual_kwh" name="Actual" stroke="#DC2626" dot={false} strokeWidth={2} />
-                  <Line
-                    type="monotone"
-                    dataKey="expected_kwh"
-                    name="Expected"
-                    stroke="#6B7280"
-                    strokeDasharray="4 3"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-              <div className="text-xs text-[#6B7280]">
-                Excess over shown period ≈ {Math.round(excessKwh).toLocaleString()} kWh
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
-        <Card variant="outlined">
-          <CardHeader>
-            <CardTitle>Assets serving this building</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            {assets.length === 0 ? (
-              <div className="p-4 text-sm text-[#6B7280]">No assets found.</div>
-            ) : (
-              <Table size="sm" hover>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Asset</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Driver</TableHead>
+            <Table size="sm" hover>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="pl-4">Asset</TableHead>
+                  <TableHead>System</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Risk</TableHead>
+                  <TableHead className="pr-4">Driver</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {assets.slice(0, 100).map((a) => (
+                  <TableRow key={a.asset_id}>
+                    <TableCell className="pl-4">
+                      <Link to={`/asset/${a.asset_id}`} className="font-medium text-[var(--bib-ink)] underline-offset-2 hover:underline">
+                        {a.name}
+                      </Link>
+                      <div className="bib-num text-[12px] text-[var(--bib-ink-muted)]">{a.asset_id}</div>
+                    </TableCell>
+                    <TableCell>
+                      <SystemIcon system={a.system} size="sm" withLabel />
+                    </TableCell>
+                    <TableCell>
+                      <StatusPill status={a.status} size="sm" />
+                    </TableCell>
+                    <TableCell className="bib-num text-right text-[15px] font-semibold text-[var(--bib-ink)]">{formatRisk(a.risk)}</TableCell>
+                    <TableCell className="pr-4 text-[var(--bib-ink-soft)]">{a.driver_label}</TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {assets.slice(0, 100).map((a) => (
-                    <TableRow key={a.asset_id}>
-                      <TableCell>
-                        <Link to={`/asset/${a.asset_id}`} className="text-[#2563EB] hover:underline">
-                          {a.name}
-                        </Link>
-                      </TableCell>
-                      <TableCell>{a.type}</TableCell>
-                      <TableCell>
-                        <StatusPill status={a.status} size="sm" />
-                      </TableCell>
-                      <TableCell>{a.driver_label}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </Panel>
 
-        {plan_b ? (
-          <Card variant="outlined">
-            <CardHeader>
-              <CardTitle>If cooling fails</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-2">
-              <div className="text-sm text-[#111827]">
-                Priority #{plan_b.priority_rank} on {plan_b.segment_id}
-              </div>
-              <div className="text-sm text-[#6B7280]">
-                {plan_b.chillers_needed} chillers · ${plan_b.cost_per_day_usd.toLocaleString()}/day
-              </div>
-              <Link to={`/planb/${plan_b.segment_id}`}>
-                <Button size="sm" className="w-full">
-                  Simulate {plan_b.segment_id} failure →
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ) : null}
+        <Panel
+          title="If cooling fails"
+          subtitle={plan_b ? `Where this building sits in the dispatch order for loop ${plan_b.segment_id}` : 'Outage plan'}
+          icon={<ShieldAlert />}
+          className="h-full"
+        >
+          {plan_b ? (
+            <div className="flex h-full flex-col gap-4">
+              <dl className="grid grid-cols-3 gap-3">
+                <div>
+                  <dt className="bib-eyebrow">Priority</dt>
+                  <dd className="bib-kpi mt-1">#{plan_b.priority_rank}</dd>
+                </div>
+                <div>
+                  <dt className="bib-eyebrow">Chillers</dt>
+                  <dd className="bib-kpi mt-1">{plan_b.chillers_needed}</dd>
+                </div>
+                <div>
+                  <dt className="bib-eyebrow">Rental</dt>
+                  <dd className="bib-kpi mt-1 text-[32px] leading-[44px]">{formatUsd(plan_b.cost_per_day_usd)}</dd>
+                  <dd className="text-[12px] leading-4 text-[var(--bib-ink-muted)]">per day (estimate)</dd>
+                </div>
+              </dl>
+              <Button asChild appearance="accent" size="lg" className="mt-auto w-full">
+                <Link to={`/planb/${plan_b.segment_id}`}>
+                  Simulate {plan_b.segment_id} failure <ArrowRight className="size-4" aria-hidden />
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <PanelState state="empty" message="This building is not on a chilled-water loop." />
+          )}
+        </Panel>
       </div>
 
-      <Card variant="outlined">
-        <CardHeader>
-          <CardTitle>Work orders</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          {work_orders.length === 0 ? (
-            <div className="text-sm text-[#6B7280]">No work orders pending.</div>
-          ) : (
-            work_orders.map((wo) => (
+      <Panel
+        title="Work orders"
+        subtitle="Drafted by the agent for assets serving this building. Nothing is scheduled until you approve it."
+        icon={<ClipboardList />}
+      >
+        {work_orders.length === 0 ? (
+          <PanelState state="empty" message="No work orders pending for this building." />
+        ) : (
+          <div className="grid gap-4 xl:grid-cols-2">
+            {work_orders.map((wo) => (
               <WorkOrderCard
                 key={wo.wo_id}
                 workOrder={wo}
@@ -279,10 +381,10 @@ export default function Building() {
                   setRefreshKey((k) => k + 1);
                 }}
               />
-            ))
-          )}
-        </CardContent>
-      </Card>
+            ))}
+          </div>
+        )}
+      </Panel>
     </div>
   );
 }
