@@ -180,3 +180,14 @@ All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint +
   call — the Asset page calls it on every mount/asOf change, so repeated visits/demo runs will draft
   duplicate work orders for the same asset. Worth a dedup check (e.g. skip drafting if a pending WO
   for that asset already exists) before the demo.
+- **Light/dark mode** (branch `anuva/theme-toggle`, not yet merged): `components/TopNav/ThemeToggle.tsx`
+  (design-system `Switch` between a sun and a moon) driving the template's existing `hooks/useTheme.ts`,
+  plus `styles/theme-dark.css` giving the `--bib-*` tokens their dark values — the C3 `.dark` block in
+  `tokens.css` already covers `--c3-style-*`, and charts re-theme for free because `chartTheme.ts` passes
+  `var(--bib-*)` straight to Recharts. Status meanings are unchanged; FAILED inverts near-black to
+  near-white, and `--bib-wo` (fill, carries white text) splits from `--bib-accent` (ink, must stay
+  readable on dark).
+- **Cross-boundary edit (flagged, not silent):** the toggle needs three one-line additions in Arnav's
+  shell — `TopNav.tsx` (import + `<ThemeToggle />` in `actions`), `App.tsx` (import the stylesheet) and
+  `main.tsx` (re-apply the stored theme before first paint, so a dark reload doesn't flash white).
+  Nothing else of his is touched. Arnav/Vibhrav: needs your OK per `AGENTS.md` §2 before it merges.
