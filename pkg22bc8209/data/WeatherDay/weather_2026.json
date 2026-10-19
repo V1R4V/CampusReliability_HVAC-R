@@ -1,0 +1,2189 @@
+[
+{
+"id": "2026-01-01",
+"date": "2026-01-01",
+"tmax_f": 15.0,
+"tmin_f": 6.0,
+"tavg_f": 10.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-02",
+"date": "2026-01-02",
+"tmax_f": 19.0,
+"tmin_f": 8.0,
+"tavg_f": 13.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-03",
+"date": "2026-01-03",
+"tmax_f": 22.0,
+"tmin_f": 16.0,
+"tavg_f": 19.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-04",
+"date": "2026-01-04",
+"tmax_f": 30.0,
+"tmin_f": 7.0,
+"tavg_f": 18.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-05",
+"date": "2026-01-05",
+"tmax_f": 38.0,
+"tmin_f": 23.0,
+"tavg_f": 30.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-06",
+"date": "2026-01-06",
+"tmax_f": 40.0,
+"tmin_f": 31.0,
+"tavg_f": 35.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-07",
+"date": "2026-01-07",
+"tmax_f": 38.0,
+"tmin_f": 27.0,
+"tavg_f": 32.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-08",
+"date": "2026-01-08",
+"tmax_f": 55.0,
+"tmin_f": 27.0,
+"tavg_f": 41.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-09",
+"date": "2026-01-09",
+"tmax_f": 56.0,
+"tmin_f": 26.0,
+"tavg_f": 41.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-10",
+"date": "2026-01-10",
+"tmax_f": 35.0,
+"tmin_f": 18.0,
+"tavg_f": 26.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-11",
+"date": "2026-01-11",
+"tmax_f": 32.0,
+"tmin_f": 19.0,
+"tavg_f": 25.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-12",
+"date": "2026-01-12",
+"tmax_f": 48.0,
+"tmin_f": 26.0,
+"tavg_f": 37.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-13",
+"date": "2026-01-13",
+"tmax_f": 53.0,
+"tmin_f": 35.0,
+"tavg_f": 44.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-14",
+"date": "2026-01-14",
+"tmax_f": 39.0,
+"tmin_f": 13.0,
+"tavg_f": 26.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-15",
+"date": "2026-01-15",
+"tmax_f": 23.0,
+"tmin_f": 8.0,
+"tavg_f": 15.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-16",
+"date": "2026-01-16",
+"tmax_f": 35.0,
+"tmin_f": 15.0,
+"tavg_f": 25.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-17",
+"date": "2026-01-17",
+"tmax_f": 16.0,
+"tmin_f": 10.0,
+"tavg_f": 13.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-18",
+"date": "2026-01-18",
+"tmax_f": 13.0,
+"tmin_f": -1.0,
+"tavg_f": 6.0,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-19",
+"date": "2026-01-19",
+"tmax_f": 10.0,
+"tmin_f": -6.0,
+"tavg_f": 2.0,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-20",
+"date": "2026-01-20",
+"tmax_f": 14.0,
+"tmin_f": -7.0,
+"tavg_f": 3.5,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-21",
+"date": "2026-01-21",
+"tmax_f": 24.0,
+"tmin_f": 13.0,
+"tavg_f": 18.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-22",
+"date": "2026-01-22",
+"tmax_f": 18.0,
+"tmin_f": -4.0,
+"tavg_f": 7.0,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-23",
+"date": "2026-01-23",
+"tmax_f": -4.0,
+"tmin_f": -18.0,
+"tavg_f": -11.0,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-24",
+"date": "2026-01-24",
+"tmax_f": -3.0,
+"tmin_f": -19.0,
+"tavg_f": -11.0,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-25",
+"date": "2026-01-25",
+"tmax_f": 4.0,
+"tmin_f": -5.0,
+"tavg_f": -0.5,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-26",
+"date": "2026-01-26",
+"tmax_f": 10.0,
+"tmin_f": -7.0,
+"tavg_f": 1.5,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-27",
+"date": "2026-01-27",
+"tmax_f": 13.0,
+"tmin_f": -2.0,
+"tavg_f": 5.5,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-28",
+"date": "2026-01-28",
+"tmax_f": 14.0,
+"tmin_f": -2.0,
+"tavg_f": 6.0,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-29",
+"date": "2026-01-29",
+"tmax_f": 12.0,
+"tmin_f": -10.0,
+"tavg_f": 1.0,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-30",
+"date": "2026-01-30",
+"tmax_f": 15.0,
+"tmin_f": 0.0,
+"tavg_f": 7.5,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-01-31",
+"date": "2026-01-31",
+"tmax_f": 22.0,
+"tmin_f": 2.0,
+"tavg_f": 12.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-01",
+"date": "2026-02-01",
+"tmax_f": 26.0,
+"tmin_f": -1.0,
+"tavg_f": 12.5,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-02",
+"date": "2026-02-02",
+"tmax_f": 26.0,
+"tmin_f": 12.0,
+"tavg_f": 19.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-03",
+"date": "2026-02-03",
+"tmax_f": 20.0,
+"tmin_f": 0.0,
+"tavg_f": 10.0,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-04",
+"date": "2026-02-04",
+"tmax_f": 26.0,
+"tmin_f": -5.0,
+"tavg_f": 10.5,
+"label": "bitter cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-05",
+"date": "2026-02-05",
+"tmax_f": 31.0,
+"tmin_f": 14.0,
+"tavg_f": 22.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-06",
+"date": "2026-02-06",
+"tmax_f": 38.0,
+"tmin_f": 15.0,
+"tavg_f": 26.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-07",
+"date": "2026-02-07",
+"tmax_f": 20.0,
+"tmin_f": 2.0,
+"tavg_f": 11.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-08",
+"date": "2026-02-08",
+"tmax_f": 28.0,
+"tmin_f": 16.0,
+"tavg_f": 22.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-09",
+"date": "2026-02-09",
+"tmax_f": 36.0,
+"tmin_f": 17.0,
+"tavg_f": 26.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-10",
+"date": "2026-02-10",
+"tmax_f": 41.0,
+"tmin_f": 25.0,
+"tavg_f": 33.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-11",
+"date": "2026-02-11",
+"tmax_f": 40.0,
+"tmin_f": 22.0,
+"tavg_f": 31.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-12",
+"date": "2026-02-12",
+"tmax_f": 38.0,
+"tmin_f": 21.0,
+"tavg_f": 29.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-13",
+"date": "2026-02-13",
+"tmax_f": 51.0,
+"tmin_f": 22.0,
+"tavg_f": 36.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-14",
+"date": "2026-02-14",
+"tmax_f": 55.0,
+"tmin_f": 21.0,
+"tavg_f": 38.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-15",
+"date": "2026-02-15",
+"tmax_f": 58.0,
+"tmin_f": 27.0,
+"tavg_f": 42.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-16",
+"date": "2026-02-16",
+"tmax_f": 64.0,
+"tmin_f": 30.0,
+"tavg_f": 47.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-17",
+"date": "2026-02-17",
+"tmax_f": 55.0,
+"tmin_f": 31.0,
+"tavg_f": 43.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-18",
+"date": "2026-02-18",
+"tmax_f": 56.0,
+"tmin_f": 37.0,
+"tavg_f": 46.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-19",
+"date": "2026-02-19",
+"tmax_f": 47.0,
+"tmin_f": 23.0,
+"tavg_f": 35.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-20",
+"date": "2026-02-20",
+"tmax_f": 34.0,
+"tmin_f": 26.0,
+"tavg_f": 30.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-21",
+"date": "2026-02-21",
+"tmax_f": 26.0,
+"tmin_f": 21.0,
+"tavg_f": 23.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-22",
+"date": "2026-02-22",
+"tmax_f": 23.0,
+"tmin_f": 16.0,
+"tavg_f": 19.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-23",
+"date": "2026-02-23",
+"tmax_f": 27.0,
+"tmin_f": 15.0,
+"tavg_f": 21.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-24",
+"date": "2026-02-24",
+"tmax_f": 34.0,
+"tmin_f": 19.0,
+"tavg_f": 26.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-25",
+"date": "2026-02-25",
+"tmax_f": 29.0,
+"tmin_f": 15.0,
+"tavg_f": 22.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-26",
+"date": "2026-02-26",
+"tmax_f": 42.0,
+"tmin_f": 12.0,
+"tavg_f": 27.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-27",
+"date": "2026-02-27",
+"tmax_f": 57.0,
+"tmin_f": 21.0,
+"tavg_f": 39.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-02-28",
+"date": "2026-02-28",
+"tmax_f": 39.0,
+"tmin_f": 19.0,
+"tavg_f": 29.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-01",
+"date": "2026-03-01",
+"tmax_f": 31.0,
+"tmin_f": 3.0,
+"tavg_f": 17.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-02",
+"date": "2026-03-02",
+"tmax_f": 44.0,
+"tmin_f": 18.0,
+"tavg_f": 31.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-03",
+"date": "2026-03-03",
+"tmax_f": 46.0,
+"tmin_f": 26.0,
+"tavg_f": 36.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-04",
+"date": "2026-03-04",
+"tmax_f": 54.0,
+"tmin_f": 21.0,
+"tavg_f": 37.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-05",
+"date": "2026-03-05",
+"tmax_f": 46.0,
+"tmin_f": 38.0,
+"tavg_f": 42.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-06",
+"date": "2026-03-06",
+"tmax_f": 60.0,
+"tmin_f": 41.0,
+"tavg_f": 50.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-07",
+"date": "2026-03-07",
+"tmax_f": 58.0,
+"tmin_f": 32.0,
+"tavg_f": 45.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-08",
+"date": "2026-03-08",
+"tmax_f": 59.0,
+"tmin_f": 31.0,
+"tavg_f": 45.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-09",
+"date": "2026-03-09",
+"tmax_f": 70.0,
+"tmin_f": 42.0,
+"tavg_f": 56.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-10",
+"date": "2026-03-10",
+"tmax_f": 53.0,
+"tmin_f": 33.0,
+"tavg_f": 43.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-11",
+"date": "2026-03-11",
+"tmax_f": 38.0,
+"tmin_f": 29.0,
+"tavg_f": 33.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-12",
+"date": "2026-03-12",
+"tmax_f": 44.0,
+"tmin_f": 27.0,
+"tavg_f": 35.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-13",
+"date": "2026-03-13",
+"tmax_f": 45.0,
+"tmin_f": 28.0,
+"tavg_f": 36.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-14",
+"date": "2026-03-14",
+"tmax_f": 37.0,
+"tmin_f": 21.0,
+"tavg_f": 29.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-15",
+"date": "2026-03-15",
+"tmax_f": 33.0,
+"tmin_f": 25.0,
+"tavg_f": 29.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-16",
+"date": "2026-03-16",
+"tmax_f": 25.0,
+"tmin_f": 14.0,
+"tavg_f": 19.5,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-17",
+"date": "2026-03-17",
+"tmax_f": 21.0,
+"tmin_f": 5.0,
+"tavg_f": 13.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-18",
+"date": "2026-03-18",
+"tmax_f": 39.0,
+"tmin_f": 17.0,
+"tavg_f": 28.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-19",
+"date": "2026-03-19",
+"tmax_f": 51.0,
+"tmin_f": 30.0,
+"tavg_f": 40.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-20",
+"date": "2026-03-20",
+"tmax_f": 63.0,
+"tmin_f": 40.0,
+"tavg_f": 51.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-21",
+"date": "2026-03-21",
+"tmax_f": 76.0,
+"tmin_f": 37.0,
+"tavg_f": 56.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-22",
+"date": "2026-03-22",
+"tmax_f": 58.0,
+"tmin_f": 33.0,
+"tavg_f": 45.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-23",
+"date": "2026-03-23",
+"tmax_f": 44.0,
+"tmin_f": 25.0,
+"tavg_f": 34.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-24",
+"date": "2026-03-24",
+"tmax_f": 52.0,
+"tmin_f": 32.0,
+"tavg_f": 42.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-25",
+"date": "2026-03-25",
+"tmax_f": 71.0,
+"tmin_f": 37.0,
+"tavg_f": 54.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-26",
+"date": "2026-03-26",
+"tmax_f": 58.0,
+"tmin_f": 31.0,
+"tavg_f": 44.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-27",
+"date": "2026-03-27",
+"tmax_f": 43.0,
+"tmin_f": 24.0,
+"tavg_f": 33.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-28",
+"date": "2026-03-28",
+"tmax_f": 47.0,
+"tmin_f": 17.0,
+"tavg_f": 32.0,
+"label": "cold",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-29",
+"date": "2026-03-29",
+"tmax_f": 64.0,
+"tmin_f": 37.0,
+"tavg_f": 50.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-30",
+"date": "2026-03-30",
+"tmax_f": 78.0,
+"tmin_f": 37.0,
+"tavg_f": 57.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-03-31",
+"date": "2026-03-31",
+"tmax_f": 60.0,
+"tmin_f": 40.0,
+"tavg_f": 50.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-01",
+"date": "2026-04-01",
+"tmax_f": 44.0,
+"tmin_f": 33.0,
+"tavg_f": 38.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-02",
+"date": "2026-04-02",
+"tmax_f": 48.0,
+"tmin_f": 33.0,
+"tavg_f": 40.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-03",
+"date": "2026-04-03",
+"tmax_f": 44.0,
+"tmin_f": 35.0,
+"tavg_f": 39.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-04",
+"date": "2026-04-04",
+"tmax_f": 45.0,
+"tmin_f": 34.0,
+"tavg_f": 39.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-05",
+"date": "2026-04-05",
+"tmax_f": 54.0,
+"tmin_f": 33.0,
+"tavg_f": 43.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-06",
+"date": "2026-04-06",
+"tmax_f": 49.0,
+"tmin_f": 25.0,
+"tavg_f": 37.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-07",
+"date": "2026-04-07",
+"tmax_f": 43.0,
+"tmin_f": 21.0,
+"tavg_f": 32.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-08",
+"date": "2026-04-08",
+"tmax_f": 70.0,
+"tmin_f": 33.0,
+"tavg_f": 51.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-09",
+"date": "2026-04-09",
+"tmax_f": 61.0,
+"tmin_f": 41.0,
+"tavg_f": 51.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-10",
+"date": "2026-04-10",
+"tmax_f": 54.0,
+"tmin_f": 32.0,
+"tavg_f": 43.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-11",
+"date": "2026-04-11",
+"tmax_f": 55.0,
+"tmin_f": 30.0,
+"tavg_f": 42.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-12",
+"date": "2026-04-12",
+"tmax_f": 74.0,
+"tmin_f": 48.0,
+"tavg_f": 61.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-13",
+"date": "2026-04-13",
+"tmax_f": 74.0,
+"tmin_f": 58.0,
+"tavg_f": 66.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-14",
+"date": "2026-04-14",
+"tmax_f": 78.0,
+"tmin_f": 58.0,
+"tavg_f": 68.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-15",
+"date": "2026-04-15",
+"tmax_f": 68.0,
+"tmin_f": 58.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-16",
+"date": "2026-04-16",
+"tmax_f": 72.0,
+"tmin_f": 54.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-17",
+"date": "2026-04-17",
+"tmax_f": 78.0,
+"tmin_f": 47.0,
+"tavg_f": 62.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-18",
+"date": "2026-04-18",
+"tmax_f": 47.0,
+"tmin_f": 37.0,
+"tavg_f": 42.0,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-19",
+"date": "2026-04-19",
+"tmax_f": 49.0,
+"tmin_f": 32.0,
+"tavg_f": 40.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-20",
+"date": "2026-04-20",
+"tmax_f": 55.0,
+"tmin_f": 27.0,
+"tavg_f": 41.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-21",
+"date": "2026-04-21",
+"tmax_f": 77.0,
+"tmin_f": 49.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-22",
+"date": "2026-04-22",
+"tmax_f": 76.0,
+"tmin_f": 46.0,
+"tavg_f": 61.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-23",
+"date": "2026-04-23",
+"tmax_f": 80.0,
+"tmin_f": 52.0,
+"tavg_f": 66.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-24",
+"date": "2026-04-24",
+"tmax_f": 69.0,
+"tmin_f": 46.0,
+"tavg_f": 57.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-25",
+"date": "2026-04-25",
+"tmax_f": 66.0,
+"tmin_f": 41.0,
+"tavg_f": 53.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-26",
+"date": "2026-04-26",
+"tmax_f": 69.0,
+"tmin_f": 42.0,
+"tavg_f": 55.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-27",
+"date": "2026-04-27",
+"tmax_f": 69.0,
+"tmin_f": 51.0,
+"tavg_f": 60.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-28",
+"date": "2026-04-28",
+"tmax_f": 63.0,
+"tmin_f": 48.0,
+"tavg_f": 55.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-29",
+"date": "2026-04-29",
+"tmax_f": 53.0,
+"tmin_f": 35.0,
+"tavg_f": 44.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-04-30",
+"date": "2026-04-30",
+"tmax_f": 53.0,
+"tmin_f": 31.0,
+"tavg_f": 42.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-01",
+"date": "2026-05-01",
+"tmax_f": 50.0,
+"tmin_f": 31.0,
+"tavg_f": 40.5,
+"label": "cool",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-02",
+"date": "2026-05-02",
+"tmax_f": 60.0,
+"tmin_f": 28.0,
+"tavg_f": 44.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-03",
+"date": "2026-05-03",
+"tmax_f": 70.0,
+"tmin_f": 46.0,
+"tavg_f": 58.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-04",
+"date": "2026-05-04",
+"tmax_f": 79.0,
+"tmin_f": 40.0,
+"tavg_f": 59.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-05",
+"date": "2026-05-05",
+"tmax_f": 57.0,
+"tmin_f": 36.0,
+"tavg_f": 46.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-06",
+"date": "2026-05-06",
+"tmax_f": 54.0,
+"tmin_f": 32.0,
+"tavg_f": 43.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-07",
+"date": "2026-05-07",
+"tmax_f": 61.0,
+"tmin_f": 30.0,
+"tavg_f": 45.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-08",
+"date": "2026-05-08",
+"tmax_f": 69.0,
+"tmin_f": 34.0,
+"tavg_f": 51.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-09",
+"date": "2026-05-09",
+"tmax_f": 68.0,
+"tmin_f": 44.0,
+"tavg_f": 56.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-10",
+"date": "2026-05-10",
+"tmax_f": 63.0,
+"tmin_f": 33.0,
+"tavg_f": 48.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-11",
+"date": "2026-05-11",
+"tmax_f": 61.0,
+"tmin_f": 33.0,
+"tavg_f": 47.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-12",
+"date": "2026-05-12",
+"tmax_f": 77.0,
+"tmin_f": 42.0,
+"tavg_f": 59.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-13",
+"date": "2026-05-13",
+"tmax_f": 64.0,
+"tmin_f": 41.0,
+"tavg_f": 52.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-14",
+"date": "2026-05-14",
+"tmax_f": 71.0,
+"tmin_f": 33.0,
+"tavg_f": 52.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-15",
+"date": "2026-05-15",
+"tmax_f": 81.0,
+"tmin_f": 55.0,
+"tavg_f": 68.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-16",
+"date": "2026-05-16",
+"tmax_f": 83.0,
+"tmin_f": 60.0,
+"tavg_f": 71.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-17",
+"date": "2026-05-17",
+"tmax_f": 72.0,
+"tmin_f": 54.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-18",
+"date": "2026-05-18",
+"tmax_f": 79.0,
+"tmin_f": 58.0,
+"tavg_f": 68.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-19",
+"date": "2026-05-19",
+"tmax_f": 71.0,
+"tmin_f": 51.0,
+"tavg_f": 61.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-20",
+"date": "2026-05-20",
+"tmax_f": 62.0,
+"tmin_f": 45.0,
+"tavg_f": 53.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-21",
+"date": "2026-05-21",
+"tmax_f": 57.0,
+"tmin_f": 43.0,
+"tavg_f": 50.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-22",
+"date": "2026-05-22",
+"tmax_f": 64.0,
+"tmin_f": 45.0,
+"tavg_f": 54.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-23",
+"date": "2026-05-23",
+"tmax_f": 76.0,
+"tmin_f": 49.0,
+"tavg_f": 62.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-24",
+"date": "2026-05-24",
+"tmax_f": 78.0,
+"tmin_f": 55.0,
+"tavg_f": 66.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-25",
+"date": "2026-05-25",
+"tmax_f": 84.0,
+"tmin_f": 55.0,
+"tavg_f": 69.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-26",
+"date": "2026-05-26",
+"tmax_f": 87.0,
+"tmin_f": 62.0,
+"tavg_f": 74.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-27",
+"date": "2026-05-27",
+"tmax_f": 87.0,
+"tmin_f": 59.0,
+"tavg_f": 73.0,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-28",
+"date": "2026-05-28",
+"tmax_f": 79.0,
+"tmin_f": 53.0,
+"tavg_f": 66.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-29",
+"date": "2026-05-29",
+"tmax_f": 82.0,
+"tmin_f": 44.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-30",
+"date": "2026-05-30",
+"tmax_f": 75.0,
+"tmin_f": 52.0,
+"tavg_f": 63.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-05-31",
+"date": "2026-05-31",
+"tmax_f": 77.0,
+"tmin_f": 50.0,
+"tavg_f": 63.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-01",
+"date": "2026-06-01",
+"tmax_f": 77.0,
+"tmin_f": 52.0,
+"tavg_f": 64.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-02",
+"date": "2026-06-02",
+"tmax_f": 79.0,
+"tmin_f": 47.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-03",
+"date": "2026-06-03",
+"tmax_f": 82.0,
+"tmin_f": 44.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-04",
+"date": "2026-06-04",
+"tmax_f": 86.0,
+"tmin_f": 55.0,
+"tavg_f": 70.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-05",
+"date": "2026-06-05",
+"tmax_f": 77.0,
+"tmin_f": 61.0,
+"tavg_f": 69.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-06",
+"date": "2026-06-06",
+"tmax_f": 85.0,
+"tmin_f": 60.0,
+"tavg_f": 72.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-07",
+"date": "2026-06-07",
+"tmax_f": 81.0,
+"tmin_f": 61.0,
+"tavg_f": 71.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-08",
+"date": "2026-06-08",
+"tmax_f": 81.0,
+"tmin_f": 63.0,
+"tavg_f": 72.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-09",
+"date": "2026-06-09",
+"tmax_f": 85.0,
+"tmin_f": 71.0,
+"tavg_f": 78.0,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-10",
+"date": "2026-06-10",
+"tmax_f": 87.0,
+"tmin_f": 69.0,
+"tavg_f": 78.0,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-11",
+"date": "2026-06-11",
+"tmax_f": 72.0,
+"tmin_f": 60.0,
+"tavg_f": 66.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-12",
+"date": "2026-06-12",
+"tmax_f": 79.0,
+"tmin_f": 56.0,
+"tavg_f": 67.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-13",
+"date": "2026-06-13",
+"tmax_f": 81.0,
+"tmin_f": 67.0,
+"tavg_f": 74.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-14",
+"date": "2026-06-14",
+"tmax_f": 68.0,
+"tmin_f": 52.0,
+"tavg_f": 60.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-15",
+"date": "2026-06-15",
+"tmax_f": 76.0,
+"tmin_f": 49.0,
+"tavg_f": 62.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-16",
+"date": "2026-06-16",
+"tmax_f": 72.0,
+"tmin_f": 55.0,
+"tavg_f": 63.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-17",
+"date": "2026-06-17",
+"tmax_f": 63.0,
+"tmin_f": 54.0,
+"tavg_f": 58.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-18",
+"date": "2026-06-18",
+"tmax_f": 74.0,
+"tmin_f": 56.0,
+"tavg_f": 65.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-19",
+"date": "2026-06-19",
+"tmax_f": 74.0,
+"tmin_f": 52.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-20",
+"date": "2026-06-20",
+"tmax_f": 76.0,
+"tmin_f": 55.0,
+"tavg_f": 65.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-21",
+"date": "2026-06-21",
+"tmax_f": 69.0,
+"tmin_f": 53.0,
+"tavg_f": 61.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-22",
+"date": "2026-06-22",
+"tmax_f": 78.0,
+"tmin_f": 53.0,
+"tavg_f": 65.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-23",
+"date": "2026-06-23",
+"tmax_f": 78.0,
+"tmin_f": 51.0,
+"tavg_f": 64.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-24",
+"date": "2026-06-24",
+"tmax_f": 74.0,
+"tmin_f": 58.0,
+"tavg_f": 66.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-25",
+"date": "2026-06-25",
+"tmax_f": 77.0,
+"tmin_f": 60.0,
+"tavg_f": 68.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-26",
+"date": "2026-06-26",
+"tmax_f": 71.0,
+"tmin_f": 57.0,
+"tavg_f": 64.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-27",
+"date": "2026-06-27",
+"tmax_f": 78.0,
+"tmin_f": 53.0,
+"tavg_f": 65.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-28",
+"date": "2026-06-28",
+"tmax_f": 77.0,
+"tmin_f": 58.0,
+"tavg_f": 67.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-29",
+"date": "2026-06-29",
+"tmax_f": 92.0,
+"tmin_f": 74.0,
+"tavg_f": 83.0,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-06-30",
+"date": "2026-06-30",
+"tmax_f": 90.0,
+"tmin_f": 79.0,
+"tavg_f": 84.5,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-01",
+"date": "2026-07-01",
+"tmax_f": 91.0,
+"tmin_f": 79.0,
+"tavg_f": 85.0,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-02",
+"date": "2026-07-02",
+"tmax_f": 88.0,
+"tmin_f": 68.0,
+"tavg_f": 78.0,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-03",
+"date": "2026-07-03",
+"tmax_f": 85.0,
+"tmin_f": 68.0,
+"tavg_f": 76.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-04",
+"date": "2026-07-04",
+"tmax_f": 79.0,
+"tmin_f": 66.0,
+"tavg_f": 72.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-05",
+"date": "2026-07-05",
+"tmax_f": 81.0,
+"tmin_f": 64.0,
+"tavg_f": 72.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-06",
+"date": "2026-07-06",
+"tmax_f": 82.0,
+"tmin_f": 60.0,
+"tavg_f": 71.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-07",
+"date": "2026-07-07",
+"tmax_f": 86.0,
+"tmin_f": 58.0,
+"tavg_f": 72.0,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-08",
+"date": "2026-07-08",
+"tmax_f": 86.0,
+"tmin_f": 68.0,
+"tavg_f": 77.0,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-09",
+"date": "2026-07-09",
+"tmax_f": 83.0,
+"tmin_f": 68.0,
+"tavg_f": 75.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-10",
+"date": "2026-07-10",
+"tmax_f": 83.0,
+"tmin_f": 65.0,
+"tavg_f": 74.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-11",
+"date": "2026-07-11",
+"tmax_f": 84.0,
+"tmin_f": 61.0,
+"tavg_f": 72.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-12",
+"date": "2026-07-12",
+"tmax_f": 88.0,
+"tmin_f": 57.0,
+"tavg_f": 72.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-13",
+"date": "2026-07-13",
+"tmax_f": 90.0,
+"tmin_f": 64.0,
+"tavg_f": 77.0,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-14",
+"date": "2026-07-14",
+"tmax_f": 94.0,
+"tmin_f": 68.0,
+"tavg_f": 81.0,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-15",
+"date": "2026-07-15",
+"tmax_f": 95.0,
+"tmin_f": 68.0,
+"tavg_f": 81.5,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-16",
+"date": "2026-07-16",
+"tmax_f": 90.0,
+"tmin_f": 70.0,
+"tavg_f": 80.0,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-17",
+"date": "2026-07-17",
+"tmax_f": 90.0,
+"tmin_f": 68.0,
+"tavg_f": 79.0,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-18",
+"date": "2026-07-18",
+"tmax_f": 86.0,
+"tmin_f": 68.0,
+"tavg_f": 77.0,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-19",
+"date": "2026-07-19",
+"tmax_f": 83.0,
+"tmin_f": 61.0,
+"tavg_f": 72.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-20",
+"date": "2026-07-20",
+"tmax_f": 84.0,
+"tmin_f": 66.0,
+"tavg_f": 75.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-21",
+"date": "2026-07-21",
+"tmax_f": 80.0,
+"tmin_f": 58.0,
+"tavg_f": 69.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-22",
+"date": "2026-07-22",
+"tmax_f": 75.0,
+"tmin_f": 50.0,
+"tavg_f": 62.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-23",
+"date": "2026-07-23",
+"tmax_f": 76.0,
+"tmin_f": 50.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-24",
+"date": "2026-07-24",
+"tmax_f": 79.0,
+"tmin_f": 57.0,
+"tavg_f": 68.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-25",
+"date": "2026-07-25",
+"tmax_f": 81.0,
+"tmin_f": 64.0,
+"tavg_f": 72.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-26",
+"date": "2026-07-26",
+"tmax_f": 92.0,
+"tmin_f": 74.0,
+"tavg_f": 83.0,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-27",
+"date": "2026-07-27",
+"tmax_f": 97.0,
+"tmin_f": 75.0,
+"tavg_f": 86.0,
+"label": "heat",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-28",
+"date": "2026-07-28",
+"tmax_f": 84.0,
+"tmin_f": 60.0,
+"tavg_f": 72.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-29",
+"date": "2026-07-29",
+"tmax_f": 85.0,
+"tmin_f": 56.0,
+"tavg_f": 70.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-30",
+"date": "2026-07-30",
+"tmax_f": 86.0,
+"tmin_f": 59.0,
+"tavg_f": 72.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-07-31",
+"date": "2026-07-31",
+"tmax_f": 73.0,
+"tmin_f": 62.0,
+"tavg_f": 67.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-01",
+"date": "2026-08-01",
+"tmax_f": 76.0,
+"tmin_f": 62.0,
+"tavg_f": 69.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-02",
+"date": "2026-08-02",
+"tmax_f": 80.0,
+"tmin_f": 59.0,
+"tavg_f": 69.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-03",
+"date": "2026-08-03",
+"tmax_f": 83.0,
+"tmin_f": 55.0,
+"tavg_f": 69.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-04",
+"date": "2026-08-04",
+"tmax_f": 84.0,
+"tmin_f": 62.0,
+"tavg_f": 73.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-05",
+"date": "2026-08-05",
+"tmax_f": 73.0,
+"tmin_f": 62.0,
+"tavg_f": 67.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-06",
+"date": "2026-08-06",
+"tmax_f": 81.0,
+"tmin_f": 59.0,
+"tavg_f": 70.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-07",
+"date": "2026-08-07",
+"tmax_f": 84.0,
+"tmin_f": 68.0,
+"tavg_f": 76.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-08",
+"date": "2026-08-08",
+"tmax_f": 80.0,
+"tmin_f": 61.0,
+"tavg_f": 70.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-09",
+"date": "2026-08-09",
+"tmax_f": 78.0,
+"tmin_f": 59.0,
+"tavg_f": 68.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-10",
+"date": "2026-08-10",
+"tmax_f": 85.0,
+"tmin_f": 64.0,
+"tavg_f": 74.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-11",
+"date": "2026-08-11",
+"tmax_f": 83.0,
+"tmin_f": 69.0,
+"tavg_f": 76.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-12",
+"date": "2026-08-12",
+"tmax_f": 85.0,
+"tmin_f": 65.0,
+"tavg_f": 75.0,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-13",
+"date": "2026-08-13",
+"tmax_f": 77.0,
+"tmin_f": 66.0,
+"tavg_f": 71.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-14",
+"date": "2026-08-14",
+"tmax_f": 81.0,
+"tmin_f": 65.0,
+"tavg_f": 73.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-15",
+"date": "2026-08-15",
+"tmax_f": 82.0,
+"tmin_f": 65.0,
+"tavg_f": 73.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-16",
+"date": "2026-08-16",
+"tmax_f": 84.0,
+"tmin_f": 61.0,
+"tavg_f": 72.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-17",
+"date": "2026-08-17",
+"tmax_f": 82.0,
+"tmin_f": 59.0,
+"tavg_f": 70.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-18",
+"date": "2026-08-18",
+"tmax_f": 81.0,
+"tmin_f": 60.0,
+"tavg_f": 70.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-19",
+"date": "2026-08-19",
+"tmax_f": 79.0,
+"tmin_f": 58.0,
+"tavg_f": 68.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-20",
+"date": "2026-08-20",
+"tmax_f": 79.0,
+"tmin_f": 53.0,
+"tavg_f": 66.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-21",
+"date": "2026-08-21",
+"tmax_f": 75.0,
+"tmin_f": 63.0,
+"tavg_f": 69.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-22",
+"date": "2026-08-22",
+"tmax_f": 78.0,
+"tmin_f": 58.0,
+"tavg_f": 68.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-23",
+"date": "2026-08-23",
+"tmax_f": 74.0,
+"tmin_f": 53.0,
+"tavg_f": 63.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-24",
+"date": "2026-08-24",
+"tmax_f": 76.0,
+"tmin_f": 50.0,
+"tavg_f": 63.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-25",
+"date": "2026-08-25",
+"tmax_f": 79.0,
+"tmin_f": 53.0,
+"tavg_f": 66.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-26",
+"date": "2026-08-26",
+"tmax_f": 80.0,
+"tmin_f": 65.0,
+"tavg_f": 72.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-27",
+"date": "2026-08-27",
+"tmax_f": 81.0,
+"tmin_f": 58.0,
+"tavg_f": 69.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-28",
+"date": "2026-08-28",
+"tmax_f": 81.0,
+"tmin_f": 55.0,
+"tavg_f": 68.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-29",
+"date": "2026-08-29",
+"tmax_f": 75.0,
+"tmin_f": 59.0,
+"tavg_f": 67.0,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-30",
+"date": "2026-08-30",
+"tmax_f": 82.0,
+"tmin_f": 67.0,
+"tavg_f": 74.5,
+"label": "mild",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+},
+{
+"id": "2026-08-31",
+"date": "2026-08-31",
+"tmax_f": 87.0,
+"tmin_f": 68.0,
+"tavg_f": 77.5,
+"label": "hot",
+"source": "NOAA GHCN-Daily USW00014837 Madison Dane Co. Rgnl Airport (real); tavg_f = (tmax+tmin)/2 derived"
+}
+]

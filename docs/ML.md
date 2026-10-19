@@ -16,6 +16,12 @@ Per asset, fit expected daily energy from outdoor temperature on its own history
 - Fit on a trailing 60-day window ending 7 days before the scored day (so a slow degradation doesn't
   teach the baseline that "bad is normal"). First 30 days of the replay: fit on whatever exists, mark low confidence.
 - `energy_over_expected_pct = (actual − expected) / expected × 100`.
+- **No weather-comparable history → expected is unknown.** A slope is only trusted when the fit
+  window has ≥ 5 days with degree-days > 0 and ≥ 1 degree-day of spread; with a slope we extrapolate
+  at most 5 degree-days past the window's range, without one not at all. Beyond that `expected` is
+  null, the energy signal is excluded for the day and the weights renormalise over the other
+  signals. Without this rule the first warm days of spring (a winter of zero CDD behind them) read
+  as "+300 % energy" on every chiller — the single largest source of false alarms in testing.
 This is the standard degree-day method (ASHRAE Guideline 14 style). It is what makes decoy D3 (heat wave) not fire.
 
 ## 2. Risk score
@@ -67,3 +73,42 @@ due/watch cooling assets (count each building once).
   0 decoys fire; false-alarm days reported (target 0, but truthful).
 - Heat wave (D3): raw cooling energy rises, `energy_over_expected_pct` stays near 0 for healthy assets.
 - Output shapes match `contract/fixtures/` exactly.
+
+**Result on the interim seed (real NOAA weather, synthetic sensors — `tools/datagen/interim_generator.py`),
+`RiskModel.score_all(3.0)` → `Backtest.run(3.0)`, 2026-10-19:**
+
+| | F1 VIL-UH-2 | F2 STE-HX-1 | F3 WIMR-AHU-3 | F4 S3-PIPE | F5 WAL-CHL-2 |
+|---|---|---|---|---|---|
+| first INSPECTION_DUE | Jan 22 | Feb 10 | Apr 8 | **Jun 8** | Jul 15 |
+| lead days | 6 | 6 | 6 | 9 | 7 |
+
+Decoys D1–D4 all ignored. False-alarm days at 3.0: **2** (S4-PIPE May 16–17: +7.9 % energy in the
+first mid-May warm spell on a 54-year-old main; clears in two days). Sweep: 2.5 → 7 false-alarm
+days, 3.25–3.5 → 0 with no misses, ≥ 3.75 misses F3. We report the 2, per §5.
+
+## 8. Failure probabilities — four methods side by side (`RiskModel.forecast_all` → `RiskForecast`)
+
+`RiskScore` says *how abnormal* an asset is today; `RiskForecast` says *how likely it is to fail*
+in the next 7 / 14 / 30 days — four independent ways, so the UI shows the spread, not one opaque
+number. All rows are precomputed after `score_all` (19,440 rows ≈ 10 s), read via
+`RiskForecast.compare(asset_id, as_of)` (one asset, all methods + 30-day history + consensus) and
+`RiskForecast.campus(as_of)` (every asset ranked by consensus `p_fail_14d`).
+
+| method | what it is | trained on |
+|---|---|---|
+| `heuristic` | logistic calibration of `RiskScore.risk` (capped at 8) vs "failed within horizon" | planted F1–F5, leave-one-failure-out |
+| `classifier` | L2 logistic regression on 8 condition features: risk, 3- and 7-day slopes, max z, number of elevated signals, energy over expected, days at WATCH, age | planted F1–F5, leave-one-failure-out |
+| `monte_carlo` | 1,000 forward paths of the (age-normalised) risk from the asset's own trailing 14-day drift and noise, drift growing 3 %/day; probability = share of paths reaching the failure level (median pre-failure risk of the *other* failures); also p10/p50/p90 days to first crossing | nothing — the asset's own history |
+| `weibull` | ASHRAE median service life by equipment type, Weibull shape 2.5 (pipes) / 3.0, conditional on survival to `age_years` | population estimate, no sensors |
+
+`consensus` = mean of the three condition-based methods; `weibull` is shown as the "age alone"
+reference. Each row carries `confidence` (low / medium / high), a one-line `basis`, and a
+`trained_on` honesty label for the UI chip.
+
+The default Python runtime has numpy/pandas/scipy but no scikit-learn, so the logistic models are
+fit with `scipy.optimize` (L-BFGS); that is a hackathon trade-off, not a design choice.
+
+**Smoke result, S3-PIPE as of 2026-06-09 (8 days before F4):** heuristic 0.92 · classifier 0.72 ·
+Monte Carlo 0.94 (days to failure p10/p50/p90 = 1/3/11) · Weibull 0.002 → consensus 0.86, spread
+0.22. Every healthy asset that day: consensus ≤ 0.06. The pitch line still holds: the failures were
+planted; this proves the pipeline, not that the real break was predictable.

@@ -1,0 +1,5167 @@
+[
+{
+"id": "S1-PIPE_2026-05-01",
+"asset": "S1-PIPE",
+"date": "2026-05-01",
+"pressure_psi": 63.57,
+"flow_imbalance_pct": 1.02,
+"delta_t_f": 10.22,
+"energy_kwh": 631.3
+},
+{
+"id": "S1-PIPE_2026-05-02",
+"asset": "S1-PIPE",
+"date": "2026-05-02",
+"pressure_psi": 61.86,
+"flow_imbalance_pct": 0.45,
+"energy_kwh": 614.0
+},
+{
+"id": "S1-PIPE_2026-05-03",
+"asset": "S1-PIPE",
+"date": "2026-05-03",
+"pressure_psi": 64.14,
+"flow_imbalance_pct": 0.72,
+"delta_t_f": 10.49,
+"energy_kwh": 775.2
+},
+{
+"id": "S1-PIPE_2026-05-04",
+"asset": "S1-PIPE",
+"date": "2026-05-04",
+"pressure_psi": 64.15,
+"flow_imbalance_pct": 0.85,
+"delta_t_f": 10.91,
+"energy_kwh": 851.3
+},
+{
+"id": "S1-PIPE_2026-05-05",
+"asset": "S1-PIPE",
+"date": "2026-05-05",
+"pressure_psi": 63.88,
+"flow_imbalance_pct": 0.67,
+"delta_t_f": 10.03,
+"energy_kwh": 628.4
+},
+{
+"id": "S1-PIPE_2026-05-06",
+"asset": "S1-PIPE",
+"date": "2026-05-06",
+"pressure_psi": 64.79,
+"flow_imbalance_pct": 0.86,
+"delta_t_f": 10.11,
+"energy_kwh": 613.7
+},
+{
+"id": "S1-PIPE_2026-05-07",
+"asset": "S1-PIPE",
+"date": "2026-05-07",
+"pressure_psi": 64.39,
+"flow_imbalance_pct": 0.77,
+"delta_t_f": 10.98,
+"energy_kwh": 591.6
+},
+{
+"id": "S1-PIPE_2026-05-08",
+"asset": "S1-PIPE",
+"date": "2026-05-08",
+"pressure_psi": 62.88,
+"flow_imbalance_pct": 0.8,
+"delta_t_f": 10.31,
+"energy_kwh": 634.1
+},
+{
+"id": "S1-PIPE_2026-05-09",
+"asset": "S1-PIPE",
+"date": "2026-05-09",
+"pressure_psi": 63.16,
+"flow_imbalance_pct": 0.3,
+"delta_t_f": 11.03,
+"energy_kwh": 630.9
+},
+{
+"id": "S1-PIPE_2026-05-10",
+"asset": "S1-PIPE",
+"date": "2026-05-10",
+"pressure_psi": 63.06,
+"flow_imbalance_pct": 0.67,
+"delta_t_f": 10.25,
+"energy_kwh": 628.5
+},
+{
+"id": "S1-PIPE_2026-05-11",
+"asset": "S1-PIPE",
+"date": "2026-05-11",
+"pressure_psi": 63.71,
+"flow_imbalance_pct": 0.47,
+"delta_t_f": 10.11,
+"energy_kwh": 612.4
+},
+{
+"id": "S1-PIPE_2026-05-12",
+"asset": "S1-PIPE",
+"date": "2026-05-12",
+"pressure_psi": 65.0,
+"flow_imbalance_pct": 1.18,
+"delta_t_f": 9.99,
+"energy_kwh": 834.2
+},
+{
+"id": "S1-PIPE_2026-05-13",
+"asset": "S1-PIPE",
+"date": "2026-05-13",
+"pressure_psi": 64.44,
+"flow_imbalance_pct": 1.03,
+"delta_t_f": 10.41,
+"energy_kwh": 602.1
+},
+{
+"id": "S1-PIPE_2026-05-14",
+"asset": "S1-PIPE",
+"date": "2026-05-14",
+"pressure_psi": 62.7,
+"flow_imbalance_pct": 1.54,
+"delta_t_f": 10.15,
+"energy_kwh": 600.1
+},
+{
+"id": "S1-PIPE_2026-05-15",
+"asset": "S1-PIPE",
+"date": "2026-05-15",
+"pressure_psi": 62.77,
+"flow_imbalance_pct": 0.41,
+"delta_t_f": 10.69,
+"energy_kwh": 1332.8
+},
+{
+"id": "S1-PIPE_2026-05-16",
+"asset": "S1-PIPE",
+"date": "2026-05-16",
+"pressure_psi": 64.05,
+"flow_imbalance_pct": 0.73,
+"delta_t_f": 10.88,
+"energy_kwh": 1472.2
+},
+{
+"id": "S1-PIPE_2026-05-17",
+"asset": "S1-PIPE",
+"date": "2026-05-17",
+"pressure_psi": 64.19,
+"flow_imbalance_pct": 0.34,
+"delta_t_f": 10.3,
+"energy_kwh": 1044.1
+},
+{
+"id": "S1-PIPE_2026-05-18",
+"asset": "S1-PIPE",
+"date": "2026-05-18",
+"pressure_psi": 64.32,
+"flow_imbalance_pct": 0.29,
+"delta_t_f": 10.62,
+"energy_kwh": 1423.9
+},
+{
+"id": "S1-PIPE_2026-05-19",
+"asset": "S1-PIPE",
+"date": "2026-05-19",
+"pressure_psi": 63.63,
+"flow_imbalance_pct": 1.09,
+"delta_t_f": 10.52,
+"energy_kwh": 955.9
+},
+{
+"id": "S1-PIPE_2026-05-20",
+"asset": "S1-PIPE",
+"date": "2026-05-20",
+"pressure_psi": 62.92,
+"flow_imbalance_pct": 0.49,
+"delta_t_f": 10.29,
+"energy_kwh": 617.0
+},
+{
+"id": "S1-PIPE_2026-05-21",
+"asset": "S1-PIPE",
+"date": "2026-05-21",
+"pressure_psi": 63.61,
+"flow_imbalance_pct": 1.04,
+"delta_t_f": 10.56,
+"energy_kwh": 620.5
+},
+{
+"id": "S1-PIPE_2026-05-22",
+"asset": "S1-PIPE",
+"date": "2026-05-22",
+"pressure_psi": 64.62,
+"flow_imbalance_pct": 1.06,
+"delta_t_f": 10.02,
+"energy_kwh": 615.7
+},
+{
+"id": "S1-PIPE_2026-05-23",
+"asset": "S1-PIPE",
+"date": "2026-05-23",
+"flow_imbalance_pct": 1.04,
+"delta_t_f": 10.89,
+"energy_kwh": 1016.8
+},
+{
+"id": "S1-PIPE_2026-05-24",
+"asset": "S1-PIPE",
+"date": "2026-05-24",
+"pressure_psi": 64.45,
+"flow_imbalance_pct": 0.62,
+"delta_t_f": 10.88,
+"energy_kwh": 1159.4
+},
+{
+"id": "S1-PIPE_2026-05-25",
+"asset": "S1-PIPE",
+"date": "2026-05-25",
+"pressure_psi": 64.14,
+"flow_imbalance_pct": 0.49,
+"delta_t_f": 11.0,
+"energy_kwh": 1390.5
+},
+{
+"id": "S1-PIPE_2026-05-26",
+"asset": "S1-PIPE",
+"date": "2026-05-26",
+"pressure_psi": 64.43,
+"flow_imbalance_pct": 1.08,
+"delta_t_f": 11.43,
+"energy_kwh": 1615.9
+},
+{
+"id": "S1-PIPE_2026-05-27",
+"asset": "S1-PIPE",
+"date": "2026-05-27",
+"pressure_psi": 62.65,
+"flow_imbalance_pct": 1.07,
+"delta_t_f": 11.29,
+"energy_kwh": 1523.2
+},
+{
+"id": "S1-PIPE_2026-05-28",
+"asset": "S1-PIPE",
+"date": "2026-05-28",
+"pressure_psi": 64.76,
+"flow_imbalance_pct": 0.93,
+"delta_t_f": 10.52,
+"energy_kwh": 1219.0
+},
+{
+"id": "S1-PIPE_2026-05-29",
+"asset": "S1-PIPE",
+"date": "2026-05-29",
+"pressure_psi": 62.41,
+"flow_imbalance_pct": 0.29,
+"delta_t_f": 10.67,
+"energy_kwh": 999.6
+},
+{
+"id": "S1-PIPE_2026-05-30",
+"asset": "S1-PIPE",
+"date": "2026-05-30",
+"pressure_psi": 63.27,
+"flow_imbalance_pct": 0.57,
+"delta_t_f": 10.43,
+"energy_kwh": 1055.7
+},
+{
+"id": "S1-PIPE_2026-05-31",
+"asset": "S1-PIPE",
+"date": "2026-05-31",
+"pressure_psi": 62.82,
+"flow_imbalance_pct": 0.65,
+"delta_t_f": 10.38,
+"energy_kwh": 1033.0
+},
+{
+"id": "S2-PIPE_2026-05-01",
+"asset": "S2-PIPE",
+"date": "2026-05-01",
+"pressure_psi": 70.78,
+"flow_imbalance_pct": 0.43,
+"delta_t_f": 11.26,
+"energy_kwh": 1308.5
+},
+{
+"id": "S2-PIPE_2026-05-02",
+"asset": "S2-PIPE",
+"date": "2026-05-02",
+"pressure_psi": 67.91,
+"flow_imbalance_pct": 0.62,
+"delta_t_f": 10.89,
+"energy_kwh": 1432.1
+},
+{
+"id": "S2-PIPE_2026-05-03",
+"asset": "S2-PIPE",
+"date": "2026-05-03",
+"pressure_psi": 68.22,
+"flow_imbalance_pct": 0.17,
+"delta_t_f": 10.94,
+"energy_kwh": 1783.5
+},
+{
+"id": "S2-PIPE_2026-05-04",
+"asset": "S2-PIPE",
+"date": "2026-05-04",
+"pressure_psi": 70.11,
+"flow_imbalance_pct": 0.52,
+"delta_t_f": 10.4,
+"energy_kwh": 1962.9
+},
+{
+"id": "S2-PIPE_2026-05-05",
+"asset": "S2-PIPE",
+"date": "2026-05-05",
+"pressure_psi": 68.14,
+"flow_imbalance_pct": 0.17,
+"delta_t_f": 10.11,
+"energy_kwh": 1387.0
+},
+{
+"id": "S2-PIPE_2026-05-06",
+"asset": "S2-PIPE",
+"date": "2026-05-06",
+"pressure_psi": 70.56,
+"flow_imbalance_pct": 0.63,
+"delta_t_f": 10.63,
+"energy_kwh": 1428.8
+},
+{
+"id": "S2-PIPE_2026-05-07",
+"asset": "S2-PIPE",
+"date": "2026-05-07",
+"pressure_psi": 68.44,
+"flow_imbalance_pct": 0.96,
+"delta_t_f": 10.06,
+"energy_kwh": 1406.3
+},
+{
+"id": "S2-PIPE_2026-05-08",
+"asset": "S2-PIPE",
+"date": "2026-05-08",
+"pressure_psi": 69.41,
+"flow_imbalance_pct": 0.49,
+"delta_t_f": 10.43,
+"energy_kwh": 1445.9
+},
+{
+"id": "S2-PIPE_2026-05-09",
+"asset": "S2-PIPE",
+"date": "2026-05-09",
+"pressure_psi": 69.5,
+"flow_imbalance_pct": 0.29,
+"energy_kwh": 1449.8
+},
+{
+"id": "S2-PIPE_2026-05-10",
+"asset": "S2-PIPE",
+"date": "2026-05-10",
+"pressure_psi": 68.57,
+"flow_imbalance_pct": 0.97,
+"delta_t_f": 10.59,
+"energy_kwh": 1473.5
+},
+{
+"id": "S2-PIPE_2026-05-11",
+"asset": "S2-PIPE",
+"date": "2026-05-11",
+"pressure_psi": 69.39,
+"flow_imbalance_pct": 0.58,
+"delta_t_f": 10.56,
+"energy_kwh": 1406.3
+},
+{
+"id": "S2-PIPE_2026-05-12",
+"asset": "S2-PIPE",
+"date": "2026-05-12",
+"pressure_psi": 69.4,
+"flow_imbalance_pct": 0.46,
+"delta_t_f": 11.08,
+"energy_kwh": 1911.2
+},
+{
+"id": "S2-PIPE_2026-05-13",
+"asset": "S2-PIPE",
+"date": "2026-05-13",
+"pressure_psi": 69.36,
+"flow_imbalance_pct": 0.71,
+"delta_t_f": 10.81,
+"energy_kwh": 1386.9
+},
+{
+"id": "S2-PIPE_2026-05-14",
+"asset": "S2-PIPE",
+"date": "2026-05-14",
+"pressure_psi": 70.11,
+"flow_imbalance_pct": 0.26,
+"delta_t_f": 10.53,
+"energy_kwh": 1393.9
+},
+{
+"id": "S2-PIPE_2026-05-15",
+"asset": "S2-PIPE",
+"date": "2026-05-15",
+"pressure_psi": 69.94,
+"flow_imbalance_pct": 0.26,
+"delta_t_f": 11.36,
+"energy_kwh": 3105.3
+},
+{
+"id": "S2-PIPE_2026-05-16",
+"asset": "S2-PIPE",
+"date": "2026-05-16",
+"pressure_psi": 68.55,
+"flow_imbalance_pct": 0.52,
+"delta_t_f": 11.81,
+"energy_kwh": 3620.0
+},
+{
+"id": "S2-PIPE_2026-05-17",
+"asset": "S2-PIPE",
+"date": "2026-05-17",
+"pressure_psi": 69.6,
+"flow_imbalance_pct": 1.04,
+"delta_t_f": 10.18,
+"energy_kwh": 2475.3
+},
+{
+"id": "S2-PIPE_2026-05-18",
+"asset": "S2-PIPE",
+"date": "2026-05-18",
+"pressure_psi": 69.14,
+"flow_imbalance_pct": 0.98,
+"delta_t_f": 11.38,
+"energy_kwh": 3023.2
+},
+{
+"id": "S2-PIPE_2026-05-19",
+"asset": "S2-PIPE",
+"date": "2026-05-19",
+"pressure_psi": 70.49,
+"flow_imbalance_pct": 0.39,
+"delta_t_f": 10.17,
+"energy_kwh": 2067.6
+},
+{
+"id": "S2-PIPE_2026-05-20",
+"asset": "S2-PIPE",
+"date": "2026-05-20",
+"pressure_psi": 69.59,
+"flow_imbalance_pct": 0.71,
+"delta_t_f": 9.94,
+"energy_kwh": 1337.8
+},
+{
+"id": "S2-PIPE_2026-05-21",
+"asset": "S2-PIPE",
+"date": "2026-05-21",
+"pressure_psi": 69.14,
+"flow_imbalance_pct": 0.35,
+"delta_t_f": 10.17,
+"energy_kwh": 1341.1
+},
+{
+"id": "S2-PIPE_2026-05-22",
+"asset": "S2-PIPE",
+"date": "2026-05-22",
+"pressure_psi": 69.15,
+"flow_imbalance_pct": 0.31,
+"delta_t_f": 10.6,
+"energy_kwh": 1455.7
+},
+{
+"id": "S2-PIPE_2026-05-23",
+"asset": "S2-PIPE",
+"date": "2026-05-23",
+"flow_imbalance_pct": 0.23,
+"delta_t_f": 11.4,
+"energy_kwh": 2395.5
+},
+{
+"id": "S2-PIPE_2026-05-24",
+"asset": "S2-PIPE",
+"date": "2026-05-24",
+"pressure_psi": 68.98,
+"flow_imbalance_pct": 0.37,
+"energy_kwh": 2904.0
+},
+{
+"id": "S2-PIPE_2026-05-25",
+"asset": "S2-PIPE",
+"date": "2026-05-25",
+"pressure_psi": 69.7,
+"flow_imbalance_pct": 0.57,
+"delta_t_f": 11.59,
+"energy_kwh": 3195.6
+},
+{
+"id": "S2-PIPE_2026-05-26",
+"asset": "S2-PIPE",
+"date": "2026-05-26",
+"pressure_psi": 69.04,
+"flow_imbalance_pct": 0.29,
+"delta_t_f": 10.98,
+"energy_kwh": 3906.7
+},
+{
+"id": "S2-PIPE_2026-05-27",
+"asset": "S2-PIPE",
+"date": "2026-05-27",
+"pressure_psi": 70.26,
+"flow_imbalance_pct": 0.06,
+"delta_t_f": 11.12,
+"energy_kwh": 3728.7
+},
+{
+"id": "S2-PIPE_2026-05-28",
+"asset": "S2-PIPE",
+"date": "2026-05-28",
+"flow_imbalance_pct": 0.35,
+"delta_t_f": 11.8,
+"energy_kwh": 2900.7
+},
+{
+"id": "S2-PIPE_2026-05-29",
+"asset": "S2-PIPE",
+"date": "2026-05-29",
+"pressure_psi": 70.48,
+"flow_imbalance_pct": 0.73,
+"delta_t_f": 10.69,
+"energy_kwh": 2204.5
+},
+{
+"id": "S2-PIPE_2026-05-30",
+"asset": "S2-PIPE",
+"date": "2026-05-30",
+"pressure_psi": 69.59,
+"flow_imbalance_pct": 0.27,
+"delta_t_f": 10.89,
+"energy_kwh": 2492.4
+},
+{
+"id": "S2-PIPE_2026-05-31",
+"asset": "S2-PIPE",
+"date": "2026-05-31",
+"flow_imbalance_pct": 0.67,
+"delta_t_f": 11.24,
+"energy_kwh": 2345.0
+},
+{
+"id": "S3-PIPE_2026-05-01",
+"asset": "S3-PIPE",
+"date": "2026-05-01",
+"pressure_psi": 70.06,
+"flow_imbalance_pct": 0.55,
+"delta_t_f": 11.79,
+"energy_kwh": 5282.0
+},
+{
+"id": "S3-PIPE_2026-05-02",
+"asset": "S3-PIPE",
+"date": "2026-05-02",
+"pressure_psi": 69.13,
+"flow_imbalance_pct": 0.8,
+"delta_t_f": 12.05,
+"energy_kwh": 5137.4
+},
+{
+"id": "S3-PIPE_2026-05-03",
+"asset": "S3-PIPE",
+"date": "2026-05-03",
+"pressure_psi": 70.58,
+"flow_imbalance_pct": 0.67,
+"delta_t_f": 12.21,
+"energy_kwh": 6862.3
+},
+{
+"id": "S3-PIPE_2026-05-04",
+"asset": "S3-PIPE",
+"date": "2026-05-04",
+"pressure_psi": 69.35,
+"flow_imbalance_pct": 0.61,
+"delta_t_f": 11.89,
+"energy_kwh": 7574.4
+},
+{
+"id": "S3-PIPE_2026-05-05",
+"asset": "S3-PIPE",
+"date": "2026-05-05",
+"pressure_psi": 71.44,
+"flow_imbalance_pct": 0.49,
+"delta_t_f": 12.47,
+"energy_kwh": 5290.2
+},
+{
+"id": "S3-PIPE_2026-05-06",
+"asset": "S3-PIPE",
+"date": "2026-05-06",
+"pressure_psi": 68.05,
+"flow_imbalance_pct": 0.36,
+"delta_t_f": 11.89,
+"energy_kwh": 5203.1
+},
+{
+"id": "S3-PIPE_2026-05-07",
+"asset": "S3-PIPE",
+"date": "2026-05-07",
+"pressure_psi": 69.32,
+"flow_imbalance_pct": 0.7,
+"energy_kwh": 5127.5
+},
+{
+"id": "S3-PIPE_2026-05-08",
+"asset": "S3-PIPE",
+"date": "2026-05-08",
+"pressure_psi": 69.71,
+"flow_imbalance_pct": 0.59,
+"delta_t_f": 12.19,
+"energy_kwh": 5613.5
+},
+{
+"id": "S3-PIPE_2026-05-09",
+"asset": "S3-PIPE",
+"date": "2026-05-09",
+"pressure_psi": 68.46,
+"flow_imbalance_pct": 0.4,
+"delta_t_f": 12.58,
+"energy_kwh": 5641.1
+},
+{
+"id": "S3-PIPE_2026-05-10",
+"asset": "S3-PIPE",
+"date": "2026-05-10",
+"pressure_psi": 68.58,
+"flow_imbalance_pct": 0.76,
+"delta_t_f": 12.37,
+"energy_kwh": 5232.0
+},
+{
+"id": "S3-PIPE_2026-05-11",
+"asset": "S3-PIPE",
+"date": "2026-05-11",
+"pressure_psi": 68.93,
+"flow_imbalance_pct": 0.61,
+"delta_t_f": 11.75,
+"energy_kwh": 5221.6
+},
+{
+"id": "S3-PIPE_2026-05-12",
+"asset": "S3-PIPE",
+"date": "2026-05-12",
+"pressure_psi": 69.97,
+"flow_imbalance_pct": 0.8,
+"delta_t_f": 12.73,
+"energy_kwh": 7187.3
+},
+{
+"id": "S3-PIPE_2026-05-13",
+"asset": "S3-PIPE",
+"date": "2026-05-13",
+"pressure_psi": 69.75,
+"delta_t_f": 12.31,
+"energy_kwh": 5172.8
+},
+{
+"id": "S3-PIPE_2026-05-14",
+"asset": "S3-PIPE",
+"date": "2026-05-14",
+"pressure_psi": 69.14,
+"flow_imbalance_pct": 1.07,
+"delta_t_f": 12.69,
+"energy_kwh": 5485.5
+},
+{
+"id": "S3-PIPE_2026-05-15",
+"asset": "S3-PIPE",
+"date": "2026-05-15",
+"pressure_psi": 68.65,
+"flow_imbalance_pct": 0.71,
+"delta_t_f": 12.59,
+"energy_kwh": 11932.1
+},
+{
+"id": "S3-PIPE_2026-05-16",
+"asset": "S3-PIPE",
+"date": "2026-05-16",
+"pressure_psi": 69.86,
+"flow_imbalance_pct": 0.18,
+"delta_t_f": 12.89,
+"energy_kwh": 13194.3
+},
+{
+"id": "S3-PIPE_2026-05-17",
+"asset": "S3-PIPE",
+"date": "2026-05-17",
+"pressure_psi": 69.62,
+"flow_imbalance_pct": 0.95,
+"delta_t_f": 12.73,
+"energy_kwh": 9586.0
+},
+{
+"id": "S3-PIPE_2026-05-18",
+"asset": "S3-PIPE",
+"date": "2026-05-18",
+"pressure_psi": 71.48,
+"flow_imbalance_pct": 0.79,
+"delta_t_f": 12.77,
+"energy_kwh": 11520.4
+},
+{
+"id": "S3-PIPE_2026-05-19",
+"asset": "S3-PIPE",
+"date": "2026-05-19",
+"flow_imbalance_pct": 0.21,
+"delta_t_f": 12.34,
+"energy_kwh": 8179.7
+},
+{
+"id": "S3-PIPE_2026-05-20",
+"asset": "S3-PIPE",
+"date": "2026-05-20",
+"pressure_psi": 68.49,
+"flow_imbalance_pct": 0.82,
+"delta_t_f": 12.11,
+"energy_kwh": 5315.9
+},
+{
+"id": "S3-PIPE_2026-05-21",
+"asset": "S3-PIPE",
+"date": "2026-05-21",
+"pressure_psi": 68.49,
+"flow_imbalance_pct": 1.33,
+"delta_t_f": 12.28,
+"energy_kwh": 5230.2
+},
+{
+"id": "S3-PIPE_2026-05-22",
+"asset": "S3-PIPE",
+"date": "2026-05-22",
+"pressure_psi": 69.35,
+"flow_imbalance_pct": 0.36,
+"delta_t_f": 12.44,
+"energy_kwh": 5178.7
+},
+{
+"id": "S3-PIPE_2026-05-23",
+"asset": "S3-PIPE",
+"date": "2026-05-23",
+"pressure_psi": 66.97,
+"flow_imbalance_pct": 0.68,
+"delta_t_f": 12.4,
+"energy_kwh": 8949.3
+},
+{
+"id": "S3-PIPE_2026-05-24",
+"asset": "S3-PIPE",
+"date": "2026-05-24",
+"pressure_psi": 70.3,
+"flow_imbalance_pct": 0.39,
+"delta_t_f": 11.87,
+"energy_kwh": 10986.9
+},
+{
+"id": "S3-PIPE_2026-05-25",
+"asset": "S3-PIPE",
+"date": "2026-05-25",
+"pressure_psi": 69.34,
+"flow_imbalance_pct": 0.94,
+"delta_t_f": 12.38,
+"energy_kwh": 11736.6
+},
+{
+"id": "S3-PIPE_2026-05-26",
+"asset": "S3-PIPE",
+"date": "2026-05-26",
+"pressure_psi": 70.16,
+"flow_imbalance_pct": 0.87,
+"delta_t_f": 12.98,
+"energy_kwh": 15244.7
+},
+{
+"id": "S3-PIPE_2026-05-27",
+"asset": "S3-PIPE",
+"date": "2026-05-27",
+"pressure_psi": 67.86,
+"flow_imbalance_pct": 0.71,
+"delta_t_f": 12.88,
+"energy_kwh": 12789.6
+},
+{
+"id": "S3-PIPE_2026-05-28",
+"asset": "S3-PIPE",
+"date": "2026-05-28",
+"pressure_psi": 69.2,
+"flow_imbalance_pct": 0.63,
+"energy_kwh": 10275.6
+},
+{
+"id": "S3-PIPE_2026-05-29",
+"asset": "S3-PIPE",
+"date": "2026-05-29",
+"pressure_psi": 70.23,
+"delta_t_f": 12.59,
+"energy_kwh": 9534.2
+},
+{
+"id": "S3-PIPE_2026-05-30",
+"asset": "S3-PIPE",
+"date": "2026-05-30",
+"pressure_psi": 69.31,
+"flow_imbalance_pct": 0.42,
+"delta_t_f": 12.36,
+"energy_kwh": 9657.8
+},
+{
+"id": "S3-PIPE_2026-05-31",
+"asset": "S3-PIPE",
+"date": "2026-05-31",
+"pressure_psi": 70.61,
+"flow_imbalance_pct": 0.77,
+"delta_t_f": 12.76,
+"energy_kwh": 9389.2
+},
+{
+"id": "S4-PIPE_2026-05-01",
+"asset": "S4-PIPE",
+"date": "2026-05-01",
+"pressure_psi": 81.98,
+"flow_imbalance_pct": 0.94,
+"delta_t_f": 11.5,
+"energy_kwh": 1794.4
+},
+{
+"id": "S4-PIPE_2026-05-02",
+"asset": "S4-PIPE",
+"date": "2026-05-02",
+"pressure_psi": 81.65,
+"flow_imbalance_pct": 0.31,
+"delta_t_f": 11.57,
+"energy_kwh": 1852.5
+},
+{
+"id": "S4-PIPE_2026-05-03",
+"asset": "S4-PIPE",
+"date": "2026-05-03",
+"pressure_psi": 82.33,
+"flow_imbalance_pct": 0.71,
+"delta_t_f": 11.45,
+"energy_kwh": 2164.5
+},
+{
+"id": "S4-PIPE_2026-05-04",
+"asset": "S4-PIPE",
+"date": "2026-05-04",
+"pressure_psi": 81.6,
+"flow_imbalance_pct": 0.68,
+"delta_t_f": 11.39,
+"energy_kwh": 2577.2
+},
+{
+"id": "S4-PIPE_2026-05-05",
+"asset": "S4-PIPE",
+"date": "2026-05-05",
+"pressure_psi": 81.74,
+"flow_imbalance_pct": 0.29,
+"delta_t_f": 11.79,
+"energy_kwh": 1720.8
+},
+{
+"id": "S4-PIPE_2026-05-06",
+"asset": "S4-PIPE",
+"date": "2026-05-06",
+"pressure_psi": 82.77,
+"flow_imbalance_pct": 0.7,
+"delta_t_f": 11.64,
+"energy_kwh": 1796.8
+},
+{
+"id": "S4-PIPE_2026-05-07",
+"asset": "S4-PIPE",
+"date": "2026-05-07",
+"pressure_psi": 82.19,
+"flow_imbalance_pct": 0.38,
+"delta_t_f": 11.26,
+"energy_kwh": 1735.3
+},
+{
+"id": "S4-PIPE_2026-05-08",
+"asset": "S4-PIPE",
+"date": "2026-05-08",
+"pressure_psi": 83.5,
+"delta_t_f": 11.09,
+"energy_kwh": 1770.9
+},
+{
+"id": "S4-PIPE_2026-05-09",
+"asset": "S4-PIPE",
+"date": "2026-05-09",
+"pressure_psi": 82.53,
+"flow_imbalance_pct": 0.39,
+"delta_t_f": 11.75,
+"energy_kwh": 1940.9
+},
+{
+"id": "S4-PIPE_2026-05-10",
+"asset": "S4-PIPE",
+"date": "2026-05-10",
+"pressure_psi": 83.57,
+"flow_imbalance_pct": 0.83,
+"delta_t_f": 10.98,
+"energy_kwh": 1796.9
+},
+{
+"id": "S4-PIPE_2026-05-11",
+"asset": "S4-PIPE",
+"date": "2026-05-11",
+"flow_imbalance_pct": 0.47,
+"delta_t_f": 11.9,
+"energy_kwh": 1807.3
+},
+{
+"id": "S4-PIPE_2026-05-12",
+"asset": "S4-PIPE",
+"date": "2026-05-12",
+"pressure_psi": 82.76,
+"flow_imbalance_pct": 0.72,
+"delta_t_f": 11.48,
+"energy_kwh": 2598.5
+},
+{
+"id": "S4-PIPE_2026-05-13",
+"asset": "S4-PIPE",
+"date": "2026-05-13",
+"pressure_psi": 81.43,
+"flow_imbalance_pct": 0.03,
+"delta_t_f": 11.11,
+"energy_kwh": 1825.5
+},
+{
+"id": "S4-PIPE_2026-05-14",
+"asset": "S4-PIPE",
+"date": "2026-05-14",
+"pressure_psi": 80.92,
+"flow_imbalance_pct": 0.64,
+"delta_t_f": 11.35,
+"energy_kwh": 1808.2
+},
+{
+"id": "S4-PIPE_2026-05-15",
+"asset": "S4-PIPE",
+"date": "2026-05-15",
+"pressure_psi": 82.5,
+"flow_imbalance_pct": 0.72,
+"delta_t_f": 11.96,
+"energy_kwh": 4131.0
+},
+{
+"id": "S4-PIPE_2026-05-16",
+"asset": "S4-PIPE",
+"date": "2026-05-16",
+"pressure_psi": 82.35,
+"flow_imbalance_pct": 0.55,
+"delta_t_f": 12.24,
+"energy_kwh": 4706.9
+},
+{
+"id": "S4-PIPE_2026-05-17",
+"asset": "S4-PIPE",
+"date": "2026-05-17",
+"pressure_psi": 82.6,
+"flow_imbalance_pct": 1.0,
+"delta_t_f": 11.64,
+"energy_kwh": 3034.0
+},
+{
+"id": "S4-PIPE_2026-05-18",
+"asset": "S4-PIPE",
+"date": "2026-05-18",
+"pressure_psi": 82.71,
+"flow_imbalance_pct": 0.53,
+"delta_t_f": 12.05,
+"energy_kwh": 3931.5
+},
+{
+"id": "S4-PIPE_2026-05-19",
+"asset": "S4-PIPE",
+"date": "2026-05-19",
+"pressure_psi": 81.9,
+"flow_imbalance_pct": 0.42,
+"delta_t_f": 12.4,
+"energy_kwh": 2721.5
+},
+{
+"id": "S4-PIPE_2026-05-20",
+"asset": "S4-PIPE",
+"date": "2026-05-20",
+"pressure_psi": 82.2,
+"flow_imbalance_pct": 0.08,
+"delta_t_f": 11.53,
+"energy_kwh": 1823.3
+},
+{
+"id": "S4-PIPE_2026-05-21",
+"asset": "S4-PIPE",
+"date": "2026-05-21",
+"pressure_psi": 82.38,
+"flow_imbalance_pct": 0.52,
+"delta_t_f": 11.73,
+"energy_kwh": 1799.2
+},
+{
+"id": "S4-PIPE_2026-05-22",
+"asset": "S4-PIPE",
+"date": "2026-05-22",
+"pressure_psi": 83.6,
+"flow_imbalance_pct": 0.77,
+"delta_t_f": 11.17,
+"energy_kwh": 1751.6
+},
+{
+"id": "S4-PIPE_2026-05-23",
+"asset": "S4-PIPE",
+"date": "2026-05-23",
+"pressure_psi": 82.47,
+"flow_imbalance_pct": 0.76,
+"delta_t_f": 11.6,
+"energy_kwh": 2970.0
+},
+{
+"id": "S4-PIPE_2026-05-24",
+"asset": "S4-PIPE",
+"date": "2026-05-24",
+"pressure_psi": 81.2,
+"flow_imbalance_pct": 0.56,
+"delta_t_f": 11.6,
+"energy_kwh": 3762.3
+},
+{
+"id": "S4-PIPE_2026-05-25",
+"asset": "S4-PIPE",
+"date": "2026-05-25",
+"pressure_psi": 81.36,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 12.41,
+"energy_kwh": 4220.9
+},
+{
+"id": "S4-PIPE_2026-05-26",
+"asset": "S4-PIPE",
+"date": "2026-05-26",
+"pressure_psi": 81.04,
+"flow_imbalance_pct": 0.79,
+"delta_t_f": 12.94,
+"energy_kwh": 4983.1
+},
+{
+"id": "S4-PIPE_2026-05-27",
+"asset": "S4-PIPE",
+"date": "2026-05-27",
+"pressure_psi": 82.39,
+"flow_imbalance_pct": 0.35,
+"delta_t_f": 11.71,
+"energy_kwh": 4595.6
+},
+{
+"id": "S4-PIPE_2026-05-28",
+"asset": "S4-PIPE",
+"date": "2026-05-28",
+"pressure_psi": 82.42,
+"flow_imbalance_pct": 0.72,
+"delta_t_f": 11.6,
+"energy_kwh": 3554.3
+},
+{
+"id": "S4-PIPE_2026-05-29",
+"asset": "S4-PIPE",
+"date": "2026-05-29",
+"pressure_psi": 81.67,
+"flow_imbalance_pct": 0.46,
+"delta_t_f": 11.01,
+"energy_kwh": 3019.4
+},
+{
+"id": "S4-PIPE_2026-05-30",
+"asset": "S4-PIPE",
+"date": "2026-05-30",
+"pressure_psi": 81.35,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 11.71,
+"energy_kwh": 3087.3
+},
+{
+"id": "S4-PIPE_2026-05-31",
+"asset": "S4-PIPE",
+"date": "2026-05-31",
+"pressure_psi": 81.36,
+"flow_imbalance_pct": 0.2,
+"energy_kwh": 3157.3
+},
+{
+"id": "S5-PIPE_2026-05-01",
+"asset": "S5-PIPE",
+"date": "2026-05-01",
+"pressure_psi": 86.8,
+"flow_imbalance_pct": 0.25,
+"delta_t_f": 11.53,
+"energy_kwh": 1586.5
+},
+{
+"id": "S5-PIPE_2026-05-02",
+"asset": "S5-PIPE",
+"date": "2026-05-02",
+"pressure_psi": 87.53,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 11.79,
+"energy_kwh": 1623.6
+},
+{
+"id": "S5-PIPE_2026-05-03",
+"asset": "S5-PIPE",
+"date": "2026-05-03",
+"pressure_psi": 86.6,
+"flow_imbalance_pct": 0.42,
+"delta_t_f": 11.47,
+"energy_kwh": 2088.5
+},
+{
+"id": "S5-PIPE_2026-05-04",
+"asset": "S5-PIPE",
+"date": "2026-05-04",
+"pressure_psi": 85.94,
+"flow_imbalance_pct": 0.35,
+"delta_t_f": 11.04,
+"energy_kwh": 2182.6
+},
+{
+"id": "S5-PIPE_2026-05-05",
+"asset": "S5-PIPE",
+"date": "2026-05-05",
+"pressure_psi": 86.8,
+"flow_imbalance_pct": 0.31,
+"delta_t_f": 11.33,
+"energy_kwh": 1651.8
+},
+{
+"id": "S5-PIPE_2026-05-06",
+"asset": "S5-PIPE",
+"date": "2026-05-06",
+"pressure_psi": 86.3,
+"flow_imbalance_pct": 0.59,
+"delta_t_f": 10.46,
+"energy_kwh": 1613.3
+},
+{
+"id": "S5-PIPE_2026-05-07",
+"asset": "S5-PIPE",
+"date": "2026-05-07",
+"pressure_psi": 86.17,
+"flow_imbalance_pct": 0.58,
+"delta_t_f": 10.95,
+"energy_kwh": 1601.5
+},
+{
+"id": "S5-PIPE_2026-05-08",
+"asset": "S5-PIPE",
+"date": "2026-05-08",
+"pressure_psi": 86.56,
+"flow_imbalance_pct": 1.08,
+"delta_t_f": 11.52,
+"energy_kwh": 1667.2
+},
+{
+"id": "S5-PIPE_2026-05-09",
+"asset": "S5-PIPE",
+"date": "2026-05-09",
+"pressure_psi": 87.02,
+"flow_imbalance_pct": 0.54,
+"delta_t_f": 11.07,
+"energy_kwh": 1725.5
+},
+{
+"id": "S5-PIPE_2026-05-10",
+"asset": "S5-PIPE",
+"date": "2026-05-10",
+"pressure_psi": 86.69,
+"flow_imbalance_pct": 0.64,
+"delta_t_f": 11.53,
+"energy_kwh": 1643.4
+},
+{
+"id": "S5-PIPE_2026-05-11",
+"asset": "S5-PIPE",
+"date": "2026-05-11",
+"pressure_psi": 85.32,
+"flow_imbalance_pct": 0.63,
+"delta_t_f": 11.24,
+"energy_kwh": 1631.4
+},
+{
+"id": "S5-PIPE_2026-05-12",
+"asset": "S5-PIPE",
+"date": "2026-05-12",
+"pressure_psi": 86.58,
+"flow_imbalance_pct": 0.44,
+"delta_t_f": 10.93,
+"energy_kwh": 2264.9
+},
+{
+"id": "S5-PIPE_2026-05-13",
+"asset": "S5-PIPE",
+"date": "2026-05-13",
+"pressure_psi": 84.14,
+"flow_imbalance_pct": 0.81,
+"delta_t_f": 11.4,
+"energy_kwh": 1677.2
+},
+{
+"id": "S5-PIPE_2026-05-14",
+"asset": "S5-PIPE",
+"date": "2026-05-14",
+"pressure_psi": 87.96,
+"flow_imbalance_pct": 0.75,
+"delta_t_f": 11.25,
+"energy_kwh": 1606.9
+},
+{
+"id": "S5-PIPE_2026-05-15",
+"asset": "S5-PIPE",
+"date": "2026-05-15",
+"pressure_psi": 86.82,
+"flow_imbalance_pct": 0.49,
+"delta_t_f": 11.94,
+"energy_kwh": 3589.4
+},
+{
+"id": "S5-PIPE_2026-05-16",
+"asset": "S5-PIPE",
+"date": "2026-05-16",
+"pressure_psi": 87.43,
+"flow_imbalance_pct": 0.6,
+"delta_t_f": 11.8,
+"energy_kwh": 3791.8
+},
+{
+"id": "S5-PIPE_2026-05-17",
+"asset": "S5-PIPE",
+"date": "2026-05-17",
+"pressure_psi": 87.25,
+"flow_imbalance_pct": 0.55,
+"delta_t_f": 11.59,
+"energy_kwh": 2678.9
+},
+{
+"id": "S5-PIPE_2026-05-18",
+"asset": "S5-PIPE",
+"date": "2026-05-18",
+"pressure_psi": 86.75,
+"flow_imbalance_pct": 0.55,
+"delta_t_f": 12.02,
+"energy_kwh": 3637.3
+},
+{
+"id": "S5-PIPE_2026-05-19",
+"asset": "S5-PIPE",
+"date": "2026-05-19",
+"pressure_psi": 86.45,
+"flow_imbalance_pct": 0.75,
+"delta_t_f": 11.16,
+"energy_kwh": 2569.9
+},
+{
+"id": "S5-PIPE_2026-05-20",
+"asset": "S5-PIPE",
+"date": "2026-05-20",
+"pressure_psi": 86.12,
+"flow_imbalance_pct": 0.17,
+"delta_t_f": 11.15,
+"energy_kwh": 1523.7
+},
+{
+"id": "S5-PIPE_2026-05-21",
+"asset": "S5-PIPE",
+"date": "2026-05-21",
+"pressure_psi": 86.51,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 11.34,
+"energy_kwh": 1643.9
+},
+{
+"id": "S5-PIPE_2026-05-22",
+"asset": "S5-PIPE",
+"date": "2026-05-22",
+"pressure_psi": 86.93,
+"flow_imbalance_pct": 0.52,
+"delta_t_f": 11.19,
+"energy_kwh": 1644.2
+},
+{
+"id": "S5-PIPE_2026-05-23",
+"asset": "S5-PIPE",
+"date": "2026-05-23",
+"pressure_psi": 87.12,
+"flow_imbalance_pct": 0.36,
+"delta_t_f": 10.87,
+"energy_kwh": 2807.8
+},
+{
+"id": "S5-PIPE_2026-05-24",
+"asset": "S5-PIPE",
+"date": "2026-05-24",
+"pressure_psi": 87.09,
+"flow_imbalance_pct": 0.65,
+"delta_t_f": 11.5,
+"energy_kwh": 3388.2
+},
+{
+"id": "S5-PIPE_2026-05-25",
+"asset": "S5-PIPE",
+"date": "2026-05-25",
+"pressure_psi": 85.35,
+"flow_imbalance_pct": 0.14,
+"delta_t_f": 11.93,
+"energy_kwh": 3876.3
+},
+{
+"id": "S5-PIPE_2026-05-26",
+"asset": "S5-PIPE",
+"date": "2026-05-26",
+"pressure_psi": 85.4,
+"flow_imbalance_pct": 0.33,
+"delta_t_f": 11.29,
+"energy_kwh": 4277.7
+},
+{
+"id": "S5-PIPE_2026-05-27",
+"asset": "S5-PIPE",
+"date": "2026-05-27",
+"pressure_psi": 87.76,
+"flow_imbalance_pct": 0.18,
+"delta_t_f": 11.23,
+"energy_kwh": 4235.3
+},
+{
+"id": "S5-PIPE_2026-05-28",
+"asset": "S5-PIPE",
+"date": "2026-05-28",
+"pressure_psi": 85.21,
+"flow_imbalance_pct": 0.7,
+"delta_t_f": 11.08,
+"energy_kwh": 3177.2
+},
+{
+"id": "S5-PIPE_2026-05-29",
+"asset": "S5-PIPE",
+"date": "2026-05-29",
+"pressure_psi": 85.98,
+"flow_imbalance_pct": 0.62,
+"delta_t_f": 11.85,
+"energy_kwh": 3000.6
+},
+{
+"id": "S5-PIPE_2026-05-30",
+"asset": "S5-PIPE",
+"date": "2026-05-30",
+"pressure_psi": 85.56,
+"flow_imbalance_pct": 0.42,
+"delta_t_f": 11.21,
+"energy_kwh": 2782.2
+},
+{
+"id": "S5-PIPE_2026-05-31",
+"asset": "S5-PIPE",
+"date": "2026-05-31",
+"pressure_psi": 86.38,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 11.0,
+"energy_kwh": 2965.6
+},
+{
+"id": "S6-PIPE_2026-05-01",
+"asset": "S6-PIPE",
+"date": "2026-05-01",
+"pressure_psi": 67.31,
+"flow_imbalance_pct": 0.64,
+"delta_t_f": 12.64,
+"energy_kwh": 722.0
+},
+{
+"id": "S6-PIPE_2026-05-02",
+"asset": "S6-PIPE",
+"date": "2026-05-02",
+"flow_imbalance_pct": 1.1,
+"delta_t_f": 13.38,
+"energy_kwh": 744.1
+},
+{
+"id": "S6-PIPE_2026-05-03",
+"asset": "S6-PIPE",
+"date": "2026-05-03",
+"pressure_psi": 67.76,
+"flow_imbalance_pct": 0.29,
+"delta_t_f": 13.29,
+"energy_kwh": 944.8
+},
+{
+"id": "S6-PIPE_2026-05-04",
+"asset": "S6-PIPE",
+"date": "2026-05-04",
+"pressure_psi": 67.23,
+"flow_imbalance_pct": 1.03,
+"delta_t_f": 12.94,
+"energy_kwh": 1029.0
+},
+{
+"id": "S6-PIPE_2026-05-05",
+"asset": "S6-PIPE",
+"date": "2026-05-05",
+"pressure_psi": 68.47,
+"flow_imbalance_pct": 0.7,
+"delta_t_f": 12.55,
+"energy_kwh": 739.7
+},
+{
+"id": "S6-PIPE_2026-05-06",
+"asset": "S6-PIPE",
+"date": "2026-05-06",
+"pressure_psi": 67.09,
+"flow_imbalance_pct": 0.68,
+"delta_t_f": 12.89,
+"energy_kwh": 727.8
+},
+{
+"id": "S6-PIPE_2026-05-07",
+"asset": "S6-PIPE",
+"date": "2026-05-07",
+"pressure_psi": 65.99,
+"flow_imbalance_pct": 0.33,
+"delta_t_f": 13.08,
+"energy_kwh": 740.0
+},
+{
+"id": "S6-PIPE_2026-05-08",
+"asset": "S6-PIPE",
+"date": "2026-05-08",
+"pressure_psi": 67.66,
+"flow_imbalance_pct": 0.78,
+"delta_t_f": 12.7,
+"energy_kwh": 756.0
+},
+{
+"id": "S6-PIPE_2026-05-09",
+"asset": "S6-PIPE",
+"date": "2026-05-09",
+"pressure_psi": 66.46,
+"flow_imbalance_pct": 0.91,
+"delta_t_f": 12.76,
+"energy_kwh": 798.1
+},
+{
+"id": "S6-PIPE_2026-05-10",
+"asset": "S6-PIPE",
+"date": "2026-05-10",
+"pressure_psi": 67.49,
+"flow_imbalance_pct": 0.93,
+"delta_t_f": 12.3,
+"energy_kwh": 711.5
+},
+{
+"id": "S6-PIPE_2026-05-11",
+"asset": "S6-PIPE",
+"date": "2026-05-11",
+"pressure_psi": 67.28,
+"flow_imbalance_pct": 0.71,
+"delta_t_f": 13.34,
+"energy_kwh": 762.8
+},
+{
+"id": "S6-PIPE_2026-05-12",
+"asset": "S6-PIPE",
+"date": "2026-05-12",
+"pressure_psi": 66.44,
+"flow_imbalance_pct": 0.71,
+"delta_t_f": 12.66,
+"energy_kwh": 1118.4
+},
+{
+"id": "S6-PIPE_2026-05-13",
+"asset": "S6-PIPE",
+"date": "2026-05-13",
+"pressure_psi": 66.97,
+"delta_t_f": 12.67,
+"energy_kwh": 770.4
+},
+{
+"id": "S6-PIPE_2026-05-14",
+"asset": "S6-PIPE",
+"date": "2026-05-14",
+"pressure_psi": 67.37,
+"flow_imbalance_pct": 0.47,
+"delta_t_f": 12.86,
+"energy_kwh": 760.1
+},
+{
+"id": "S6-PIPE_2026-05-15",
+"asset": "S6-PIPE",
+"date": "2026-05-15",
+"pressure_psi": 68.36,
+"flow_imbalance_pct": 0.21,
+"delta_t_f": 13.16,
+"energy_kwh": 1554.7
+},
+{
+"id": "S6-PIPE_2026-05-16",
+"asset": "S6-PIPE",
+"date": "2026-05-16",
+"pressure_psi": 67.18,
+"flow_imbalance_pct": 0.47,
+"delta_t_f": 13.14,
+"energy_kwh": 1935.3
+},
+{
+"id": "S6-PIPE_2026-05-17",
+"asset": "S6-PIPE",
+"date": "2026-05-17",
+"pressure_psi": 67.39,
+"flow_imbalance_pct": 0.18,
+"delta_t_f": 13.13,
+"energy_kwh": 1261.8
+},
+{
+"id": "S6-PIPE_2026-05-18",
+"asset": "S6-PIPE",
+"date": "2026-05-18",
+"pressure_psi": 68.07,
+"flow_imbalance_pct": 0.56,
+"delta_t_f": 13.22,
+"energy_kwh": 1666.9
+},
+{
+"id": "S6-PIPE_2026-05-19",
+"asset": "S6-PIPE",
+"date": "2026-05-19",
+"pressure_psi": 66.97,
+"flow_imbalance_pct": 0.71,
+"delta_t_f": 13.29,
+"energy_kwh": 1140.3
+},
+{
+"id": "S6-PIPE_2026-05-20",
+"asset": "S6-PIPE",
+"date": "2026-05-20",
+"pressure_psi": 66.48,
+"flow_imbalance_pct": 0.67,
+"delta_t_f": 12.99,
+"energy_kwh": 725.0
+},
+{
+"id": "S6-PIPE_2026-05-21",
+"asset": "S6-PIPE",
+"date": "2026-05-21",
+"pressure_psi": 68.42,
+"flow_imbalance_pct": 0.8,
+"delta_t_f": 13.07,
+"energy_kwh": 783.8
+},
+{
+"id": "S6-PIPE_2026-05-22",
+"asset": "S6-PIPE",
+"date": "2026-05-22",
+"pressure_psi": 66.69,
+"flow_imbalance_pct": 0.47,
+"delta_t_f": 12.6,
+"energy_kwh": 724.7
+},
+{
+"id": "S6-PIPE_2026-05-23",
+"asset": "S6-PIPE",
+"date": "2026-05-23",
+"pressure_psi": 68.26,
+"flow_imbalance_pct": 0.65,
+"delta_t_f": 12.42,
+"energy_kwh": 1245.1
+},
+{
+"id": "S6-PIPE_2026-05-24",
+"asset": "S6-PIPE",
+"date": "2026-05-24",
+"pressure_psi": 66.43,
+"flow_imbalance_pct": 0.34,
+"delta_t_f": 13.34,
+"energy_kwh": 1454.8
+},
+{
+"id": "S6-PIPE_2026-05-25",
+"asset": "S6-PIPE",
+"date": "2026-05-25",
+"pressure_psi": 68.08,
+"flow_imbalance_pct": 0.38,
+"delta_t_f": 13.47,
+"energy_kwh": 1704.4
+},
+{
+"id": "S6-PIPE_2026-05-26",
+"asset": "S6-PIPE",
+"date": "2026-05-26",
+"pressure_psi": 66.76,
+"flow_imbalance_pct": 1.03,
+"delta_t_f": 13.2,
+"energy_kwh": 2109.8
+},
+{
+"id": "S6-PIPE_2026-05-27",
+"asset": "S6-PIPE",
+"date": "2026-05-27",
+"pressure_psi": 66.38,
+"flow_imbalance_pct": 0.63,
+"delta_t_f": 13.37,
+"energy_kwh": 1914.8
+},
+{
+"id": "S6-PIPE_2026-05-28",
+"asset": "S6-PIPE",
+"date": "2026-05-28",
+"pressure_psi": 67.36,
+"flow_imbalance_pct": 1.13,
+"delta_t_f": 14.01,
+"energy_kwh": 1445.5
+},
+{
+"id": "S6-PIPE_2026-05-29",
+"asset": "S6-PIPE",
+"date": "2026-05-29",
+"pressure_psi": 67.17,
+"flow_imbalance_pct": 0.61,
+"delta_t_f": 13.02,
+"energy_kwh": 1341.6
+},
+{
+"id": "S6-PIPE_2026-05-30",
+"asset": "S6-PIPE",
+"date": "2026-05-30",
+"pressure_psi": 66.89,
+"flow_imbalance_pct": 0.74,
+"delta_t_f": 12.71,
+"energy_kwh": 1295.4
+},
+{
+"id": "S6-PIPE_2026-05-31",
+"asset": "S6-PIPE",
+"date": "2026-05-31",
+"pressure_psi": 67.41,
+"flow_imbalance_pct": 0.45,
+"delta_t_f": 13.25,
+"energy_kwh": 1331.9
+},
+{
+"id": "CHA-CHL-1_2026-05-01",
+"asset": "CHA-CHL-1",
+"date": "2026-05-01",
+"delta_t_f": 11.32,
+"vibration_mm_s": 2.26,
+"energy_kwh": 4852.5
+},
+{
+"id": "CHA-CHL-1_2026-05-02",
+"asset": "CHA-CHL-1",
+"date": "2026-05-02",
+"delta_t_f": 12.24,
+"vibration_mm_s": 2.16,
+"energy_kwh": 4975.8
+},
+{
+"id": "CHA-CHL-1_2026-05-03",
+"asset": "CHA-CHL-1",
+"date": "2026-05-03",
+"delta_t_f": 11.88,
+"vibration_mm_s": 2.01,
+"energy_kwh": 5456.3
+},
+{
+"id": "CHA-CHL-1_2026-05-04",
+"asset": "CHA-CHL-1",
+"date": "2026-05-04",
+"delta_t_f": 11.78,
+"vibration_mm_s": 2.13,
+"energy_kwh": 8176.9
+},
+{
+"id": "CHA-CHL-1_2026-05-05",
+"asset": "CHA-CHL-1",
+"date": "2026-05-05",
+"delta_t_f": 12.28,
+"vibration_mm_s": 2.15,
+"energy_kwh": 5193.1
+},
+{
+"id": "CHA-CHL-1_2026-05-06",
+"asset": "CHA-CHL-1",
+"date": "2026-05-06",
+"delta_t_f": 12.33,
+"vibration_mm_s": 2.24,
+"energy_kwh": 5333.8
+},
+{
+"id": "CHA-CHL-1_2026-05-07",
+"asset": "CHA-CHL-1",
+"date": "2026-05-07",
+"delta_t_f": 11.92,
+"vibration_mm_s": 2.04,
+"energy_kwh": 5242.4
+},
+{
+"id": "CHA-CHL-1_2026-05-08",
+"asset": "CHA-CHL-1",
+"date": "2026-05-08",
+"delta_t_f": 12.37,
+"vibration_mm_s": 2.22,
+"energy_kwh": 5176.5
+},
+{
+"id": "CHA-CHL-1_2026-05-09",
+"asset": "CHA-CHL-1",
+"date": "2026-05-09",
+"delta_t_f": 11.83,
+"energy_kwh": 5049.5
+},
+{
+"id": "CHA-CHL-1_2026-05-10",
+"asset": "CHA-CHL-1",
+"date": "2026-05-10",
+"delta_t_f": 11.92,
+"vibration_mm_s": 2.07,
+"energy_kwh": 5007.5
+},
+{
+"id": "CHA-CHL-1_2026-05-11",
+"asset": "CHA-CHL-1",
+"date": "2026-05-11",
+"delta_t_f": 11.98,
+"vibration_mm_s": 2.14,
+"energy_kwh": 5310.3
+},
+{
+"id": "CHA-CHL-1_2026-05-12",
+"asset": "CHA-CHL-1",
+"date": "2026-05-12",
+"delta_t_f": 12.06,
+"vibration_mm_s": 2.27,
+"energy_kwh": 8494.8
+},
+{
+"id": "CHA-CHL-1_2026-05-13",
+"asset": "CHA-CHL-1",
+"date": "2026-05-13",
+"delta_t_f": 12.14,
+"vibration_mm_s": 1.97,
+"energy_kwh": 5114.9
+},
+{
+"id": "CHA-CHL-1_2026-05-14",
+"asset": "CHA-CHL-1",
+"date": "2026-05-14",
+"delta_t_f": 11.7,
+"vibration_mm_s": 2.21,
+"energy_kwh": 5023.4
+},
+{
+"id": "CHA-CHL-1_2026-05-15",
+"asset": "CHA-CHL-1",
+"date": "2026-05-15",
+"delta_t_f": 12.6,
+"vibration_mm_s": 1.89,
+"energy_kwh": 22670.8
+},
+{
+"id": "CHA-CHL-1_2026-05-16",
+"asset": "CHA-CHL-1",
+"date": "2026-05-16",
+"delta_t_f": 12.74,
+"vibration_mm_s": 1.96,
+"energy_kwh": 29875.7
+},
+{
+"id": "CHA-CHL-1_2026-05-17",
+"asset": "CHA-CHL-1",
+"date": "2026-05-17",
+"delta_t_f": 12.11,
+"vibration_mm_s": 2.28,
+"energy_kwh": 14160.8
+},
+{
+"id": "CHA-CHL-1_2026-05-18",
+"asset": "CHA-CHL-1",
+"date": "2026-05-18",
+"delta_t_f": 12.56,
+"vibration_mm_s": 2.29,
+"energy_kwh": 25470.7
+},
+{
+"id": "CHA-CHL-1_2026-05-19",
+"asset": "CHA-CHL-1",
+"date": "2026-05-19",
+"delta_t_f": 11.62,
+"vibration_mm_s": 2.15,
+"energy_kwh": 10657.3
+},
+{
+"id": "CHA-CHL-1_2026-05-20",
+"asset": "CHA-CHL-1",
+"date": "2026-05-20",
+"delta_t_f": 11.68,
+"vibration_mm_s": 2.22,
+"energy_kwh": 5045.7
+},
+{
+"id": "CHA-CHL-1_2026-05-21",
+"asset": "CHA-CHL-1",
+"date": "2026-05-21",
+"delta_t_f": 10.97,
+"vibration_mm_s": 2.35,
+"energy_kwh": 5072.6
+},
+{
+"id": "CHA-CHL-1_2026-05-22",
+"asset": "CHA-CHL-1",
+"date": "2026-05-22",
+"delta_t_f": 11.56,
+"vibration_mm_s": 2.18,
+"energy_kwh": 4930.7
+},
+{
+"id": "CHA-CHL-1_2026-05-23",
+"asset": "CHA-CHL-1",
+"date": "2026-05-23",
+"delta_t_f": 12.1,
+"vibration_mm_s": 2.12,
+"energy_kwh": 13739.8
+},
+{
+"id": "CHA-CHL-1_2026-05-24",
+"asset": "CHA-CHL-1",
+"date": "2026-05-24",
+"delta_t_f": 12.79,
+"vibration_mm_s": 2.38,
+"energy_kwh": 20832.1
+},
+{
+"id": "CHA-CHL-1_2026-05-25",
+"asset": "CHA-CHL-1",
+"date": "2026-05-25",
+"delta_t_f": 12.52,
+"vibration_mm_s": 2.07,
+"energy_kwh": 27295.6
+},
+{
+"id": "CHA-CHL-1_2026-05-26",
+"asset": "CHA-CHL-1",
+"date": "2026-05-26",
+"delta_t_f": 12.03,
+"vibration_mm_s": 2.1,
+"energy_kwh": 35444.6
+},
+{
+"id": "CHA-CHL-1_2026-05-27",
+"asset": "CHA-CHL-1",
+"date": "2026-05-27",
+"vibration_mm_s": 2.18,
+"energy_kwh": 32328.0
+},
+{
+"id": "CHA-CHL-1_2026-05-28",
+"asset": "CHA-CHL-1",
+"date": "2026-05-28",
+"delta_t_f": 12.29,
+"vibration_mm_s": 2.41,
+"energy_kwh": 20974.7
+},
+{
+"id": "CHA-CHL-1_2026-05-29",
+"asset": "CHA-CHL-1",
+"date": "2026-05-29",
+"delta_t_f": 12.58,
+"vibration_mm_s": 1.97,
+"energy_kwh": 14247.8
+},
+{
+"id": "CHA-CHL-1_2026-05-30",
+"asset": "CHA-CHL-1",
+"date": "2026-05-30",
+"delta_t_f": 11.97,
+"vibration_mm_s": 2.35,
+"energy_kwh": 15418.0
+},
+{
+"id": "CHA-CHL-1_2026-05-31",
+"asset": "CHA-CHL-1",
+"date": "2026-05-31",
+"delta_t_f": 12.29,
+"vibration_mm_s": 2.29,
+"energy_kwh": 14980.4
+},
+{
+"id": "CHA-CHL-2_2026-05-01",
+"asset": "CHA-CHL-2",
+"date": "2026-05-01",
+"delta_t_f": 10.82,
+"vibration_mm_s": 2.34,
+"energy_kwh": 3724.2
+},
+{
+"id": "CHA-CHL-2_2026-05-02",
+"asset": "CHA-CHL-2",
+"date": "2026-05-02",
+"delta_t_f": 11.63,
+"vibration_mm_s": 2.58,
+"energy_kwh": 3548.2
+},
+{
+"id": "CHA-CHL-2_2026-05-03",
+"asset": "CHA-CHL-2",
+"date": "2026-05-03",
+"delta_t_f": 10.86,
+"vibration_mm_s": 2.37,
+"energy_kwh": 4002.0
+},
+{
+"id": "CHA-CHL-2_2026-05-04",
+"asset": "CHA-CHL-2",
+"date": "2026-05-04",
+"delta_t_f": 11.39,
+"vibration_mm_s": 2.18,
+"energy_kwh": 5716.4
+},
+{
+"id": "CHA-CHL-2_2026-05-05",
+"asset": "CHA-CHL-2",
+"date": "2026-05-05",
+"delta_t_f": 11.05,
+"vibration_mm_s": 2.35,
+"energy_kwh": 3663.8
+},
+{
+"id": "CHA-CHL-2_2026-05-06",
+"asset": "CHA-CHL-2",
+"date": "2026-05-06",
+"delta_t_f": 11.17,
+"vibration_mm_s": 2.24,
+"energy_kwh": 3456.8
+},
+{
+"id": "CHA-CHL-2_2026-05-07",
+"asset": "CHA-CHL-2",
+"date": "2026-05-07",
+"delta_t_f": 11.11,
+"vibration_mm_s": 2.32,
+"energy_kwh": 3629.0
+},
+{
+"id": "CHA-CHL-2_2026-05-08",
+"asset": "CHA-CHL-2",
+"date": "2026-05-08",
+"delta_t_f": 10.89,
+"vibration_mm_s": 2.14,
+"energy_kwh": 3781.6
+},
+{
+"id": "CHA-CHL-2_2026-05-09",
+"asset": "CHA-CHL-2",
+"date": "2026-05-09",
+"delta_t_f": 11.26,
+"vibration_mm_s": 2.09,
+"energy_kwh": 3756.6
+},
+{
+"id": "CHA-CHL-2_2026-05-10",
+"asset": "CHA-CHL-2",
+"date": "2026-05-10",
+"delta_t_f": 11.8,
+"vibration_mm_s": 2.21,
+"energy_kwh": 3876.9
+},
+{
+"id": "CHA-CHL-2_2026-05-11",
+"asset": "CHA-CHL-2",
+"date": "2026-05-11",
+"delta_t_f": 10.51,
+"vibration_mm_s": 2.43,
+"energy_kwh": 3638.7
+},
+{
+"id": "CHA-CHL-2_2026-05-12",
+"asset": "CHA-CHL-2",
+"date": "2026-05-12",
+"delta_t_f": 10.94,
+"vibration_mm_s": 2.49,
+"energy_kwh": 5865.4
+},
+{
+"id": "CHA-CHL-2_2026-05-13",
+"asset": "CHA-CHL-2",
+"date": "2026-05-13",
+"delta_t_f": 11.22,
+"vibration_mm_s": 2.49,
+"energy_kwh": 3719.2
+},
+{
+"id": "CHA-CHL-2_2026-05-14",
+"asset": "CHA-CHL-2",
+"date": "2026-05-14",
+"delta_t_f": 11.46,
+"vibration_mm_s": 2.45,
+"energy_kwh": 3589.9
+},
+{
+"id": "CHA-CHL-2_2026-05-15",
+"asset": "CHA-CHL-2",
+"date": "2026-05-15",
+"delta_t_f": 11.25,
+"vibration_mm_s": 2.36,
+"energy_kwh": 17007.2
+},
+{
+"id": "CHA-CHL-2_2026-05-16",
+"asset": "CHA-CHL-2",
+"date": "2026-05-16",
+"delta_t_f": 11.69,
+"vibration_mm_s": 2.66,
+"energy_kwh": 21622.4
+},
+{
+"id": "CHA-CHL-2_2026-05-17",
+"asset": "CHA-CHL-2",
+"date": "2026-05-17",
+"delta_t_f": 11.83,
+"vibration_mm_s": 2.31,
+"energy_kwh": 10455.8
+},
+{
+"id": "CHA-CHL-2_2026-05-18",
+"asset": "CHA-CHL-2",
+"date": "2026-05-18",
+"delta_t_f": 10.89,
+"vibration_mm_s": 2.74,
+"energy_kwh": 17122.0
+},
+{
+"id": "CHA-CHL-2_2026-05-19",
+"asset": "CHA-CHL-2",
+"date": "2026-05-19",
+"delta_t_f": 11.66,
+"vibration_mm_s": 2.56,
+"energy_kwh": 7507.1
+},
+{
+"id": "CHA-CHL-2_2026-05-20",
+"asset": "CHA-CHL-2",
+"date": "2026-05-20",
+"delta_t_f": 10.92,
+"vibration_mm_s": 2.13,
+"energy_kwh": 3629.3
+},
+{
+"id": "CHA-CHL-2_2026-05-21",
+"asset": "CHA-CHL-2",
+"date": "2026-05-21",
+"delta_t_f": 11.49,
+"vibration_mm_s": 2.29,
+"energy_kwh": 3657.2
+},
+{
+"id": "CHA-CHL-2_2026-05-22",
+"asset": "CHA-CHL-2",
+"date": "2026-05-22",
+"delta_t_f": 11.1,
+"vibration_mm_s": 2.27,
+"energy_kwh": 3741.9
+},
+{
+"id": "CHA-CHL-2_2026-05-23",
+"asset": "CHA-CHL-2",
+"date": "2026-05-23",
+"delta_t_f": 11.05,
+"energy_kwh": 9937.7
+},
+{
+"id": "CHA-CHL-2_2026-05-24",
+"asset": "CHA-CHL-2",
+"date": "2026-05-24",
+"delta_t_f": 11.01,
+"vibration_mm_s": 2.54,
+"energy_kwh": 14582.7
+},
+{
+"id": "CHA-CHL-2_2026-05-25",
+"asset": "CHA-CHL-2",
+"date": "2026-05-25",
+"delta_t_f": 11.62,
+"vibration_mm_s": 2.19,
+"energy_kwh": 17633.9
+},
+{
+"id": "CHA-CHL-2_2026-05-26",
+"asset": "CHA-CHL-2",
+"date": "2026-05-26",
+"delta_t_f": 11.38,
+"vibration_mm_s": 2.28,
+"energy_kwh": 24695.3
+},
+{
+"id": "CHA-CHL-2_2026-05-27",
+"asset": "CHA-CHL-2",
+"date": "2026-05-27",
+"delta_t_f": 10.69,
+"vibration_mm_s": 2.54,
+"energy_kwh": 23360.2
+},
+{
+"id": "CHA-CHL-2_2026-05-28",
+"asset": "CHA-CHL-2",
+"date": "2026-05-28",
+"delta_t_f": 10.91,
+"vibration_mm_s": 2.53,
+"energy_kwh": 14330.9
+},
+{
+"id": "CHA-CHL-2_2026-05-29",
+"asset": "CHA-CHL-2",
+"date": "2026-05-29",
+"delta_t_f": 11.62,
+"vibration_mm_s": 2.61,
+"energy_kwh": 10033.1
+},
+{
+"id": "CHA-CHL-2_2026-05-30",
+"asset": "CHA-CHL-2",
+"date": "2026-05-30",
+"delta_t_f": 11.03,
+"energy_kwh": 10923.8
+},
+{
+"id": "CHA-CHL-2_2026-05-31",
+"asset": "CHA-CHL-2",
+"date": "2026-05-31",
+"delta_t_f": 11.44,
+"vibration_mm_s": 2.54,
+"energy_kwh": 11090.2
+},
+{
+"id": "WAL-CHL-2_2026-05-01",
+"asset": "WAL-CHL-2",
+"date": "2026-05-01",
+"delta_t_f": 12.04,
+"vibration_mm_s": 1.82,
+"energy_kwh": 2076.7
+},
+{
+"id": "WAL-CHL-2_2026-05-02",
+"asset": "WAL-CHL-2",
+"date": "2026-05-02",
+"delta_t_f": 12.28,
+"vibration_mm_s": 1.5,
+"energy_kwh": 2149.9
+},
+{
+"id": "WAL-CHL-2_2026-05-03",
+"asset": "WAL-CHL-2",
+"date": "2026-05-03",
+"delta_t_f": 10.94,
+"vibration_mm_s": 1.4,
+"energy_kwh": 2352.1
+},
+{
+"id": "WAL-CHL-2_2026-05-04",
+"asset": "WAL-CHL-2",
+"date": "2026-05-04",
+"delta_t_f": 11.86,
+"vibration_mm_s": 1.72,
+"energy_kwh": 3542.4
+},
+{
+"id": "WAL-CHL-2_2026-05-05",
+"asset": "WAL-CHL-2",
+"date": "2026-05-05",
+"delta_t_f": 11.94,
+"vibration_mm_s": 1.72,
+"energy_kwh": 2063.1
+},
+{
+"id": "WAL-CHL-2_2026-05-06",
+"asset": "WAL-CHL-2",
+"date": "2026-05-06",
+"delta_t_f": 11.26,
+"vibration_mm_s": 1.58,
+"energy_kwh": 2158.5
+},
+{
+"id": "WAL-CHL-2_2026-05-07",
+"asset": "WAL-CHL-2",
+"date": "2026-05-07",
+"delta_t_f": 11.3,
+"vibration_mm_s": 1.51,
+"energy_kwh": 2145.6
+},
+{
+"id": "WAL-CHL-2_2026-05-08",
+"asset": "WAL-CHL-2",
+"date": "2026-05-08",
+"delta_t_f": 11.58,
+"vibration_mm_s": 1.68,
+"energy_kwh": 2244.8
+},
+{
+"id": "WAL-CHL-2_2026-05-09",
+"asset": "WAL-CHL-2",
+"date": "2026-05-09",
+"delta_t_f": 11.6,
+"vibration_mm_s": 1.79,
+"energy_kwh": 2225.6
+},
+{
+"id": "WAL-CHL-2_2026-05-10",
+"asset": "WAL-CHL-2",
+"date": "2026-05-10",
+"delta_t_f": 11.67,
+"vibration_mm_s": 1.94,
+"energy_kwh": 2247.4
+},
+{
+"id": "WAL-CHL-2_2026-05-11",
+"asset": "WAL-CHL-2",
+"date": "2026-05-11",
+"delta_t_f": 11.37,
+"vibration_mm_s": 1.89,
+"energy_kwh": 2208.7
+},
+{
+"id": "WAL-CHL-2_2026-05-12",
+"asset": "WAL-CHL-2",
+"date": "2026-05-12",
+"delta_t_f": 11.61,
+"vibration_mm_s": 1.68,
+"energy_kwh": 3317.6
+},
+{
+"id": "WAL-CHL-2_2026-05-13",
+"asset": "WAL-CHL-2",
+"date": "2026-05-13",
+"delta_t_f": 11.47,
+"vibration_mm_s": 1.64,
+"energy_kwh": 2131.3
+},
+{
+"id": "WAL-CHL-2_2026-05-14",
+"asset": "WAL-CHL-2",
+"date": "2026-05-14",
+"delta_t_f": 11.36,
+"vibration_mm_s": 1.51,
+"energy_kwh": 2199.4
+},
+{
+"id": "WAL-CHL-2_2026-05-15",
+"asset": "WAL-CHL-2",
+"date": "2026-05-15",
+"delta_t_f": 11.88,
+"vibration_mm_s": 1.76,
+"energy_kwh": 9417.3
+},
+{
+"id": "WAL-CHL-2_2026-05-16",
+"asset": "WAL-CHL-2",
+"date": "2026-05-16",
+"delta_t_f": 11.69,
+"vibration_mm_s": 1.99,
+"energy_kwh": 13235.2
+},
+{
+"id": "WAL-CHL-2_2026-05-17",
+"asset": "WAL-CHL-2",
+"date": "2026-05-17",
+"delta_t_f": 10.96,
+"vibration_mm_s": 1.68,
+"energy_kwh": 6089.4
+},
+{
+"id": "WAL-CHL-2_2026-05-18",
+"asset": "WAL-CHL-2",
+"date": "2026-05-18",
+"delta_t_f": 11.87,
+"vibration_mm_s": 1.41,
+"energy_kwh": 10378.3
+},
+{
+"id": "WAL-CHL-2_2026-05-19",
+"asset": "WAL-CHL-2",
+"date": "2026-05-19",
+"delta_t_f": 11.44,
+"vibration_mm_s": 2.03,
+"energy_kwh": 4667.0
+},
+{
+"id": "WAL-CHL-2_2026-05-20",
+"asset": "WAL-CHL-2",
+"date": "2026-05-20",
+"delta_t_f": 11.37,
+"vibration_mm_s": 1.81,
+"energy_kwh": 2219.6
+},
+{
+"id": "WAL-CHL-2_2026-05-21",
+"asset": "WAL-CHL-2",
+"date": "2026-05-21",
+"delta_t_f": 11.16,
+"vibration_mm_s": 2.03,
+"energy_kwh": 2233.4
+},
+{
+"id": "WAL-CHL-2_2026-05-22",
+"asset": "WAL-CHL-2",
+"date": "2026-05-22",
+"delta_t_f": 11.49,
+"vibration_mm_s": 1.84,
+"energy_kwh": 2161.3
+},
+{
+"id": "WAL-CHL-2_2026-05-23",
+"asset": "WAL-CHL-2",
+"date": "2026-05-23",
+"delta_t_f": 11.42,
+"vibration_mm_s": 1.73,
+"energy_kwh": 6063.2
+},
+{
+"id": "WAL-CHL-2_2026-05-24",
+"asset": "WAL-CHL-2",
+"date": "2026-05-24",
+"delta_t_f": 11.61,
+"vibration_mm_s": 1.62,
+"energy_kwh": 8982.7
+},
+{
+"id": "WAL-CHL-2_2026-05-25",
+"asset": "WAL-CHL-2",
+"date": "2026-05-25",
+"delta_t_f": 12.25,
+"vibration_mm_s": 1.56,
+"energy_kwh": 11148.9
+},
+{
+"id": "WAL-CHL-2_2026-05-26",
+"asset": "WAL-CHL-2",
+"date": "2026-05-26",
+"delta_t_f": 11.65,
+"vibration_mm_s": 1.67,
+"energy_kwh": 14162.6
+},
+{
+"id": "WAL-CHL-2_2026-05-27",
+"asset": "WAL-CHL-2",
+"date": "2026-05-27",
+"delta_t_f": 11.89,
+"vibration_mm_s": 1.77,
+"energy_kwh": 14046.1
+},
+{
+"id": "WAL-CHL-2_2026-05-28",
+"asset": "WAL-CHL-2",
+"date": "2026-05-28",
+"delta_t_f": 12.38,
+"vibration_mm_s": 1.95,
+"energy_kwh": 8868.5
+},
+{
+"id": "WAL-CHL-2_2026-05-29",
+"asset": "WAL-CHL-2",
+"date": "2026-05-29",
+"delta_t_f": 11.82,
+"vibration_mm_s": 1.87,
+"energy_kwh": 6325.6
+},
+{
+"id": "WAL-CHL-2_2026-05-30",
+"asset": "WAL-CHL-2",
+"date": "2026-05-30",
+"delta_t_f": 11.44,
+"vibration_mm_s": 1.68,
+"energy_kwh": 6684.0
+},
+{
+"id": "WAL-CHL-2_2026-05-31",
+"asset": "WAL-CHL-2",
+"date": "2026-05-31",
+"delta_t_f": 12.08,
+"vibration_mm_s": 1.95,
+"energy_kwh": 6651.2
+},
+{
+"id": "WCCF-CHL-1_2026-05-01",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-01",
+"delta_t_f": 10.45,
+"vibration_mm_s": 1.86,
+"energy_kwh": 409.0
+},
+{
+"id": "WCCF-CHL-1_2026-05-02",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-02",
+"delta_t_f": 10.09,
+"vibration_mm_s": 2.14,
+"energy_kwh": 413.4
+},
+{
+"id": "WCCF-CHL-1_2026-05-03",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-03",
+"delta_t_f": 10.83,
+"vibration_mm_s": 1.99,
+"energy_kwh": 433.1
+},
+{
+"id": "WCCF-CHL-1_2026-05-04",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-04",
+"delta_t_f": 9.98,
+"vibration_mm_s": 2.12,
+"energy_kwh": 649.6
+},
+{
+"id": "WCCF-CHL-1_2026-05-05",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-05",
+"delta_t_f": 10.56,
+"vibration_mm_s": 1.95,
+"energy_kwh": 412.9
+},
+{
+"id": "WCCF-CHL-1_2026-05-06",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-06",
+"delta_t_f": 10.53,
+"vibration_mm_s": 1.87,
+"energy_kwh": 409.3
+},
+{
+"id": "WCCF-CHL-1_2026-05-07",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-07",
+"delta_t_f": 11.06,
+"vibration_mm_s": 1.92,
+"energy_kwh": 413.9
+},
+{
+"id": "WCCF-CHL-1_2026-05-08",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-08",
+"delta_t_f": 10.49,
+"vibration_mm_s": 1.86,
+"energy_kwh": 422.6
+},
+{
+"id": "WCCF-CHL-1_2026-05-09",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-09",
+"delta_t_f": 10.81,
+"vibration_mm_s": 1.81,
+"energy_kwh": 415.9
+},
+{
+"id": "WCCF-CHL-1_2026-05-10",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-10",
+"delta_t_f": 10.64,
+"vibration_mm_s": 1.91,
+"energy_kwh": 411.2
+},
+{
+"id": "WCCF-CHL-1_2026-05-11",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-11",
+"delta_t_f": 10.85,
+"vibration_mm_s": 1.65,
+"energy_kwh": 411.6
+},
+{
+"id": "WCCF-CHL-1_2026-05-12",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-12",
+"delta_t_f": 10.64,
+"vibration_mm_s": 1.97,
+"energy_kwh": 651.1
+},
+{
+"id": "WCCF-CHL-1_2026-05-13",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-13",
+"delta_t_f": 10.79,
+"vibration_mm_s": 1.78,
+"energy_kwh": 414.9
+},
+{
+"id": "WCCF-CHL-1_2026-05-14",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-14",
+"delta_t_f": 10.3,
+"vibration_mm_s": 2.23,
+"energy_kwh": 402.8
+},
+{
+"id": "WCCF-CHL-1_2026-05-15",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-15",
+"delta_t_f": 10.32,
+"vibration_mm_s": 1.99,
+"energy_kwh": 1877.0
+},
+{
+"id": "WCCF-CHL-1_2026-05-16",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-16",
+"delta_t_f": 10.68,
+"vibration_mm_s": 1.65,
+"energy_kwh": 2403.7
+},
+{
+"id": "WCCF-CHL-1_2026-05-17",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-17",
+"delta_t_f": 11.04,
+"vibration_mm_s": 2.04,
+"energy_kwh": 1253.5
+},
+{
+"id": "WCCF-CHL-1_2026-05-18",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-18",
+"delta_t_f": 10.84,
+"vibration_mm_s": 2.06,
+"energy_kwh": 1897.2
+},
+{
+"id": "WCCF-CHL-1_2026-05-19",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-19",
+"delta_t_f": 11.47,
+"vibration_mm_s": 1.71,
+"energy_kwh": 912.2
+},
+{
+"id": "WCCF-CHL-1_2026-05-20",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-20",
+"delta_t_f": 10.38,
+"vibration_mm_s": 1.87,
+"energy_kwh": 406.0
+},
+{
+"id": "WCCF-CHL-1_2026-05-21",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-21",
+"delta_t_f": 11.03,
+"vibration_mm_s": 1.93,
+"energy_kwh": 409.0
+},
+{
+"id": "WCCF-CHL-1_2026-05-22",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-22",
+"delta_t_f": 10.59,
+"vibration_mm_s": 2.08,
+"energy_kwh": 416.3
+},
+{
+"id": "WCCF-CHL-1_2026-05-23",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-23",
+"delta_t_f": 10.66,
+"vibration_mm_s": 2.05,
+"energy_kwh": 1097.2
+},
+{
+"id": "WCCF-CHL-1_2026-05-24",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-24",
+"delta_t_f": 11.55,
+"vibration_mm_s": 2.1,
+"energy_kwh": 1731.4
+},
+{
+"id": "WCCF-CHL-1_2026-05-25",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-25",
+"delta_t_f": 10.88,
+"vibration_mm_s": 1.83,
+"energy_kwh": 2166.1
+},
+{
+"id": "WCCF-CHL-1_2026-05-26",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-26",
+"delta_t_f": 11.43,
+"vibration_mm_s": 1.76,
+"energy_kwh": 2847.7
+},
+{
+"id": "WCCF-CHL-1_2026-05-27",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-27",
+"delta_t_f": 11.14,
+"vibration_mm_s": 2.08,
+"energy_kwh": 2625.7
+},
+{
+"id": "WCCF-CHL-1_2026-05-28",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-28",
+"delta_t_f": 10.52,
+"vibration_mm_s": 1.75,
+"energy_kwh": 1551.9
+},
+{
+"id": "WCCF-CHL-1_2026-05-29",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-29",
+"delta_t_f": 10.41,
+"vibration_mm_s": 2.04,
+"energy_kwh": 1181.4
+},
+{
+"id": "WCCF-CHL-1_2026-05-30",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-30",
+"delta_t_f": 10.4,
+"vibration_mm_s": 1.81,
+"energy_kwh": 1192.5
+},
+{
+"id": "WCCF-CHL-1_2026-05-31",
+"asset": "WCCF-CHL-1",
+"date": "2026-05-31",
+"delta_t_f": 10.99,
+"vibration_mm_s": 1.8,
+"energy_kwh": 1227.3
+},
+{
+"id": "VIL-AHU-1_2026-05-01",
+"asset": "VIL-AHU-1",
+"date": "2026-05-01",
+"delta_t_f": 15.05,
+"vibration_mm_s": 2.04,
+"energy_kwh": 3781.6
+},
+{
+"id": "VIL-AHU-1_2026-05-02",
+"asset": "VIL-AHU-1",
+"date": "2026-05-02",
+"delta_t_f": 15.42,
+"vibration_mm_s": 1.87,
+"energy_kwh": 3312.2
+},
+{
+"id": "VIL-AHU-1_2026-05-03",
+"asset": "VIL-AHU-1",
+"date": "2026-05-03",
+"delta_t_f": 15.53,
+"vibration_mm_s": 2.2,
+"energy_kwh": 3299.2
+},
+{
+"id": "VIL-AHU-1_2026-05-04",
+"asset": "VIL-AHU-1",
+"date": "2026-05-04"
+},
+{
+"id": "VIL-AHU-1_2026-05-05",
+"asset": "VIL-AHU-1",
+"date": "2026-05-05"
+},
+{
+"id": "VIL-AHU-1_2026-05-06",
+"asset": "VIL-AHU-1",
+"date": "2026-05-06"
+},
+{
+"id": "VIL-AHU-1_2026-05-07",
+"asset": "VIL-AHU-1",
+"date": "2026-05-07"
+},
+{
+"id": "VIL-AHU-1_2026-05-08",
+"asset": "VIL-AHU-1",
+"date": "2026-05-08"
+},
+{
+"id": "VIL-AHU-1_2026-05-09",
+"asset": "VIL-AHU-1",
+"date": "2026-05-09",
+"delta_t_f": 15.06,
+"vibration_mm_s": 1.74,
+"energy_kwh": 3362.3
+},
+{
+"id": "VIL-AHU-1_2026-05-10",
+"asset": "VIL-AHU-1",
+"date": "2026-05-10",
+"delta_t_f": 14.52,
+"vibration_mm_s": 2.03,
+"energy_kwh": 3397.0
+},
+{
+"id": "VIL-AHU-1_2026-05-11",
+"asset": "VIL-AHU-1",
+"date": "2026-05-11",
+"delta_t_f": 15.1,
+"vibration_mm_s": 1.91,
+"energy_kwh": 3878.5
+},
+{
+"id": "VIL-AHU-1_2026-05-12",
+"asset": "VIL-AHU-1",
+"date": "2026-05-12",
+"delta_t_f": 15.14,
+"vibration_mm_s": 2.05,
+"energy_kwh": 3725.4
+},
+{
+"id": "VIL-AHU-1_2026-05-13",
+"asset": "VIL-AHU-1",
+"date": "2026-05-13",
+"delta_t_f": 14.4,
+"vibration_mm_s": 2.07,
+"energy_kwh": 3610.4
+},
+{
+"id": "VIL-AHU-1_2026-05-14",
+"asset": "VIL-AHU-1",
+"date": "2026-05-14",
+"delta_t_f": 14.93,
+"vibration_mm_s": 2.13,
+"energy_kwh": 3852.2
+},
+{
+"id": "VIL-AHU-1_2026-05-15",
+"asset": "VIL-AHU-1",
+"date": "2026-05-15",
+"delta_t_f": 15.63,
+"vibration_mm_s": 2.12,
+"energy_kwh": 4117.5
+},
+{
+"id": "VIL-AHU-1_2026-05-16",
+"asset": "VIL-AHU-1",
+"date": "2026-05-16",
+"delta_t_f": 15.32,
+"vibration_mm_s": 1.94,
+"energy_kwh": 4060.1
+},
+{
+"id": "VIL-AHU-1_2026-05-17",
+"asset": "VIL-AHU-1",
+"date": "2026-05-17",
+"delta_t_f": 14.99,
+"vibration_mm_s": 2.03,
+"energy_kwh": 3569.8
+},
+{
+"id": "VIL-AHU-1_2026-05-18",
+"asset": "VIL-AHU-1",
+"date": "2026-05-18",
+"delta_t_f": 15.09,
+"vibration_mm_s": 2.1,
+"energy_kwh": 4517.5
+},
+{
+"id": "VIL-AHU-1_2026-05-19",
+"asset": "VIL-AHU-1",
+"date": "2026-05-19",
+"delta_t_f": 15.65,
+"vibration_mm_s": 1.75,
+"energy_kwh": 3993.9
+},
+{
+"id": "VIL-AHU-1_2026-05-20",
+"asset": "VIL-AHU-1",
+"date": "2026-05-20",
+"delta_t_f": 15.69,
+"vibration_mm_s": 1.88,
+"energy_kwh": 3870.8
+},
+{
+"id": "VIL-AHU-1_2026-05-21",
+"asset": "VIL-AHU-1",
+"date": "2026-05-21",
+"delta_t_f": 14.79,
+"vibration_mm_s": 1.87,
+"energy_kwh": 3740.8
+},
+{
+"id": "VIL-AHU-1_2026-05-22",
+"asset": "VIL-AHU-1",
+"date": "2026-05-22",
+"delta_t_f": 15.14,
+"vibration_mm_s": 1.87,
+"energy_kwh": 3862.7
+},
+{
+"id": "VIL-AHU-1_2026-05-23",
+"asset": "VIL-AHU-1",
+"date": "2026-05-23",
+"delta_t_f": 15.37,
+"vibration_mm_s": 1.98,
+"energy_kwh": 3584.9
+},
+{
+"id": "VIL-AHU-1_2026-05-24",
+"asset": "VIL-AHU-1",
+"date": "2026-05-24",
+"delta_t_f": 15.23,
+"vibration_mm_s": 1.91,
+"energy_kwh": 3848.7
+},
+{
+"id": "VIL-AHU-1_2026-05-25",
+"asset": "VIL-AHU-1",
+"date": "2026-05-25",
+"delta_t_f": 15.04,
+"vibration_mm_s": 2.09,
+"energy_kwh": 4230.6
+},
+{
+"id": "VIL-AHU-1_2026-05-26",
+"asset": "VIL-AHU-1",
+"date": "2026-05-26",
+"delta_t_f": 15.0,
+"energy_kwh": 4483.3
+},
+{
+"id": "VIL-AHU-1_2026-05-27",
+"asset": "VIL-AHU-1",
+"date": "2026-05-27",
+"delta_t_f": 15.89,
+"vibration_mm_s": 1.87,
+"energy_kwh": 4513.5
+},
+{
+"id": "VIL-AHU-1_2026-05-28",
+"asset": "VIL-AHU-1",
+"date": "2026-05-28",
+"delta_t_f": 15.5,
+"vibration_mm_s": 1.76,
+"energy_kwh": 3852.8
+},
+{
+"id": "VIL-AHU-1_2026-05-29",
+"asset": "VIL-AHU-1",
+"date": "2026-05-29",
+"delta_t_f": 14.89,
+"vibration_mm_s": 1.75,
+"energy_kwh": 4046.5
+},
+{
+"id": "VIL-AHU-1_2026-05-30",
+"asset": "VIL-AHU-1",
+"date": "2026-05-30",
+"delta_t_f": 15.17,
+"vibration_mm_s": 1.91,
+"energy_kwh": 3472.0
+},
+{
+"id": "VIL-AHU-1_2026-05-31",
+"asset": "VIL-AHU-1",
+"date": "2026-05-31",
+"delta_t_f": 15.61,
+"vibration_mm_s": 2.04,
+"energy_kwh": 3635.0
+},
+{
+"id": "VIL-UH-2_2026-05-01",
+"asset": "VIL-UH-2",
+"date": "2026-05-01",
+"delta_t_f": 31.34,
+"vibration_mm_s": 1.15,
+"energy_kwh": 694.1
+},
+{
+"id": "VIL-UH-2_2026-05-02",
+"asset": "VIL-UH-2",
+"date": "2026-05-02",
+"delta_t_f": 31.19,
+"vibration_mm_s": 1.3,
+"energy_kwh": 610.1
+},
+{
+"id": "VIL-UH-2_2026-05-03",
+"asset": "VIL-UH-2",
+"date": "2026-05-03",
+"delta_t_f": 31.55,
+"vibration_mm_s": 1.14,
+"energy_kwh": 236.5
+},
+{
+"id": "VIL-UH-2_2026-05-04",
+"asset": "VIL-UH-2",
+"date": "2026-05-04",
+"delta_t_f": 31.29,
+"vibration_mm_s": 1.04,
+"energy_kwh": 190.8
+},
+{
+"id": "VIL-UH-2_2026-05-05",
+"asset": "VIL-UH-2",
+"date": "2026-05-05",
+"delta_t_f": 32.24,
+"vibration_mm_s": 1.35,
+"energy_kwh": 560.9
+},
+{
+"id": "VIL-UH-2_2026-05-06",
+"asset": "VIL-UH-2",
+"date": "2026-05-06",
+"delta_t_f": 30.88,
+"vibration_mm_s": 1.67,
+"energy_kwh": 634.8
+},
+{
+"id": "VIL-UH-2_2026-05-07",
+"asset": "VIL-UH-2",
+"date": "2026-05-07",
+"delta_t_f": 30.96,
+"vibration_mm_s": 1.34,
+"energy_kwh": 567.4
+},
+{
+"id": "VIL-UH-2_2026-05-08",
+"asset": "VIL-UH-2",
+"date": "2026-05-08",
+"delta_t_f": 31.2,
+"vibration_mm_s": 1.17,
+"energy_kwh": 409.3
+},
+{
+"id": "VIL-UH-2_2026-05-09",
+"asset": "VIL-UH-2",
+"date": "2026-05-09",
+"delta_t_f": 31.31,
+"vibration_mm_s": 1.38,
+"energy_kwh": 285.2
+},
+{
+"id": "VIL-UH-2_2026-05-10",
+"asset": "VIL-UH-2",
+"date": "2026-05-10",
+"delta_t_f": 31.5,
+"vibration_mm_s": 1.52,
+"energy_kwh": 488.2
+},
+{
+"id": "VIL-UH-2_2026-05-11",
+"asset": "VIL-UH-2",
+"date": "2026-05-11",
+"delta_t_f": 31.2,
+"vibration_mm_s": 1.29,
+"energy_kwh": 502.8
+},
+{
+"id": "VIL-UH-2_2026-05-12",
+"asset": "VIL-UH-2",
+"date": "2026-05-12",
+"delta_t_f": 31.29,
+"vibration_mm_s": 1.18,
+"energy_kwh": 189.3
+},
+{
+"id": "VIL-UH-2_2026-05-13",
+"asset": "VIL-UH-2",
+"date": "2026-05-13",
+"delta_t_f": 31.19,
+"vibration_mm_s": 1.36,
+"energy_kwh": 382.8
+},
+{
+"id": "VIL-UH-2_2026-05-14",
+"asset": "VIL-UH-2",
+"date": "2026-05-14",
+"delta_t_f": 31.33,
+"vibration_mm_s": 1.38,
+"energy_kwh": 407.0
+},
+{
+"id": "VIL-UH-2_2026-05-15",
+"asset": "VIL-UH-2",
+"date": "2026-05-15",
+"delta_t_f": 31.33,
+"vibration_mm_s": 1.2,
+"energy_kwh": 172.0
+},
+{
+"id": "VIL-UH-2_2026-05-16",
+"asset": "VIL-UH-2",
+"date": "2026-05-16",
+"delta_t_f": 31.71,
+"vibration_mm_s": 1.32,
+"energy_kwh": 187.0
+},
+{
+"id": "VIL-UH-2_2026-05-17",
+"asset": "VIL-UH-2",
+"date": "2026-05-17",
+"delta_t_f": 31.34,
+"vibration_mm_s": 1.28,
+"energy_kwh": 187.9
+},
+{
+"id": "VIL-UH-2_2026-05-18",
+"asset": "VIL-UH-2",
+"date": "2026-05-18",
+"delta_t_f": 31.87,
+"vibration_mm_s": 1.35,
+"energy_kwh": 176.9
+},
+{
+"id": "VIL-UH-2_2026-05-19",
+"asset": "VIL-UH-2",
+"date": "2026-05-19",
+"delta_t_f": 31.52,
+"vibration_mm_s": 1.16,
+"energy_kwh": 176.3
+},
+{
+"id": "VIL-UH-2_2026-05-20",
+"asset": "VIL-UH-2",
+"date": "2026-05-20",
+"delta_t_f": 31.55,
+"vibration_mm_s": 1.17,
+"energy_kwh": 348.5
+},
+{
+"id": "VIL-UH-2_2026-05-21",
+"asset": "VIL-UH-2",
+"date": "2026-05-21",
+"delta_t_f": 30.9,
+"vibration_mm_s": 1.14,
+"energy_kwh": 422.9
+},
+{
+"id": "VIL-UH-2_2026-05-22",
+"asset": "VIL-UH-2",
+"date": "2026-05-22",
+"delta_t_f": 31.25,
+"vibration_mm_s": 1.49,
+"energy_kwh": 317.0
+},
+{
+"id": "VIL-UH-2_2026-05-23",
+"asset": "VIL-UH-2",
+"date": "2026-05-23",
+"delta_t_f": 31.49,
+"vibration_mm_s": 1.23,
+"energy_kwh": 188.2
+},
+{
+"id": "VIL-UH-2_2026-05-24",
+"asset": "VIL-UH-2",
+"date": "2026-05-24",
+"delta_t_f": 31.09,
+"vibration_mm_s": 1.17,
+"energy_kwh": 172.1
+},
+{
+"id": "VIL-UH-2_2026-05-25",
+"asset": "VIL-UH-2",
+"date": "2026-05-25",
+"delta_t_f": 31.36,
+"vibration_mm_s": 1.41,
+"energy_kwh": 176.2
+},
+{
+"id": "VIL-UH-2_2026-05-26",
+"asset": "VIL-UH-2",
+"date": "2026-05-26",
+"delta_t_f": 31.05,
+"energy_kwh": 179.7
+},
+{
+"id": "VIL-UH-2_2026-05-27",
+"asset": "VIL-UH-2",
+"date": "2026-05-27",
+"delta_t_f": 30.87,
+"vibration_mm_s": 1.48,
+"energy_kwh": 182.0
+},
+{
+"id": "VIL-UH-2_2026-05-28",
+"asset": "VIL-UH-2",
+"date": "2026-05-28",
+"vibration_mm_s": 1.22,
+"energy_kwh": 176.6
+},
+{
+"id": "VIL-UH-2_2026-05-29",
+"asset": "VIL-UH-2",
+"date": "2026-05-29",
+"delta_t_f": 31.08,
+"vibration_mm_s": 1.35,
+"energy_kwh": 189.0
+},
+{
+"id": "VIL-UH-2_2026-05-30",
+"asset": "VIL-UH-2",
+"date": "2026-05-30",
+"delta_t_f": 31.51,
+"vibration_mm_s": 1.3,
+"energy_kwh": 181.4
+},
+{
+"id": "VIL-UH-2_2026-05-31",
+"asset": "VIL-UH-2",
+"date": "2026-05-31",
+"delta_t_f": 31.22,
+"vibration_mm_s": 1.14,
+"energy_kwh": 176.5
+},
+{
+"id": "VV-HX-1_2026-05-01",
+"asset": "VV-HX-1",
+"date": "2026-05-01",
+"pressure_psi": 85.94,
+"flow_imbalance_pct": 1.07,
+"delta_t_f": 27.05,
+"energy_kwh": 10453.4
+},
+{
+"id": "VV-HX-1_2026-05-02",
+"asset": "VV-HX-1",
+"date": "2026-05-02",
+"pressure_psi": 86.4,
+"flow_imbalance_pct": 1.0,
+"delta_t_f": 26.68,
+"energy_kwh": 9772.0
+},
+{
+"id": "VV-HX-1_2026-05-03",
+"asset": "VV-HX-1",
+"date": "2026-05-03",
+"pressure_psi": 86.57,
+"flow_imbalance_pct": 0.99,
+"delta_t_f": 26.92,
+"energy_kwh": 3858.5
+},
+{
+"id": "VV-HX-1_2026-05-04",
+"asset": "VV-HX-1",
+"date": "2026-05-04",
+"pressure_psi": 84.74,
+"delta_t_f": 26.97,
+"energy_kwh": 3221.6
+},
+{
+"id": "VV-HX-1_2026-05-05",
+"asset": "VV-HX-1",
+"date": "2026-05-05",
+"pressure_psi": 84.76,
+"flow_imbalance_pct": 0.41,
+"delta_t_f": 26.92,
+"energy_kwh": 8949.7
+},
+{
+"id": "VV-HX-1_2026-05-06",
+"asset": "VV-HX-1",
+"date": "2026-05-06",
+"pressure_psi": 86.4,
+"flow_imbalance_pct": 0.88,
+"delta_t_f": 26.53,
+"energy_kwh": 10008.7
+},
+{
+"id": "VV-HX-1_2026-05-07",
+"asset": "VV-HX-1",
+"date": "2026-05-07",
+"pressure_psi": 85.32,
+"flow_imbalance_pct": 0.3,
+"delta_t_f": 26.36,
+"energy_kwh": 9494.2
+},
+{
+"id": "VV-HX-1_2026-05-08",
+"asset": "VV-HX-1",
+"date": "2026-05-08",
+"pressure_psi": 85.35,
+"flow_imbalance_pct": 1.3,
+"delta_t_f": 26.78,
+"energy_kwh": 6391.1
+},
+{
+"id": "VV-HX-1_2026-05-09",
+"asset": "VV-HX-1",
+"date": "2026-05-09",
+"pressure_psi": 85.04,
+"flow_imbalance_pct": 0.9,
+"delta_t_f": 26.64,
+"energy_kwh": 4569.4
+},
+{
+"id": "VV-HX-1_2026-05-10",
+"asset": "VV-HX-1",
+"date": "2026-05-10",
+"pressure_psi": 86.29,
+"flow_imbalance_pct": 0.97,
+"delta_t_f": 26.86,
+"energy_kwh": 7896.8
+},
+{
+"id": "VV-HX-1_2026-05-11",
+"asset": "VV-HX-1",
+"date": "2026-05-11",
+"pressure_psi": 86.11,
+"flow_imbalance_pct": 0.84,
+"delta_t_f": 26.6,
+"energy_kwh": 8536.6
+},
+{
+"id": "VV-HX-1_2026-05-12",
+"asset": "VV-HX-1",
+"date": "2026-05-12",
+"pressure_psi": 84.51,
+"flow_imbalance_pct": 0.77,
+"delta_t_f": 26.8,
+"energy_kwh": 3310.1
+},
+{
+"id": "VV-HX-1_2026-05-13",
+"asset": "VV-HX-1",
+"date": "2026-05-13",
+"pressure_psi": 85.27,
+"flow_imbalance_pct": 1.08,
+"delta_t_f": 26.86,
+"energy_kwh": 6079.5
+},
+{
+"id": "VV-HX-1_2026-05-14",
+"asset": "VV-HX-1",
+"date": "2026-05-14",
+"pressure_psi": 85.9,
+"flow_imbalance_pct": 0.96,
+"delta_t_f": 27.08,
+"energy_kwh": 6425.1
+},
+{
+"id": "VV-HX-1_2026-05-15",
+"asset": "VV-HX-1",
+"date": "2026-05-15",
+"pressure_psi": 85.59,
+"flow_imbalance_pct": 0.95,
+"delta_t_f": 25.85,
+"energy_kwh": 2866.8
+},
+{
+"id": "VV-HX-1_2026-05-16",
+"asset": "VV-HX-1",
+"date": "2026-05-16",
+"pressure_psi": 86.33,
+"flow_imbalance_pct": 0.65,
+"delta_t_f": 26.49,
+"energy_kwh": 3041.3
+},
+{
+"id": "VV-HX-1_2026-05-17",
+"asset": "VV-HX-1",
+"date": "2026-05-17",
+"pressure_psi": 86.92,
+"flow_imbalance_pct": 0.18,
+"delta_t_f": 26.77,
+"energy_kwh": 3040.1
+},
+{
+"id": "VV-HX-1_2026-05-18",
+"asset": "VV-HX-1",
+"date": "2026-05-18",
+"pressure_psi": 86.46,
+"flow_imbalance_pct": 0.98,
+"delta_t_f": 26.66,
+"energy_kwh": 2784.6
+},
+{
+"id": "VV-HX-1_2026-05-19",
+"asset": "VV-HX-1",
+"date": "2026-05-19",
+"pressure_psi": 85.31,
+"flow_imbalance_pct": 0.65,
+"delta_t_f": 27.36,
+"energy_kwh": 2881.3
+},
+{
+"id": "VV-HX-1_2026-05-20",
+"asset": "VV-HX-1",
+"date": "2026-05-20",
+"pressure_psi": 85.1,
+"flow_imbalance_pct": 0.56,
+"delta_t_f": 27.03,
+"energy_kwh": 5663.5
+},
+{
+"id": "VV-HX-1_2026-05-21",
+"asset": "VV-HX-1",
+"date": "2026-05-21",
+"pressure_psi": 85.22,
+"flow_imbalance_pct": 0.38,
+"delta_t_f": 26.8,
+"energy_kwh": 7053.9
+},
+{
+"id": "VV-HX-1_2026-05-22",
+"asset": "VV-HX-1",
+"date": "2026-05-22",
+"pressure_psi": 84.88,
+"flow_imbalance_pct": 0.79,
+"delta_t_f": 26.67,
+"energy_kwh": 5241.6
+},
+{
+"id": "VV-HX-1_2026-05-23",
+"asset": "VV-HX-1",
+"date": "2026-05-23",
+"pressure_psi": 85.07,
+"flow_imbalance_pct": 0.78,
+"delta_t_f": 26.57,
+"energy_kwh": 2966.6
+},
+{
+"id": "VV-HX-1_2026-05-24",
+"asset": "VV-HX-1",
+"date": "2026-05-24",
+"pressure_psi": 86.63,
+"flow_imbalance_pct": 1.2,
+"delta_t_f": 26.81,
+"energy_kwh": 2965.0
+},
+{
+"id": "VV-HX-1_2026-05-25",
+"asset": "VV-HX-1",
+"date": "2026-05-25",
+"pressure_psi": 85.53,
+"flow_imbalance_pct": 0.79,
+"delta_t_f": 27.03,
+"energy_kwh": 3147.5
+},
+{
+"id": "VV-HX-1_2026-05-26",
+"asset": "VV-HX-1",
+"date": "2026-05-26",
+"pressure_psi": 86.11,
+"flow_imbalance_pct": 0.72,
+"delta_t_f": 26.59,
+"energy_kwh": 2977.0
+},
+{
+"id": "VV-HX-1_2026-05-27",
+"asset": "VV-HX-1",
+"date": "2026-05-27",
+"pressure_psi": 84.63,
+"flow_imbalance_pct": 0.65,
+"delta_t_f": 26.7,
+"energy_kwh": 2849.5
+},
+{
+"id": "VV-HX-1_2026-05-28",
+"asset": "VV-HX-1",
+"date": "2026-05-28",
+"pressure_psi": 85.68,
+"flow_imbalance_pct": 0.9,
+"delta_t_f": 26.46,
+"energy_kwh": 2992.4
+},
+{
+"id": "VV-HX-1_2026-05-29",
+"asset": "VV-HX-1",
+"date": "2026-05-29",
+"pressure_psi": 85.3,
+"flow_imbalance_pct": 1.26,
+"delta_t_f": 26.53,
+"energy_kwh": 2998.1
+},
+{
+"id": "VV-HX-1_2026-05-30",
+"asset": "VV-HX-1",
+"date": "2026-05-30",
+"pressure_psi": 85.48,
+"flow_imbalance_pct": 0.67,
+"delta_t_f": 27.02,
+"energy_kwh": 2849.4
+},
+{
+"id": "VV-HX-1_2026-05-31",
+"asset": "VV-HX-1",
+"date": "2026-05-31",
+"pressure_psi": 85.56,
+"flow_imbalance_pct": 0.58,
+"delta_t_f": 26.68,
+"energy_kwh": 2973.7
+},
+{
+"id": "VV-AHU-1_2026-05-01",
+"asset": "VV-AHU-1",
+"date": "2026-05-01",
+"delta_t_f": 17.45,
+"vibration_mm_s": 1.9,
+"energy_kwh": 2012.8
+},
+{
+"id": "VV-AHU-1_2026-05-02",
+"asset": "VV-AHU-1",
+"date": "2026-05-02",
+"delta_t_f": 17.66,
+"vibration_mm_s": 1.8,
+"energy_kwh": 1808.6
+},
+{
+"id": "VV-AHU-1_2026-05-03",
+"asset": "VV-AHU-1",
+"date": "2026-05-03",
+"delta_t_f": 17.35,
+"vibration_mm_s": 1.99,
+"energy_kwh": 1703.8
+},
+{
+"id": "VV-AHU-1_2026-05-04",
+"asset": "VV-AHU-1",
+"date": "2026-05-04",
+"delta_t_f": 17.67,
+"vibration_mm_s": 2.25,
+"energy_kwh": 1912.5
+},
+{
+"id": "VV-AHU-1_2026-05-05",
+"asset": "VV-AHU-1",
+"date": "2026-05-05",
+"delta_t_f": 17.06,
+"vibration_mm_s": 2.25,
+"energy_kwh": 1971.7
+},
+{
+"id": "VV-AHU-1_2026-05-06",
+"asset": "VV-AHU-1",
+"date": "2026-05-06",
+"delta_t_f": 17.58,
+"vibration_mm_s": 1.91,
+"energy_kwh": 2031.4
+},
+{
+"id": "VV-AHU-1_2026-05-07",
+"asset": "VV-AHU-1",
+"date": "2026-05-07",
+"delta_t_f": 17.64,
+"vibration_mm_s": 2.14,
+"energy_kwh": 1916.4
+},
+{
+"id": "VV-AHU-1_2026-05-08",
+"asset": "VV-AHU-1",
+"date": "2026-05-08",
+"delta_t_f": 17.2,
+"vibration_mm_s": 1.87,
+"energy_kwh": 1821.3
+},
+{
+"id": "VV-AHU-1_2026-05-09",
+"asset": "VV-AHU-1",
+"date": "2026-05-09",
+"delta_t_f": 17.54,
+"vibration_mm_s": 2.03,
+"energy_kwh": 1681.7
+},
+{
+"id": "VV-AHU-1_2026-05-10",
+"asset": "VV-AHU-1",
+"date": "2026-05-10",
+"delta_t_f": 17.37,
+"vibration_mm_s": 2.26,
+"energy_kwh": 1777.2
+},
+{
+"id": "VV-AHU-1_2026-05-11",
+"asset": "VV-AHU-1",
+"date": "2026-05-11",
+"delta_t_f": 17.28,
+"vibration_mm_s": 2.09,
+"energy_kwh": 2046.8
+},
+{
+"id": "VV-AHU-1_2026-05-12",
+"asset": "VV-AHU-1",
+"date": "2026-05-12",
+"delta_t_f": 17.47,
+"vibration_mm_s": 2.19,
+"energy_kwh": 1968.6
+},
+{
+"id": "VV-AHU-1_2026-05-13",
+"asset": "VV-AHU-1",
+"date": "2026-05-13",
+"delta_t_f": 18.04,
+"vibration_mm_s": 1.82,
+"energy_kwh": 1881.8
+},
+{
+"id": "VV-AHU-1_2026-05-14",
+"asset": "VV-AHU-1",
+"date": "2026-05-14",
+"delta_t_f": 17.29,
+"vibration_mm_s": 2.11,
+"energy_kwh": 1867.0
+},
+{
+"id": "VV-AHU-1_2026-05-15",
+"asset": "VV-AHU-1",
+"date": "2026-05-15",
+"delta_t_f": 17.98,
+"vibration_mm_s": 1.94,
+"energy_kwh": 2016.2
+},
+{
+"id": "VV-AHU-1_2026-05-16",
+"asset": "VV-AHU-1",
+"date": "2026-05-16",
+"delta_t_f": 17.44,
+"vibration_mm_s": 1.81,
+"energy_kwh": 1887.8
+},
+{
+"id": "VV-AHU-1_2026-05-17",
+"asset": "VV-AHU-1",
+"date": "2026-05-17",
+"delta_t_f": 17.73,
+"vibration_mm_s": 2.03,
+"energy_kwh": 1833.8
+},
+{
+"id": "VV-AHU-1_2026-05-18",
+"asset": "VV-AHU-1",
+"date": "2026-05-18",
+"delta_t_f": 17.29,
+"vibration_mm_s": 1.84,
+"energy_kwh": 2078.1
+},
+{
+"id": "VV-AHU-1_2026-05-19",
+"asset": "VV-AHU-1",
+"date": "2026-05-19",
+"delta_t_f": 17.83,
+"vibration_mm_s": 2.29,
+"energy_kwh": 1969.2
+},
+{
+"id": "VV-AHU-1_2026-05-20",
+"asset": "VV-AHU-1",
+"date": "2026-05-20",
+"delta_t_f": 17.8,
+"vibration_mm_s": 2.0,
+"energy_kwh": 1886.6
+},
+{
+"id": "VV-AHU-1_2026-05-21",
+"asset": "VV-AHU-1",
+"date": "2026-05-21",
+"delta_t_f": 18.18,
+"vibration_mm_s": 2.17,
+"energy_kwh": 1848.4
+},
+{
+"id": "VV-AHU-1_2026-05-22",
+"asset": "VV-AHU-1",
+"date": "2026-05-22",
+"delta_t_f": 17.89,
+"vibration_mm_s": 1.91,
+"energy_kwh": 1859.6
+},
+{
+"id": "VV-AHU-1_2026-05-23",
+"asset": "VV-AHU-1",
+"date": "2026-05-23",
+"delta_t_f": 18.33,
+"vibration_mm_s": 1.54,
+"energy_kwh": 1757.8
+},
+{
+"id": "VV-AHU-1_2026-05-24",
+"asset": "VV-AHU-1",
+"date": "2026-05-24",
+"delta_t_f": 17.8,
+"vibration_mm_s": 1.89,
+"energy_kwh": 1877.9
+},
+{
+"id": "VV-AHU-1_2026-05-25",
+"asset": "VV-AHU-1",
+"date": "2026-05-25",
+"delta_t_f": 17.57,
+"vibration_mm_s": 2.0,
+"energy_kwh": 2152.3
+},
+{
+"id": "VV-AHU-1_2026-05-26",
+"asset": "VV-AHU-1",
+"date": "2026-05-26",
+"delta_t_f": 17.72,
+"vibration_mm_s": 2.01,
+"energy_kwh": 2191.8
+},
+{
+"id": "VV-AHU-1_2026-05-27",
+"asset": "VV-AHU-1",
+"date": "2026-05-27",
+"delta_t_f": 17.87,
+"vibration_mm_s": 1.92,
+"energy_kwh": 2221.4
+},
+{
+"id": "VV-AHU-1_2026-05-28",
+"asset": "VV-AHU-1",
+"date": "2026-05-28",
+"delta_t_f": 17.8,
+"vibration_mm_s": 2.06,
+"energy_kwh": 2062.4
+},
+{
+"id": "VV-AHU-1_2026-05-29",
+"asset": "VV-AHU-1",
+"date": "2026-05-29",
+"delta_t_f": 17.5,
+"vibration_mm_s": 1.83,
+"energy_kwh": 1930.7
+},
+{
+"id": "VV-AHU-1_2026-05-30",
+"asset": "VV-AHU-1",
+"date": "2026-05-30",
+"delta_t_f": 18.33,
+"vibration_mm_s": 2.01,
+"energy_kwh": 1821.5
+},
+{
+"id": "VV-AHU-1_2026-05-31",
+"asset": "VV-AHU-1",
+"date": "2026-05-31",
+"delta_t_f": 17.9,
+"vibration_mm_s": 2.0,
+"energy_kwh": 1819.4
+},
+{
+"id": "STE-HX-1_2026-05-01",
+"asset": "STE-HX-1",
+"date": "2026-05-01",
+"pressure_psi": 79.9,
+"flow_imbalance_pct": 0.66,
+"delta_t_f": 33.28,
+"energy_kwh": 8743.3
+},
+{
+"id": "STE-HX-1_2026-05-02",
+"asset": "STE-HX-1",
+"date": "2026-05-02",
+"pressure_psi": 78.81,
+"flow_imbalance_pct": 0.23,
+"delta_t_f": 34.06,
+"energy_kwh": 7719.7
+},
+{
+"id": "STE-HX-1_2026-05-03",
+"asset": "STE-HX-1",
+"date": "2026-05-03",
+"pressure_psi": 80.24,
+"flow_imbalance_pct": 0.11,
+"delta_t_f": 33.34,
+"energy_kwh": 3027.2
+},
+{
+"id": "STE-HX-1_2026-05-04",
+"asset": "STE-HX-1",
+"date": "2026-05-04",
+"pressure_psi": 79.91,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 33.95,
+"energy_kwh": 2652.7
+},
+{
+"id": "STE-HX-1_2026-05-05",
+"asset": "STE-HX-1",
+"date": "2026-05-05",
+"pressure_psi": 79.84,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 33.07,
+"energy_kwh": 7233.0
+},
+{
+"id": "STE-HX-1_2026-05-06",
+"asset": "STE-HX-1",
+"date": "2026-05-06",
+"pressure_psi": 80.13,
+"flow_imbalance_pct": 0.54,
+"delta_t_f": 33.19,
+"energy_kwh": 7990.6
+},
+{
+"id": "STE-HX-1_2026-05-07",
+"asset": "STE-HX-1",
+"date": "2026-05-07",
+"pressure_psi": 79.67,
+"flow_imbalance_pct": 0.09,
+"delta_t_f": 33.13,
+"energy_kwh": 7551.5
+},
+{
+"id": "STE-HX-1_2026-05-08",
+"asset": "STE-HX-1",
+"date": "2026-05-08",
+"pressure_psi": 80.68,
+"flow_imbalance_pct": 0.83,
+"delta_t_f": 33.14,
+"energy_kwh": 5208.7
+},
+{
+"id": "STE-HX-1_2026-05-09",
+"asset": "STE-HX-1",
+"date": "2026-05-09",
+"pressure_psi": 79.99,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 33.53,
+"energy_kwh": 3663.9
+},
+{
+"id": "STE-HX-1_2026-05-10",
+"asset": "STE-HX-1",
+"date": "2026-05-10",
+"pressure_psi": 78.56,
+"flow_imbalance_pct": 0.54,
+"delta_t_f": 33.3,
+"energy_kwh": 6327.9
+},
+{
+"id": "STE-HX-1_2026-05-11",
+"asset": "STE-HX-1",
+"date": "2026-05-11",
+"pressure_psi": 80.39,
+"flow_imbalance_pct": 0.39,
+"delta_t_f": 33.03,
+"energy_kwh": 6696.7
+},
+{
+"id": "STE-HX-1_2026-05-12",
+"asset": "STE-HX-1",
+"date": "2026-05-12",
+"pressure_psi": 79.54,
+"flow_imbalance_pct": 0.66,
+"delta_t_f": 32.98,
+"energy_kwh": 2616.4
+},
+{
+"id": "STE-HX-1_2026-05-13",
+"asset": "STE-HX-1",
+"date": "2026-05-13",
+"pressure_psi": 80.3,
+"flow_imbalance_pct": 0.15,
+"delta_t_f": 33.33,
+"energy_kwh": 5080.3
+},
+{
+"id": "STE-HX-1_2026-05-14",
+"asset": "STE-HX-1",
+"date": "2026-05-14",
+"pressure_psi": 80.26,
+"flow_imbalance_pct": 0.36,
+"delta_t_f": 33.16,
+"energy_kwh": 5341.1
+},
+{
+"id": "STE-HX-1_2026-05-15",
+"asset": "STE-HX-1",
+"date": "2026-05-15",
+"pressure_psi": 80.81,
+"flow_imbalance_pct": 0.17,
+"delta_t_f": 33.56,
+"energy_kwh": 2353.5
+},
+{
+"id": "STE-HX-1_2026-05-16",
+"asset": "STE-HX-1",
+"date": "2026-05-16",
+"pressure_psi": 80.55,
+"flow_imbalance_pct": 0.1,
+"delta_t_f": 33.64,
+"energy_kwh": 2370.9
+},
+{
+"id": "STE-HX-1_2026-05-17",
+"asset": "STE-HX-1",
+"date": "2026-05-17",
+"pressure_psi": 80.72,
+"flow_imbalance_pct": 0.66,
+"delta_t_f": 33.32,
+"energy_kwh": 2396.5
+},
+{
+"id": "STE-HX-1_2026-05-18",
+"asset": "STE-HX-1",
+"date": "2026-05-18",
+"pressure_psi": 79.63,
+"flow_imbalance_pct": 0.59,
+"delta_t_f": 33.69,
+"energy_kwh": 2392.2
+},
+{
+"id": "STE-HX-1_2026-05-19",
+"asset": "STE-HX-1",
+"date": "2026-05-19",
+"pressure_psi": 80.58,
+"flow_imbalance_pct": 0.58,
+"delta_t_f": 33.37,
+"energy_kwh": 2368.6
+},
+{
+"id": "STE-HX-1_2026-05-20",
+"asset": "STE-HX-1",
+"date": "2026-05-20",
+"pressure_psi": 80.8,
+"flow_imbalance_pct": 0.02,
+"delta_t_f": 32.52,
+"energy_kwh": 4580.6
+},
+{
+"id": "STE-HX-1_2026-05-21",
+"asset": "STE-HX-1",
+"date": "2026-05-21",
+"pressure_psi": 80.8,
+"flow_imbalance_pct": 0.13,
+"delta_t_f": 33.18,
+"energy_kwh": 5561.5
+},
+{
+"id": "STE-HX-1_2026-05-22",
+"asset": "STE-HX-1",
+"date": "2026-05-22",
+"pressure_psi": 80.82,
+"flow_imbalance_pct": 0.39,
+"delta_t_f": 33.15,
+"energy_kwh": 3984.8
+},
+{
+"id": "STE-HX-1_2026-05-23",
+"asset": "STE-HX-1",
+"date": "2026-05-23",
+"pressure_psi": 79.57,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 33.55,
+"energy_kwh": 2349.9
+},
+{
+"id": "STE-HX-1_2026-05-24",
+"asset": "STE-HX-1",
+"date": "2026-05-24",
+"pressure_psi": 79.86,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 33.33,
+"energy_kwh": 2448.2
+},
+{
+"id": "STE-HX-1_2026-05-25",
+"asset": "STE-HX-1",
+"date": "2026-05-25",
+"pressure_psi": 79.77,
+"flow_imbalance_pct": 0.26,
+"delta_t_f": 32.68,
+"energy_kwh": 2420.6
+},
+{
+"id": "STE-HX-1_2026-05-26",
+"asset": "STE-HX-1",
+"date": "2026-05-26",
+"pressure_psi": 79.49,
+"flow_imbalance_pct": 0.73,
+"delta_t_f": 33.63,
+"energy_kwh": 2405.2
+},
+{
+"id": "STE-HX-1_2026-05-27",
+"asset": "STE-HX-1",
+"date": "2026-05-27",
+"pressure_psi": 80.37,
+"flow_imbalance_pct": 0.3,
+"delta_t_f": 33.76,
+"energy_kwh": 2284.1
+},
+{
+"id": "STE-HX-1_2026-05-28",
+"asset": "STE-HX-1",
+"date": "2026-05-28",
+"pressure_psi": 78.62,
+"flow_imbalance_pct": 0.35,
+"delta_t_f": 33.23,
+"energy_kwh": 2494.5
+},
+{
+"id": "STE-HX-1_2026-05-29",
+"asset": "STE-HX-1",
+"date": "2026-05-29",
+"pressure_psi": 80.33,
+"flow_imbalance_pct": 0.47,
+"delta_t_f": 32.67,
+"energy_kwh": 2336.0
+},
+{
+"id": "STE-HX-1_2026-05-30",
+"asset": "STE-HX-1",
+"date": "2026-05-30",
+"pressure_psi": 79.41,
+"flow_imbalance_pct": 0.01,
+"delta_t_f": 33.69,
+"energy_kwh": 2433.3
+},
+{
+"id": "STE-HX-1_2026-05-31",
+"asset": "STE-HX-1",
+"date": "2026-05-31",
+"pressure_psi": 80.67,
+"flow_imbalance_pct": 0.0,
+"delta_t_f": 32.84,
+"energy_kwh": 2579.4
+},
+{
+"id": "WIMR-AHU-3_2026-05-01",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-01",
+"delta_t_f": 15.53,
+"vibration_mm_s": 1.68,
+"energy_kwh": 6048.5
+},
+{
+"id": "WIMR-AHU-3_2026-05-02",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-02",
+"delta_t_f": 14.89,
+"vibration_mm_s": 1.64,
+"energy_kwh": 4935.2
+},
+{
+"id": "WIMR-AHU-3_2026-05-03",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-03",
+"delta_t_f": 14.85,
+"vibration_mm_s": 1.67,
+"energy_kwh": 5196.8
+},
+{
+"id": "WIMR-AHU-3_2026-05-04",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-04",
+"delta_t_f": 15.38,
+"vibration_mm_s": 1.71,
+"energy_kwh": 5533.2
+},
+{
+"id": "WIMR-AHU-3_2026-05-05",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-05",
+"delta_t_f": 15.18,
+"vibration_mm_s": 1.61,
+"energy_kwh": 5971.5
+},
+{
+"id": "WIMR-AHU-3_2026-05-06",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-06",
+"delta_t_f": 15.02,
+"vibration_mm_s": 1.99,
+"energy_kwh": 5735.8
+},
+{
+"id": "WIMR-AHU-3_2026-05-07",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-07",
+"delta_t_f": 14.65,
+"vibration_mm_s": 1.7,
+"energy_kwh": 6085.6
+},
+{
+"id": "WIMR-AHU-3_2026-05-08",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-08",
+"delta_t_f": 15.36,
+"vibration_mm_s": 1.4,
+"energy_kwh": 5615.7
+},
+{
+"id": "WIMR-AHU-3_2026-05-09",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-09",
+"delta_t_f": 15.64,
+"vibration_mm_s": 1.92,
+"energy_kwh": 4930.5
+},
+{
+"id": "WIMR-AHU-3_2026-05-10",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-10",
+"delta_t_f": 15.15,
+"vibration_mm_s": 1.58,
+"energy_kwh": 5083.7
+},
+{
+"id": "WIMR-AHU-3_2026-05-11",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-11",
+"delta_t_f": 15.58,
+"vibration_mm_s": 1.54,
+"energy_kwh": 5446.3
+},
+{
+"id": "WIMR-AHU-3_2026-05-12",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-12",
+"delta_t_f": 14.8,
+"vibration_mm_s": 1.88,
+"energy_kwh": 5805.1
+},
+{
+"id": "WIMR-AHU-3_2026-05-13",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-13",
+"delta_t_f": 15.19,
+"vibration_mm_s": 1.78,
+"energy_kwh": 5488.1
+},
+{
+"id": "WIMR-AHU-3_2026-05-14",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-14",
+"delta_t_f": 15.27,
+"vibration_mm_s": 1.64,
+"energy_kwh": 5592.5
+},
+{
+"id": "WIMR-AHU-3_2026-05-15",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-15",
+"delta_t_f": 15.58,
+"vibration_mm_s": 1.7,
+"energy_kwh": 6140.6
+},
+{
+"id": "WIMR-AHU-3_2026-05-16",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-16",
+"delta_t_f": 15.22,
+"vibration_mm_s": 1.72,
+"energy_kwh": 6078.5
+},
+{
+"id": "WIMR-AHU-3_2026-05-17",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-17",
+"delta_t_f": 15.04,
+"vibration_mm_s": 1.77,
+"energy_kwh": 5085.5
+},
+{
+"id": "WIMR-AHU-3_2026-05-18",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-18",
+"delta_t_f": 15.68,
+"vibration_mm_s": 1.69,
+"energy_kwh": 6291.2
+},
+{
+"id": "WIMR-AHU-3_2026-05-19",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-19",
+"delta_t_f": 15.39,
+"vibration_mm_s": 1.45,
+"energy_kwh": 5681.7
+},
+{
+"id": "WIMR-AHU-3_2026-05-20",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-20",
+"delta_t_f": 14.91,
+"vibration_mm_s": 1.62,
+"energy_kwh": 5537.6
+},
+{
+"id": "WIMR-AHU-3_2026-05-21",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-21",
+"delta_t_f": 15.33,
+"vibration_mm_s": 1.67,
+"energy_kwh": 5849.7
+},
+{
+"id": "WIMR-AHU-3_2026-05-22",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-22",
+"delta_t_f": 14.83,
+"vibration_mm_s": 1.83,
+"energy_kwh": 5580.1
+},
+{
+"id": "WIMR-AHU-3_2026-05-23",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-23",
+"delta_t_f": 15.28,
+"vibration_mm_s": 1.38,
+"energy_kwh": 5400.8
+},
+{
+"id": "WIMR-AHU-3_2026-05-24",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-24",
+"delta_t_f": 15.67,
+"vibration_mm_s": 1.9,
+"energy_kwh": 5340.2
+},
+{
+"id": "WIMR-AHU-3_2026-05-25",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-25",
+"delta_t_f": 15.46,
+"vibration_mm_s": 1.68,
+"energy_kwh": 6195.1
+},
+{
+"id": "WIMR-AHU-3_2026-05-26",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-26",
+"delta_t_f": 15.22,
+"vibration_mm_s": 1.69,
+"energy_kwh": 6785.1
+},
+{
+"id": "WIMR-AHU-3_2026-05-27",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-27",
+"delta_t_f": 15.28,
+"energy_kwh": 6681.3
+},
+{
+"id": "WIMR-AHU-3_2026-05-28",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-28",
+"delta_t_f": 15.44,
+"vibration_mm_s": 1.67,
+"energy_kwh": 6198.7
+},
+{
+"id": "WIMR-AHU-3_2026-05-29",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-29",
+"delta_t_f": 15.04,
+"vibration_mm_s": 1.61,
+"energy_kwh": 5984.1
+},
+{
+"id": "WIMR-AHU-3_2026-05-30",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-30",
+"delta_t_f": 15.19,
+"vibration_mm_s": 1.69,
+"energy_kwh": 5496.9
+},
+{
+"id": "WIMR-AHU-3_2026-05-31",
+"asset": "WIMR-AHU-3",
+"date": "2026-05-31",
+"delta_t_f": 15.0,
+"vibration_mm_s": 1.48,
+"energy_kwh": 5668.6
+},
+{
+"id": "CHM-AHU-1_2026-05-01",
+"asset": "CHM-AHU-1",
+"date": "2026-05-01",
+"delta_t_f": 17.2,
+"vibration_mm_s": 1.51,
+"energy_kwh": 4688.0
+},
+{
+"id": "CHM-AHU-1_2026-05-02",
+"asset": "CHM-AHU-1",
+"date": "2026-05-02",
+"delta_t_f": 18.03,
+"vibration_mm_s": 1.48,
+"energy_kwh": 4129.2
+},
+{
+"id": "CHM-AHU-1_2026-05-03",
+"asset": "CHM-AHU-1",
+"date": "2026-05-03",
+"delta_t_f": 17.54,
+"vibration_mm_s": 1.71,
+"energy_kwh": 4003.6
+},
+{
+"id": "CHM-AHU-1_2026-05-04",
+"asset": "CHM-AHU-1",
+"date": "2026-05-04",
+"delta_t_f": 17.78,
+"vibration_mm_s": 1.65,
+"energy_kwh": 4416.8
+},
+{
+"id": "CHM-AHU-1_2026-05-05",
+"asset": "CHM-AHU-1",
+"date": "2026-05-05",
+"delta_t_f": 17.29,
+"vibration_mm_s": 1.4,
+"energy_kwh": 4581.7
+},
+{
+"id": "CHM-AHU-1_2026-05-06",
+"asset": "CHM-AHU-1",
+"date": "2026-05-06",
+"delta_t_f": 16.8,
+"vibration_mm_s": 1.57,
+"energy_kwh": 4492.2
+},
+{
+"id": "CHM-AHU-1_2026-05-07",
+"asset": "CHM-AHU-1",
+"date": "2026-05-07",
+"delta_t_f": 17.35,
+"vibration_mm_s": 1.6,
+"energy_kwh": 4655.1
+},
+{
+"id": "CHM-AHU-1_2026-05-08",
+"asset": "CHM-AHU-1",
+"date": "2026-05-08",
+"delta_t_f": 17.99,
+"vibration_mm_s": 1.31,
+"energy_kwh": 4514.6
+},
+{
+"id": "CHM-AHU-1_2026-05-09",
+"asset": "CHM-AHU-1",
+"date": "2026-05-09",
+"delta_t_f": 17.21,
+"vibration_mm_s": 1.59,
+"energy_kwh": 3891.3
+},
+{
+"id": "CHM-AHU-1_2026-05-10",
+"asset": "CHM-AHU-1",
+"date": "2026-05-10",
+"delta_t_f": 17.18,
+"vibration_mm_s": 1.41,
+"energy_kwh": 4237.4
+},
+{
+"id": "CHM-AHU-1_2026-05-11",
+"asset": "CHM-AHU-1",
+"date": "2026-05-11",
+"delta_t_f": 17.04,
+"vibration_mm_s": 1.51,
+"energy_kwh": 4422.8
+},
+{
+"id": "CHM-AHU-1_2026-05-12",
+"asset": "CHM-AHU-1",
+"date": "2026-05-12",
+"delta_t_f": 17.55,
+"vibration_mm_s": 1.52,
+"energy_kwh": 4731.0
+},
+{
+"id": "CHM-AHU-1_2026-05-13",
+"asset": "CHM-AHU-1",
+"date": "2026-05-13",
+"delta_t_f": 17.78,
+"vibration_mm_s": 1.54,
+"energy_kwh": 4527.4
+},
+{
+"id": "CHM-AHU-1_2026-05-14",
+"asset": "CHM-AHU-1",
+"date": "2026-05-14",
+"delta_t_f": 16.82,
+"vibration_mm_s": 1.69,
+"energy_kwh": 4558.4
+},
+{
+"id": "CHM-AHU-1_2026-05-15",
+"asset": "CHM-AHU-1",
+"date": "2026-05-15",
+"delta_t_f": 17.15,
+"vibration_mm_s": 1.43,
+"energy_kwh": 4717.1
+},
+{
+"id": "CHM-AHU-1_2026-05-16",
+"asset": "CHM-AHU-1",
+"date": "2026-05-16",
+"delta_t_f": 17.55,
+"vibration_mm_s": 1.44,
+"energy_kwh": 4615.4
+},
+{
+"id": "CHM-AHU-1_2026-05-17",
+"asset": "CHM-AHU-1",
+"date": "2026-05-17",
+"delta_t_f": 17.44,
+"vibration_mm_s": 1.27,
+"energy_kwh": 4091.7
+},
+{
+"id": "CHM-AHU-1_2026-05-18",
+"asset": "CHM-AHU-1",
+"date": "2026-05-18",
+"delta_t_f": 17.62,
+"vibration_mm_s": 1.44,
+"energy_kwh": 4845.8
+},
+{
+"id": "CHM-AHU-1_2026-05-19",
+"asset": "CHM-AHU-1",
+"date": "2026-05-19",
+"delta_t_f": 17.0,
+"vibration_mm_s": 1.46,
+"energy_kwh": 4548.6
+},
+{
+"id": "CHM-AHU-1_2026-05-20",
+"asset": "CHM-AHU-1",
+"date": "2026-05-20",
+"delta_t_f": 17.14,
+"vibration_mm_s": 1.33,
+"energy_kwh": 4158.9
+},
+{
+"id": "CHM-AHU-1_2026-05-21",
+"asset": "CHM-AHU-1",
+"date": "2026-05-21",
+"delta_t_f": 17.04,
+"vibration_mm_s": 1.3,
+"energy_kwh": 4453.1
+},
+{
+"id": "CHM-AHU-1_2026-05-22",
+"asset": "CHM-AHU-1",
+"date": "2026-05-22",
+"delta_t_f": 17.8,
+"vibration_mm_s": 1.71,
+"energy_kwh": 4431.0
+},
+{
+"id": "CHM-AHU-1_2026-05-23",
+"asset": "CHM-AHU-1",
+"date": "2026-05-23",
+"delta_t_f": 18.11,
+"vibration_mm_s": 1.56,
+"energy_kwh": 4102.4
+},
+{
+"id": "CHM-AHU-1_2026-05-24",
+"asset": "CHM-AHU-1",
+"date": "2026-05-24",
+"delta_t_f": 16.98,
+"vibration_mm_s": 1.62,
+"energy_kwh": 4250.7
+},
+{
+"id": "CHM-AHU-1_2026-05-25",
+"asset": "CHM-AHU-1",
+"date": "2026-05-25",
+"delta_t_f": 17.59,
+"vibration_mm_s": 1.46,
+"energy_kwh": 4914.6
+},
+{
+"id": "CHM-AHU-1_2026-05-26",
+"asset": "CHM-AHU-1",
+"date": "2026-05-26",
+"delta_t_f": 17.86,
+"vibration_mm_s": 1.37,
+"energy_kwh": 5308.7
+},
+{
+"id": "CHM-AHU-1_2026-05-27",
+"asset": "CHM-AHU-1",
+"date": "2026-05-27",
+"delta_t_f": 17.48,
+"vibration_mm_s": 1.49,
+"energy_kwh": 5101.6
+},
+{
+"id": "CHM-AHU-1_2026-05-28",
+"asset": "CHM-AHU-1",
+"date": "2026-05-28",
+"delta_t_f": 17.36,
+"vibration_mm_s": 1.32,
+"energy_kwh": 4790.9
+},
+{
+"id": "CHM-AHU-1_2026-05-29",
+"asset": "CHM-AHU-1",
+"date": "2026-05-29",
+"delta_t_f": 17.48,
+"vibration_mm_s": 1.67,
+"energy_kwh": 4459.0
+},
+{
+"id": "CHM-AHU-1_2026-05-30",
+"asset": "CHM-AHU-1",
+"date": "2026-05-30",
+"delta_t_f": 17.27,
+"vibration_mm_s": 1.65,
+"energy_kwh": 4086.0
+},
+{
+"id": "CHM-AHU-1_2026-05-31",
+"asset": "CHM-AHU-1",
+"date": "2026-05-31",
+"delta_t_f": 17.5,
+"vibration_mm_s": 1.67,
+"energy_kwh": 4050.5
+},
+{
+"id": "GRA-AHU-1_2026-05-01",
+"asset": "GRA-AHU-1",
+"date": "2026-05-01",
+"delta_t_f": 17.34,
+"vibration_mm_s": 1.75,
+"energy_kwh": 4783.0
+},
+{
+"id": "GRA-AHU-1_2026-05-02",
+"asset": "GRA-AHU-1",
+"date": "2026-05-02",
+"delta_t_f": 17.64,
+"vibration_mm_s": 1.78,
+"energy_kwh": 4511.1
+},
+{
+"id": "GRA-AHU-1_2026-05-03",
+"asset": "GRA-AHU-1",
+"date": "2026-05-03",
+"delta_t_f": 17.62,
+"vibration_mm_s": 1.88,
+"energy_kwh": 4203.9
+},
+{
+"id": "GRA-AHU-1_2026-05-04",
+"asset": "GRA-AHU-1",
+"date": "2026-05-04",
+"delta_t_f": 17.67,
+"vibration_mm_s": 1.89,
+"energy_kwh": 4426.3
+},
+{
+"id": "GRA-AHU-1_2026-05-05",
+"asset": "GRA-AHU-1",
+"date": "2026-05-05",
+"delta_t_f": 17.34,
+"vibration_mm_s": 2.06,
+"energy_kwh": 4796.9
+},
+{
+"id": "GRA-AHU-1_2026-05-06",
+"asset": "GRA-AHU-1",
+"date": "2026-05-06",
+"delta_t_f": 17.18,
+"vibration_mm_s": 1.79,
+"energy_kwh": 4541.4
+},
+{
+"id": "GRA-AHU-1_2026-05-07",
+"asset": "GRA-AHU-1",
+"date": "2026-05-07",
+"delta_t_f": 17.68,
+"vibration_mm_s": 1.85,
+"energy_kwh": 4530.8
+},
+{
+"id": "GRA-AHU-1_2026-05-08",
+"asset": "GRA-AHU-1",
+"date": "2026-05-08",
+"delta_t_f": 17.28,
+"vibration_mm_s": 1.85,
+"energy_kwh": 4624.6
+},
+{
+"id": "GRA-AHU-1_2026-05-09",
+"asset": "GRA-AHU-1",
+"date": "2026-05-09",
+"delta_t_f": 17.66,
+"vibration_mm_s": 1.72,
+"energy_kwh": 3914.2
+},
+{
+"id": "GRA-AHU-1_2026-05-10",
+"asset": "GRA-AHU-1",
+"date": "2026-05-10",
+"vibration_mm_s": 1.73,
+"energy_kwh": 4399.4
+},
+{
+"id": "GRA-AHU-1_2026-05-11",
+"asset": "GRA-AHU-1",
+"date": "2026-05-11",
+"delta_t_f": 17.74,
+"vibration_mm_s": 1.99,
+"energy_kwh": 4762.6
+},
+{
+"id": "GRA-AHU-1_2026-05-12",
+"asset": "GRA-AHU-1",
+"date": "2026-05-12",
+"delta_t_f": 17.59,
+"vibration_mm_s": 1.91,
+"energy_kwh": 4572.1
+},
+{
+"id": "GRA-AHU-1_2026-05-13",
+"asset": "GRA-AHU-1",
+"date": "2026-05-13",
+"delta_t_f": 17.62,
+"vibration_mm_s": 1.75,
+"energy_kwh": 4774.5
+},
+{
+"id": "GRA-AHU-1_2026-05-14",
+"asset": "GRA-AHU-1",
+"date": "2026-05-14",
+"delta_t_f": 17.33,
+"vibration_mm_s": 1.92,
+"energy_kwh": 4384.5
+},
+{
+"id": "GRA-AHU-1_2026-05-15",
+"asset": "GRA-AHU-1",
+"date": "2026-05-15",
+"delta_t_f": 17.11,
+"vibration_mm_s": 2.05,
+"energy_kwh": 4933.9
+},
+{
+"id": "GRA-AHU-1_2026-05-16",
+"asset": "GRA-AHU-1",
+"date": "2026-05-16",
+"delta_t_f": 16.77,
+"vibration_mm_s": 2.01,
+"energy_kwh": 4502.6
+},
+{
+"id": "GRA-AHU-1_2026-05-17",
+"asset": "GRA-AHU-1",
+"date": "2026-05-17",
+"delta_t_f": 17.55,
+"vibration_mm_s": 1.79,
+"energy_kwh": 4335.5
+},
+{
+"id": "GRA-AHU-1_2026-05-18",
+"asset": "GRA-AHU-1",
+"date": "2026-05-18",
+"delta_t_f": 16.96,
+"vibration_mm_s": 1.84,
+"energy_kwh": 4891.4
+},
+{
+"id": "GRA-AHU-1_2026-05-19",
+"asset": "GRA-AHU-1",
+"date": "2026-05-19",
+"delta_t_f": 17.32,
+"vibration_mm_s": 1.77,
+"energy_kwh": 4687.6
+},
+{
+"id": "GRA-AHU-1_2026-05-20",
+"asset": "GRA-AHU-1",
+"date": "2026-05-20",
+"delta_t_f": 17.67,
+"vibration_mm_s": 1.86,
+"energy_kwh": 4416.1
+},
+{
+"id": "GRA-AHU-1_2026-05-21",
+"asset": "GRA-AHU-1",
+"date": "2026-05-21",
+"delta_t_f": 17.43,
+"vibration_mm_s": 1.91,
+"energy_kwh": 4332.3
+},
+{
+"id": "GRA-AHU-1_2026-05-22",
+"asset": "GRA-AHU-1",
+"date": "2026-05-22",
+"delta_t_f": 17.86,
+"vibration_mm_s": 1.89,
+"energy_kwh": 4459.1
+},
+{
+"id": "GRA-AHU-1_2026-05-23",
+"asset": "GRA-AHU-1",
+"date": "2026-05-23",
+"delta_t_f": 17.28,
+"vibration_mm_s": 2.41,
+"energy_kwh": 4258.5
+},
+{
+"id": "GRA-AHU-1_2026-05-24",
+"asset": "GRA-AHU-1",
+"date": "2026-05-24",
+"delta_t_f": 17.95,
+"vibration_mm_s": 1.74,
+"energy_kwh": 4497.4
+},
+{
+"id": "GRA-AHU-1_2026-05-25",
+"asset": "GRA-AHU-1",
+"date": "2026-05-25",
+"delta_t_f": 17.49,
+"vibration_mm_s": 2.12,
+"energy_kwh": 5030.2
+},
+{
+"id": "GRA-AHU-1_2026-05-26",
+"asset": "GRA-AHU-1",
+"date": "2026-05-26",
+"delta_t_f": 17.81,
+"vibration_mm_s": 1.69,
+"energy_kwh": 5003.3
+},
+{
+"id": "GRA-AHU-1_2026-05-27",
+"asset": "GRA-AHU-1",
+"date": "2026-05-27",
+"delta_t_f": 17.68,
+"vibration_mm_s": 2.06,
+"energy_kwh": 5437.3
+},
+{
+"id": "GRA-AHU-1_2026-05-28",
+"asset": "GRA-AHU-1",
+"date": "2026-05-28",
+"delta_t_f": 17.8,
+"vibration_mm_s": 1.84,
+"energy_kwh": 4897.1
+},
+{
+"id": "GRA-AHU-1_2026-05-29",
+"asset": "GRA-AHU-1",
+"date": "2026-05-29",
+"delta_t_f": 17.35,
+"vibration_mm_s": 1.97,
+"energy_kwh": 4590.1
+},
+{
+"id": "GRA-AHU-1_2026-05-30",
+"asset": "GRA-AHU-1",
+"date": "2026-05-30",
+"delta_t_f": 17.46,
+"vibration_mm_s": 1.97,
+"energy_kwh": 4291.5
+},
+{
+"id": "GRA-AHU-1_2026-05-31",
+"asset": "GRA-AHU-1",
+"date": "2026-05-31",
+"delta_t_f": 16.63,
+"vibration_mm_s": 1.89,
+"energy_kwh": 4327.7
+},
+{
+"id": "BAS-AHU-1_2026-05-01",
+"asset": "BAS-AHU-1",
+"date": "2026-05-01",
+"delta_t_f": 16.93,
+"vibration_mm_s": 1.42,
+"energy_kwh": 2317.8
+},
+{
+"id": "BAS-AHU-1_2026-05-02",
+"asset": "BAS-AHU-1",
+"date": "2026-05-02",
+"delta_t_f": 17.11,
+"vibration_mm_s": 1.35,
+"energy_kwh": 2045.0
+},
+{
+"id": "BAS-AHU-1_2026-05-03",
+"asset": "BAS-AHU-1",
+"date": "2026-05-03",
+"delta_t_f": 16.65,
+"vibration_mm_s": 1.58,
+"energy_kwh": 2100.4
+},
+{
+"id": "BAS-AHU-1_2026-05-04",
+"asset": "BAS-AHU-1",
+"date": "2026-05-04",
+"delta_t_f": 16.9,
+"vibration_mm_s": 1.66,
+"energy_kwh": 2202.3
+},
+{
+"id": "BAS-AHU-1_2026-05-05",
+"asset": "BAS-AHU-1",
+"date": "2026-05-05",
+"delta_t_f": 17.28,
+"vibration_mm_s": 1.59,
+"energy_kwh": 2332.3
+},
+{
+"id": "BAS-AHU-1_2026-05-06",
+"asset": "BAS-AHU-1",
+"date": "2026-05-06",
+"delta_t_f": 16.93,
+"vibration_mm_s": 1.59,
+"energy_kwh": 2291.0
+},
+{
+"id": "BAS-AHU-1_2026-05-07",
+"asset": "BAS-AHU-1",
+"date": "2026-05-07",
+"delta_t_f": 16.91,
+"vibration_mm_s": 1.76,
+"energy_kwh": 2356.6
+},
+{
+"id": "BAS-AHU-1_2026-05-08",
+"asset": "BAS-AHU-1",
+"date": "2026-05-08",
+"delta_t_f": 16.98,
+"vibration_mm_s": 1.55,
+"energy_kwh": 2241.9
+},
+{
+"id": "BAS-AHU-1_2026-05-09",
+"asset": "BAS-AHU-1",
+"date": "2026-05-09",
+"delta_t_f": 17.33,
+"vibration_mm_s": 2.07,
+"energy_kwh": 1990.3
+},
+{
+"id": "BAS-AHU-1_2026-05-10",
+"asset": "BAS-AHU-1",
+"date": "2026-05-10",
+"delta_t_f": 17.48,
+"vibration_mm_s": 1.68,
+"energy_kwh": 2172.0
+},
+{
+"id": "BAS-AHU-1_2026-05-11",
+"asset": "BAS-AHU-1",
+"date": "2026-05-11",
+"delta_t_f": 16.94,
+"vibration_mm_s": 1.59,
+"energy_kwh": 2344.7
+},
+{
+"id": "BAS-AHU-1_2026-05-12",
+"asset": "BAS-AHU-1",
+"date": "2026-05-12",
+"delta_t_f": 17.57,
+"vibration_mm_s": 1.54,
+"energy_kwh": 2240.7
+},
+{
+"id": "BAS-AHU-1_2026-05-13",
+"asset": "BAS-AHU-1",
+"date": "2026-05-13",
+"delta_t_f": 17.15,
+"vibration_mm_s": 1.78,
+"energy_kwh": 2295.2
+},
+{
+"id": "BAS-AHU-1_2026-05-14",
+"asset": "BAS-AHU-1",
+"date": "2026-05-14",
+"delta_t_f": 16.99,
+"vibration_mm_s": 1.38,
+"energy_kwh": 2184.8
+},
+{
+"id": "BAS-AHU-1_2026-05-15",
+"asset": "BAS-AHU-1",
+"date": "2026-05-15",
+"delta_t_f": 16.75,
+"vibration_mm_s": 1.61,
+"energy_kwh": 2548.2
+},
+{
+"id": "BAS-AHU-1_2026-05-16",
+"asset": "BAS-AHU-1",
+"date": "2026-05-16",
+"delta_t_f": 17.41,
+"vibration_mm_s": 1.73,
+"energy_kwh": 2371.4
+},
+{
+"id": "BAS-AHU-1_2026-05-17",
+"asset": "BAS-AHU-1",
+"date": "2026-05-17",
+"delta_t_f": 16.89,
+"vibration_mm_s": 1.42,
+"energy_kwh": 2055.2
+},
+{
+"id": "BAS-AHU-1_2026-05-18",
+"asset": "BAS-AHU-1",
+"date": "2026-05-18",
+"delta_t_f": 17.52,
+"vibration_mm_s": 1.85,
+"energy_kwh": 2503.8
+},
+{
+"id": "BAS-AHU-1_2026-05-19",
+"asset": "BAS-AHU-1",
+"date": "2026-05-19",
+"delta_t_f": 17.28,
+"vibration_mm_s": 1.64,
+"energy_kwh": 2243.7
+},
+{
+"id": "BAS-AHU-1_2026-05-20",
+"asset": "BAS-AHU-1",
+"date": "2026-05-20",
+"delta_t_f": 17.21,
+"vibration_mm_s": 1.65,
+"energy_kwh": 2195.8
+},
+{
+"id": "BAS-AHU-1_2026-05-21",
+"asset": "BAS-AHU-1",
+"date": "2026-05-21",
+"delta_t_f": 16.9,
+"vibration_mm_s": 1.59,
+"energy_kwh": 2215.4
+},
+{
+"id": "BAS-AHU-1_2026-05-22",
+"asset": "BAS-AHU-1",
+"date": "2026-05-22",
+"delta_t_f": 16.62,
+"vibration_mm_s": 1.49,
+"energy_kwh": 2192.5
+},
+{
+"id": "BAS-AHU-1_2026-05-23",
+"asset": "BAS-AHU-1",
+"date": "2026-05-23",
+"delta_t_f": 17.46,
+"vibration_mm_s": 1.36,
+"energy_kwh": 2148.4
+},
+{
+"id": "BAS-AHU-1_2026-05-24",
+"asset": "BAS-AHU-1",
+"date": "2026-05-24",
+"delta_t_f": 16.65,
+"vibration_mm_s": 1.73,
+"energy_kwh": 2204.1
+},
+{
+"id": "BAS-AHU-1_2026-05-25",
+"asset": "BAS-AHU-1",
+"date": "2026-05-25",
+"delta_t_f": 16.79,
+"vibration_mm_s": 1.5,
+"energy_kwh": 2406.3
+},
+{
+"id": "BAS-AHU-1_2026-05-26",
+"asset": "BAS-AHU-1",
+"date": "2026-05-26",
+"delta_t_f": 17.49,
+"vibration_mm_s": 1.53,
+"energy_kwh": 2664.5
+},
+{
+"id": "BAS-AHU-1_2026-05-27",
+"asset": "BAS-AHU-1",
+"date": "2026-05-27",
+"delta_t_f": 16.72,
+"vibration_mm_s": 1.6,
+"energy_kwh": 2642.8
+},
+{
+"id": "BAS-AHU-1_2026-05-28",
+"asset": "BAS-AHU-1",
+"date": "2026-05-28",
+"delta_t_f": 17.39,
+"vibration_mm_s": 1.56,
+"energy_kwh": 2443.3
+},
+{
+"id": "BAS-AHU-1_2026-05-29",
+"asset": "BAS-AHU-1",
+"date": "2026-05-29",
+"delta_t_f": 17.16,
+"vibration_mm_s": 1.7,
+"energy_kwh": 2288.0
+},
+{
+"id": "BAS-AHU-1_2026-05-30",
+"asset": "BAS-AHU-1",
+"date": "2026-05-30",
+"delta_t_f": 16.62,
+"vibration_mm_s": 1.52,
+"energy_kwh": 2039.1
+},
+{
+"id": "BAS-AHU-1_2026-05-31",
+"asset": "BAS-AHU-1",
+"date": "2026-05-31",
+"delta_t_f": 17.57,
+"energy_kwh": 2121.2
+},
+{
+"id": "ENG-AHU-1_2026-05-01",
+"asset": "ENG-AHU-1",
+"date": "2026-05-01",
+"delta_t_f": 16.47,
+"vibration_mm_s": 1.32,
+"energy_kwh": 5652.6
+},
+{
+"id": "ENG-AHU-1_2026-05-02",
+"asset": "ENG-AHU-1",
+"date": "2026-05-02",
+"delta_t_f": 16.54,
+"vibration_mm_s": 1.61,
+"energy_kwh": 5012.9
+},
+{
+"id": "ENG-AHU-1_2026-05-03",
+"asset": "ENG-AHU-1",
+"date": "2026-05-03",
+"delta_t_f": 16.13,
+"vibration_mm_s": 1.62,
+"energy_kwh": 4642.6
+},
+{
+"id": "ENG-AHU-1_2026-05-04",
+"asset": "ENG-AHU-1",
+"date": "2026-05-04",
+"delta_t_f": 16.34,
+"vibration_mm_s": 1.42,
+"energy_kwh": 5334.3
+},
+{
+"id": "ENG-AHU-1_2026-05-05",
+"asset": "ENG-AHU-1",
+"date": "2026-05-05",
+"delta_t_f": 15.81,
+"vibration_mm_s": 1.57,
+"energy_kwh": 5637.6
+},
+{
+"id": "ENG-AHU-1_2026-05-06",
+"asset": "ENG-AHU-1",
+"date": "2026-05-06",
+"delta_t_f": 15.86,
+"vibration_mm_s": 1.41,
+"energy_kwh": 5298.8
+},
+{
+"id": "ENG-AHU-1_2026-05-07",
+"asset": "ENG-AHU-1",
+"date": "2026-05-07",
+"delta_t_f": 15.87,
+"vibration_mm_s": 1.45,
+"energy_kwh": 5436.0
+},
+{
+"id": "ENG-AHU-1_2026-05-08",
+"asset": "ENG-AHU-1",
+"date": "2026-05-08",
+"delta_t_f": 16.43,
+"vibration_mm_s": 1.31,
+"energy_kwh": 5262.6
+},
+{
+"id": "ENG-AHU-1_2026-05-09",
+"asset": "ENG-AHU-1",
+"date": "2026-05-09",
+"delta_t_f": 15.94,
+"vibration_mm_s": 1.41,
+"energy_kwh": 4787.1
+},
+{
+"id": "ENG-AHU-1_2026-05-10",
+"asset": "ENG-AHU-1",
+"date": "2026-05-10",
+"delta_t_f": 15.7,
+"vibration_mm_s": 1.7,
+"energy_kwh": 4885.4
+},
+{
+"id": "ENG-AHU-1_2026-05-11",
+"asset": "ENG-AHU-1",
+"date": "2026-05-11",
+"delta_t_f": 16.4,
+"vibration_mm_s": 1.55,
+"energy_kwh": 5447.5
+},
+{
+"id": "ENG-AHU-1_2026-05-12",
+"asset": "ENG-AHU-1",
+"date": "2026-05-12",
+"delta_t_f": 16.27,
+"vibration_mm_s": 1.58,
+"energy_kwh": 5098.1
+},
+{
+"id": "ENG-AHU-1_2026-05-13",
+"asset": "ENG-AHU-1",
+"date": "2026-05-13",
+"delta_t_f": 15.53,
+"vibration_mm_s": 1.57,
+"energy_kwh": 5337.5
+},
+{
+"id": "ENG-AHU-1_2026-05-14",
+"asset": "ENG-AHU-1",
+"date": "2026-05-14",
+"delta_t_f": 15.96,
+"vibration_mm_s": 1.47,
+"energy_kwh": 5153.6
+},
+{
+"id": "ENG-AHU-1_2026-05-15",
+"asset": "ENG-AHU-1",
+"date": "2026-05-15",
+"delta_t_f": 16.06,
+"vibration_mm_s": 1.45,
+"energy_kwh": 5903.1
+},
+{
+"id": "ENG-AHU-1_2026-05-16",
+"asset": "ENG-AHU-1",
+"date": "2026-05-16",
+"delta_t_f": 16.15,
+"vibration_mm_s": 1.92,
+"energy_kwh": 5410.4
+},
+{
+"id": "ENG-AHU-1_2026-05-17",
+"asset": "ENG-AHU-1",
+"date": "2026-05-17",
+"delta_t_f": 15.78,
+"vibration_mm_s": 1.64,
+"energy_kwh": 5079.6
+},
+{
+"id": "ENG-AHU-1_2026-05-18",
+"asset": "ENG-AHU-1",
+"date": "2026-05-18",
+"delta_t_f": 16.2,
+"vibration_mm_s": 1.48,
+"energy_kwh": 5856.8
+},
+{
+"id": "ENG-AHU-1_2026-05-19",
+"asset": "ENG-AHU-1",
+"date": "2026-05-19",
+"delta_t_f": 15.95,
+"vibration_mm_s": 1.39,
+"energy_kwh": 5363.1
+},
+{
+"id": "ENG-AHU-1_2026-05-20",
+"asset": "ENG-AHU-1",
+"date": "2026-05-20",
+"delta_t_f": 16.57,
+"vibration_mm_s": 1.88,
+"energy_kwh": 5359.2
+},
+{
+"id": "ENG-AHU-1_2026-05-21",
+"asset": "ENG-AHU-1",
+"date": "2026-05-21",
+"delta_t_f": 16.31,
+"vibration_mm_s": 1.54,
+"energy_kwh": 5319.7
+},
+{
+"id": "ENG-AHU-1_2026-05-22",
+"asset": "ENG-AHU-1",
+"date": "2026-05-22",
+"delta_t_f": 16.13,
+"vibration_mm_s": 1.53,
+"energy_kwh": 5010.2
+},
+{
+"id": "ENG-AHU-1_2026-05-23",
+"asset": "ENG-AHU-1",
+"date": "2026-05-23",
+"delta_t_f": 16.0,
+"vibration_mm_s": 1.54,
+"energy_kwh": 4769.7
+},
+{
+"id": "ENG-AHU-1_2026-05-24",
+"asset": "ENG-AHU-1",
+"date": "2026-05-24",
+"delta_t_f": 16.46,
+"vibration_mm_s": 1.48,
+"energy_kwh": 5246.9
+},
+{
+"id": "ENG-AHU-1_2026-05-25",
+"asset": "ENG-AHU-1",
+"date": "2026-05-25",
+"delta_t_f": 16.14,
+"vibration_mm_s": 1.38,
+"energy_kwh": 5674.0
+},
+{
+"id": "ENG-AHU-1_2026-05-26",
+"asset": "ENG-AHU-1",
+"date": "2026-05-26",
+"delta_t_f": 15.92,
+"vibration_mm_s": 1.3,
+"energy_kwh": 6258.8
+},
+{
+"id": "ENG-AHU-1_2026-05-27",
+"asset": "ENG-AHU-1",
+"date": "2026-05-27",
+"delta_t_f": 16.32,
+"vibration_mm_s": 1.82,
+"energy_kwh": 6202.9
+},
+{
+"id": "ENG-AHU-1_2026-05-28",
+"asset": "ENG-AHU-1",
+"date": "2026-05-28",
+"delta_t_f": 16.25,
+"vibration_mm_s": 1.48,
+"energy_kwh": 5786.9
+},
+{
+"id": "ENG-AHU-1_2026-05-29",
+"asset": "ENG-AHU-1",
+"date": "2026-05-29",
+"delta_t_f": 16.07,
+"vibration_mm_s": 1.5,
+"energy_kwh": 5648.0
+},
+{
+"id": "ENG-AHU-1_2026-05-30",
+"asset": "ENG-AHU-1",
+"date": "2026-05-30",
+"delta_t_f": 16.14,
+"vibration_mm_s": 1.47,
+"energy_kwh": 4845.6
+},
+{
+"id": "ENG-AHU-1_2026-05-31",
+"asset": "ENG-AHU-1",
+"date": "2026-05-31",
+"delta_t_f": 16.29,
+"vibration_mm_s": 1.44,
+"energy_kwh": 4980.0
+}
+]
