@@ -32,6 +32,8 @@ You build your part inside it. Root folders are docs only.
 | Anuva   | UI Building dashboard, Asset detail, Work Orders, Agent drawer | `docs/briefs/anuva.md` |
 
 ## Docs
+- `PROJECT.md` — the project overview (pitch, demo path with real numbers, provenance, architecture,
+  ML path, data generation, how to run, results, Judge Q&A). Read this first if you're new.
 - `AGENTS.md` — rules for agents (and humans). `docs/RULES.md` — git, self-merge gate, schedule.
 - `docs/CONTRACT.md` — data contract; **§5 = C3 mapping** (types, seed, every `c3Action` call, your paths).
 - `docs/PLAN.md` pitch + demo path · `docs/RUBRIC.md` how we score · `docs/FRONTEND.md` · `docs/DATA.md` · `docs/ML.md`.
