@@ -207,8 +207,10 @@ All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint +
 - **Noted for Vibhrav:** `Briefing.generate` drafts a new PENDING_APPROVAL `WorkOrder` on *every*
   call — the Asset page calls it on every mount/asOf change, so repeated visits/demo runs will draft
   duplicate work orders for the same asset. Worth a dedup check (e.g. skip drafting if a pending WO
-  for that asset already exists) before the demo.
-- **Light/dark mode** (branch `anuva/theme-toggle`, not yet merged): `components/TopNav/ThemeToggle.tsx`
+  for that asset already exists) before the demo. Also: `BuildingDashboard.assets` rows are
+  `QueueItem`s with no `age_years`, so the §5.3 "age" column is omitted rather than invented.
+- **Light/dark mode** (merged from `anuva/theme-toggle`; the parallel `anuva/ui` night-mode variant was
+  folded into it — one `TopNav/ThemeToggle`, dark tokens only in `styles/theme-dark.css`): `components/TopNav/ThemeToggle.tsx`
   (design-system `Switch` between a sun and a moon) driving the template's existing `hooks/useTheme.ts`,
   plus `styles/theme-dark.css` giving the `--bib-*` tokens their dark values — the C3 `.dark` block in
   `tokens.css` already covers `--c3-style-*`, and charts re-theme for free because `chartTheme.ts` passes

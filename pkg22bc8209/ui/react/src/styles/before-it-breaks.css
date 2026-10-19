@@ -74,6 +74,8 @@
   --bib-status-soft: var(--bib-status-offline-soft);
 }
 
+/* Dark values for every --bib-* token live in styles/theme-dark.css (scoped to `.dark`). */
+
 [data-status='HEALTHY'] {
   --bib-status-color: var(--bib-status-healthy);
   --bib-status-soft: var(--bib-status-healthy-soft);
