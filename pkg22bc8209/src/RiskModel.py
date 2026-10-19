@@ -79,6 +79,15 @@ def _score_asset(aid, g, system, age_years, weather, failed_windows, thr):
     hdd = np.maximum(0.0, 60.0 - tavg)
     dd = cdd if system == "cooling" else (hdd if system == "heating" else cdd + hdd)
 
+    # Days inside a FAILED window never enter any baseline: an outage (idle equipment, collapsed
+    # pressure) would otherwise teach the model that "broken" is normal and make the recovery
+    # look like a 200%+ energy spike.
+    windows = [(lo, hi) for lo, hi in failed_windows]
+    failed_mask = np.array([any(lo <= d <= hi for lo, hi in windows) for d in g["date"]], dtype=bool)
+    for c in list(SENSOR_COL.values()) + ["energy_kwh"]:
+        if c in g:
+            g.loc[failed_mask, c] = np.nan
+
     energy = g["energy_kwh"].astype(float).values
     expected = _expected_energy(energy, dd)
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -98,7 +107,9 @@ def _score_asset(aid, g, system, age_years, weather, failed_windows, thr):
         sd = x.rolling(BASELINE_WINDOW, min_periods=5).std().shift(1).fillna(0.0).clip(lower=FLOORS[sig])
         raw = DIRECTION[sig] * (x - m) / sd
         delta[sig] = x - m
-        z[sig] = raw.clip(lower=0.0).rolling(3, min_periods=1).mean()
+        # 3-day rolling MEDIAN (not mean): a one-day spike (decoy D1) is removed outright,
+        # while genuine monotone drift passes through unchanged after the first two days.
+        z[sig] = raw.clip(lower=0.0).rolling(3, min_periods=1).median()
 
     n = len(g)
     rows = []
@@ -109,20 +120,24 @@ def _score_asset(aid, g, system, age_years, weather, failed_windows, thr):
     prev_status = None
     days_in = 0
     age_mult = 1.0 + float(age_years or 0) / 60.0
-    windows = [(lo, hi) for lo, hi in failed_windows]
+    prev_driver = None
+    prev_label = None
 
     for i in range(n):
         date = g.at[i, "date"]
         avail = {sig: float(z[sig].iat[i]) for sig in SIGNALS if not np.isnan(z[sig].iat[i])}
         sensors_present = any(not np.isnan(float(g.at[i, c])) for c in SENSOR_COL.values() if c in g) or not np.isnan(energy[i])
         if not avail or not sensors_present:
+            # Missing data never raises risk (decoy D2): decay and keep yesterday's explanation.
             risk = prev_risk * 0.9
             contrib = {}
             driver = None
         else:
             wsum = sum(WEIGHTS[s] for s in avail)
             weighted = {s: WEIGHTS[s] / wsum * avail[s] for s in avail}
-            risk = sum(weighted.values())
+            # Weighted mean alone dilutes a single screaming sensor (a bearing failure shows only
+            # in vibration), so blend in the dominant signal: 0.6 × weighted mean + 0.4 × max z.
+            risk = 0.6 * sum(weighted.values()) + 0.4 * max(avail.values())
             risk *= age_mult
             if system == "heating" and tavg[i] < 0:
                 risk *= 1.3
@@ -132,7 +147,7 @@ def _score_asset(aid, g, system, age_years, weather, failed_windows, thr):
             contrib = {s: (weighted[s] / total if total > 0 else 1.0 / len(weighted)) for s in weighted}
             driver = max(weighted, key=weighted.get) if total > 0 else "pressure" if "pressure" in avail else list(avail)[0]
 
-        failed = any(lo <= date <= hi for lo, hi in windows)
+        failed = bool(failed_mask[i])
         if failed:
             status = "FAILED"
             due = False
@@ -149,7 +164,12 @@ def _score_asset(aid, g, system, age_years, weather, failed_windows, thr):
         prev_status = status
         prev_risk = risk
 
-        d_delta = _clean(delta[driver].iat[i]) if driver else None
+        if driver:
+            d_delta = _clean(delta[driver].iat[i])
+            label = _label(driver, d_delta, _clean(pct[i]))
+            prev_driver, prev_label = driver, label
+        else:
+            driver, label = prev_driver, prev_label
         row = {
             "id": "%s_%s" % (aid, date),
             "asset": {"id": aid},
@@ -157,7 +177,7 @@ def _score_asset(aid, g, system, age_years, weather, failed_windows, thr):
             "risk": round(float(risk), 3),
             "status": status,
             "driver": driver,
-            "driver_label": _label(driver, d_delta, _clean(pct[i])) if driver else None,
+            "driver_label": label,
             "expected_energy_kwh": _clean(expected[i]),
             "energy_over_expected_pct": round(_clean(pct[i]), 2) if _clean(pct[i]) is not None else None,
             "days_in_status": days_in,

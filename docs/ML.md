@@ -25,9 +25,10 @@ For each asset and day:
    vibration 0.1 mm/s, energy-pct 1.0).
 2. Direction-adjust so positive = bad: pressure falling, flow imbalance rising, ΔT shrinking,
    vibration rising, energy_over_expected rising. Clip negatives to 0.
-3. Smooth each with a 3-day rolling mean.
-4. Weighted sum: pressure 0.25, flow imbalance 0.25, ΔT 0.15, vibration 0.15, energy 0.20 —
-   renormalized over signals that are non-null that day.
+3. Smooth each with a 3-day rolling **median** (changed from mean on Oct 19 after decoy D1 fired at 3.0: a mean smears a one-day spike across 3 days, which then satisfies the 2-day persistence rule; a median removes it and still passes monotone drift).
+4. `risk = 0.6 × weighted mean + 0.4 × max z` with weights pressure 0.25, flow imbalance 0.25, ΔT 0.15, vibration 0.15, energy 0.20 —
+   renormalized over signals that are non-null that day. (The max term was added Oct 19 because the pure weighted mean diluted a bearing failure visible only in vibration — z≈6 averaged with two quiet signals stayed under 3.0 and F3 was missed.)
+   Days inside a FAILED window are excluded from every baseline window, so an outage never becomes "normal" and the post-repair recovery never reads as an energy spike.
 5. Multipliers: `× (1 + age_years / 60)`; heating assets `× 1.3` when `tavg_f < 0`; cooling assets
    `× 1.2` when `tmax_f > 85`.
 6. `driver` = signal with the largest weighted contribution; `contrib_*` = shares summing to 1.

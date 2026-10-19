@@ -172,10 +172,19 @@ def compute(cls, as_of):
     if due:
         top = due[0]
         labs = sum(1 for bid in top["_served_ids"] if buildings_by_id.get(bid) is not None and buildings_by_id[bid].criticality in ("research_lab", "patient_care"))
-        brief = "%d asset%s need%s inspection. The %s has %s for %d day%s and serves %d building%s%s." % (
+        recent = _fetch("RiskScore", "date, status", "asset.id == '" + top["asset_id"] + "' && date <= '" + as_of + "' && date >= '" + _shift(as_of, -45) + "'")
+        drifting = 0
+        for r in sorted(recent, key=lambda r: r.date, reverse=True):
+            if r.status in ("WATCH", "INSPECTION_DUE", "FAILED"):
+                drifting += 1
+            else:
+                break
+        drifting = max(drifting, 1)
+        name = top["name"][0].lower() + top["name"][1:] if top["name"] else top["asset_id"]
+        brief = "%d asset%s need%s inspection. The %s has shown %s for %d day%s and serves %d building%s%s." % (
             len(due), "" if len(due) == 1 else "s", "s" if len(due) == 1 else "",
-            top["name"], top["driver_label"] or "drifted from its normal", top["days_in_status"],
-            "" if top["days_in_status"] == 1 else "s", top["buildings_served"],
+            name, top["driver_label"] or "drift from its normal", drifting,
+            "" if drifting == 1 else "s", top["buildings_served"],
             "" if top["buildings_served"] == 1 else "s",
             (", including %d research lab%s" % (labs, "" if labs == 1 else "s")) if labs else "")
     elif watch:

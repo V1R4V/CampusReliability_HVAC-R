@@ -35,6 +35,26 @@ def _wo_json(w):
     }
 
 
+FALLING = ("pressure", "delta_t")  # signals whose "bad" direction is down
+
+
+def _days_drifting(asset_id, as_of):
+    """Consecutive days up to as_of the asset has been off HEALTHY (WATCH/INSPECTION_DUE/FAILED)."""
+    rows = _fetch("RiskScore", "date, status", "asset.id == '" + asset_id + "' && date <= '" + as_of + "'")
+    rows.sort(key=lambda r: r.date, reverse=True)
+    n = 0
+    for r in rows:
+        if r.status in ("WATCH", "INSPECTION_DUE", "FAILED"):
+            n += 1
+        else:
+            break
+    return max(n, 1)
+
+
+def _trend_word(sig):
+    return "falling" if sig in FALLING else "rising"
+
+
 def _short_name(b):
     n = b.name or b.id
     for suffix in (" Building", " Hall"):
@@ -101,7 +121,7 @@ def generate(cls, asset_id, as_of):
     contribs.sort(key=lambda t: -t[1])
 
     status = q["status"]
-    days = q["days_in_status"]
+    days = _days_drifting(asset_id, as_of) if status != "HEALTHY" else 0
     pct = q["energy_over_expected_pct"] or 0.0
     driver_label = q["driver_label"] or "drifting from its normal"
     is_cooling = asset.system == "cooling"
@@ -124,11 +144,13 @@ def generate(cls, asset_id, as_of):
                 sentences.append("Energy is also %+.1f%% over its weather-expected use." % pct)
             else:
                 sentences.append("%s is also drifting (%d%% of the risk)." % (SIGNAL_NAME[second], int(round(contribs[1][1] * 100))))
-    if pct and status != "HEALTHY":
+    if pct >= 1.0 and status != "HEALTHY":
         sentences.append("It is running %.1f%% over its normal energy use." % pct)
-    if served:
-        sentences.append("It serves %d building%s, including %s%s." % (
-            len(served), "" if len(served) == 1 else "s", top_names,
+    if len(served) == 1:
+        sentences.append("It serves %s." % served[0].name)
+    elif served:
+        sentences.append("It serves %d buildings, including %s%s." % (
+            len(served), top_names,
             (" (%d research lab%s)" % (len(labs), "" if len(labs) == 1 else "s")) if labs and len(served) > 2 else ""))
     if is_cooling and cost and status != "HEALTHY":
         sentences.append("If it fails: %d temporary chiller%s, %s." % (chillers, "" if chillers == 1 else "s", cost_k))
@@ -140,8 +162,11 @@ def generate(cls, asset_id, as_of):
         for sig, c in contribs[1:3]:
             if sig != "energy" and c >= 0.05:
                 bullets.append("%s (%d%%)" % (SIGNAL_NAME[sig], int(round(c * 100))))
-    bullets.append("Energy %+.1f%% over weather-expected" % pct)
-    bullets.append("Serves %d building%s · %d research lab%s" % (len(served), "" if len(served) == 1 else "s", len(labs), "" if len(labs) == 1 else "s"))
+    bullets.append("Energy %+.1f%% vs weather-expected" % pct)
+    if labs:
+        bullets.append("Serves %d building%s · %d research lab%s" % (len(served), "" if len(served) == 1 else "s", len(labs), "" if len(labs) == 1 else "s"))
+    else:
+        bullets.append("Serves %d building%s" % (len(served), "" if len(served) == 1 else "s"))
     if is_cooling and cost:
         bullets.append("Plan B if it fails: %d chillers · %s (estimate)" % (chillers, cost_k.replace(" a day", "/day")))
 
@@ -152,7 +177,7 @@ def generate(cls, asset_id, as_of):
         priority = 1 if status in ("INSPECTION_DUE", "FAILED") and q["impact"] >= top_quartile else 2
         description = "%s %d day%s%s. Inspect %s." % (
             driver_label[0].upper() + driver_label[1:], days, "" if days == 1 else "s",
-            (" and %s rising" % SIGNAL_NAME[contribs[1][0]].lower()) if len(contribs) > 1 and contribs[1][0] not in ("energy",) and contribs[1][1] >= 0.15 else "",
+            (" and %s %s" % (SIGNAL_NAME[contribs[1][0]] if contribs[1][0] == "delta_t" else SIGNAL_NAME[contribs[1][0]].lower(), _trend_word(contribs[1][0]))) if len(contribs) > 1 and contribs[1][0] not in ("energy",) and contribs[1][1] >= 0.15 else "",
             {"chw_main": "the segment supply line and isolation valves",
              "chiller": "compressor bearings, refrigerant charge and condenser approach",
              "ahu": "fan bearings, belts and coil ΔT",
