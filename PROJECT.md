@@ -1,367 +1,290 @@
-# Before It Breaks — predictive maintenance + Plan B for UW–Madison campus utilities
+# Before It Breaks
 
-Team **zeroday@c3** · C3 AI hackathon, Oct 19 2026 · one C3 package: `pkg22bc8209/`
+**Predictive maintenance and outage planning for UW–Madison campus utilities.**
+Team zeroday@c3 · C3 AI hackathon, October 19 2026 · one C3 package: `pkg22bc8209/`
 
-On June 17, 2026 a chilled-water supply main (~4 ft wide, ~20 ft underground) broke near the
-Charter Street plant. 23 buildings closed and 11 more partly closed during a statewide heat
-emergency; the bill was **$15.8M, and ~$10.0M (63%) of it was renting temporary chillers**. The
-expensive part was not the pipe — it was being caught unprepared. *Before It Breaks* is an agent for
-UW Facilities (FP&M) that watches every monitored cooling, heating and air-handling asset on
-campus against its own weather-adjusted normal, says **"inspection due"** on whichever is most
-likely to fail next, ranks the queue by the buildings and dollars at stake, flags the energy each
-degrading asset wastes while it degrades, drafts the work order as **PENDING APPROVAL** (a human
-approves; nothing is auto-executed), and has **Plan B** — who loses cooling, in what order, how many
-rental chillers, $/day — ready before the failure. It replays Jan 1 → Aug 31 2026 on real Madison
-weather with a planted reenactment of the June 17 break. Fix it before it breaks.
+> This file is the project README. It is named `PROJECT.md` because the C3 package upload rejects a
+> file called `README.md`; rename it on GitHub after the upload if you want it as the landing page.
 
 ---
 
-## 1. What you see — the demo path (≈85 s)
+## 1. The problem
 
-Six steps, from `docs/PLAN.md` §7, with the numbers the running app produces on the current seed
-(`docs/ML.md` §7, `pkg22bc8209/src/WORKSPACE_SUMMARY.md`, validated 2026-10-19):
+On **June 17, 2026** a chilled-water supply main broke near the Charter Street plant. 23 campus
+buildings closed and 11 more partly closed during a heat emergency; buildings did not fully reopen
+until August 10. The bill was **$15.8M**, and **$10M of it was renting temporary chillers**, because
+nobody knew in advance which buildings would lose cooling, in what order, or how many chillers to
+stage. UW carries a ~$1.5B deferred-maintenance backlog and spends roughly a third of what peer
+campuses spend on prevention; the Regents were warned about exactly this in 2019.
 
-1. **Overview on the January cold-snap warning date.** The Vilas Hall unit heater `VIL-UH-2` tops
-   the ranked queue — first `INSPECTION_DUE` on **Jan 22**, six days before its planted failure on
-   Jan 28. "This is what the Regents heard in 2019."
-2. **Asset detail → agent briefing → Approve.** The briefing names the driving signal, the energy
-   over normal and the buildings served, and the drafted work order (FP&M format `WO 26-0NNNNN`)
-   flips from pending to approved.
-3. **Click the black "Real break" marker on the scrubber.** It lands 8 days earlier, on **~Jun 9**;
-   the S3 "Bascom Hill loop" main turns red on the schematic. `S3-PIPE` first went `INSPECTION_DUE`
-   on **Jun 8**, 9 days before the Jun 17 failure, and ranks #1 with its 9 buildings. Labeled
-   "Reenactment of the real June 17 event."
-4. **Read the S3-PIPE briefing** — buildings served, pressure falling + flow imbalance rising (leak
-   signal), energy over normal, $/day if it fails — then **Approve**. The Predictions panel on the
-   same page shows the four forecasts for Jun 9: heuristic **0.92** · classifier **0.72** ·
-   Monte Carlo **0.94** (days to failure p10/p50/p90 = 1/3/11) · Weibull age-only **0.002** →
-   consensus **0.86** (spread 0.22). Every healthy asset that day: consensus ≤ 0.06.
-5. **Plan B → S3 → Simulate failure.** Buildings go dark in criticality order, labs first; totals
-   for all nine buildings: **18 chillers / $66,672 per day** (ESTIMATE), shown next to the real tile
-   (**$15.8M · ~30 chillers · ~$111K/day · 23 closed + 11 partial**). Priority-only staging
-   (patient care + research labs) at 95 °F: 8 chillers / $29,632 per day.
-6. **Backtest → slide the threshold.** At 3.0 all five planted failures are flagged with lead
-   times of **6 / 6 / 6 / 9 / 7 days**, **2 false-alarm days**, all **4 decoys ignored**. Moving the
-   slider trades lead time against false alarms live.
+The expensive part was not the pipe. It was being caught unprepared.
 
----
+## 2. What Before It Breaks does
 
-## 2. Honesty / provenance
+A facilities manager opens it at 7 a.m. and gets three answers:
 
-Every number in the UI carries a chip. The labels below are the ones used in the data (`source`,
-`synthetic`) and on screen.
+| Question | Page | What the system does |
+|---|---|---|
+| **What needs attention today?** | Overview | Scores every monitored cooling, heating and air-handling asset against its *own* weather-adjusted normal, says **Inspection due** on the ones drifting toward failure, and ranks them by the buildings and dollars at stake. |
+| **Why, and what do I do?** | Asset detail | Shows which signals are drifting and by how much, four independent probabilities that the asset fails in the next 14 days, an agent-written briefing, and a drafted work order that waits for a human to approve. |
+| **What happens if I don't?** | Outage plan | For any chilled-water loop: who loses cooling, in what order (labs and patient care first), how many rental chillers, what it costs per day, next to what the real June outage cost. |
 
-| Label | What |
+Plus the everyday payoff: every degrading asset is also shown running **X% over its weather-expected
+energy**, so the same alert saves money in the weeks when nothing breaks.
+
+The app replays **January 1 to August 31, 2026** on real Madison weather, with five planted equipment
+failures (including a reenactment of the June 17 break) and four decoys that a naive alarm would
+have fired on. A date scrubber in the top bar moves the whole app through time.
+
+## 3. System design
+
+```
+                      ┌─────────────────────────────── C3 AI platform ───────────────────────────────┐
+  real NOAA weather ──┤  seed JSON                 entity types                 API types (json)       │
+  synthetic sensors ──┤  data/<Type>/*.json  ──►  Plant, LoopSegment,  ──►  CampusSnapshot.compute   │
+  real buildings,     │        │                   Building, Asset,         BuildingDashboard.compute │
+  plants, costs       │  upsertSeedData            WeatherDay,              AssetHistory.get          │
+                      │        │                   SensorReading,           Briefing.generate         │
+                      │        ▼                   FailureEvent,            PlanB.simulate            │
+                      │  RiskModel.score_all ──►  RiskScore (4,860)        Backtest.run              │
+                      │        │                                            RiskForecast.compare     │
+                      │        ▼                                            RiskForecast.campus      │
+                      │  RiskModel.forecast_all ─► RiskForecast (19,440)    FacilitiesAgent.ask      │
+                      │                            WorkOrder (approve/dismiss members)               │
+                      └──────────────────────────────────────┬───────────────────────────────────────┘
+                                                             │  c3Action(type, method, [args])
+                      ┌──────────────────────────────────────┴───────────────────────────────────────┐
+                      │  React + TypeScript + Vite  (ui/react/src)                                   │
+                      │  AsOfProvider (one global date, campus snapshot, events, threshold)          │
+                      │  shared/api/*  →  pages: Overview · Buildings · Building · Asset ·            │
+                      │                   Outage plan · Work orders · Predictions · Backtest          │
+                      └──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Design choices and why
+
+| Choice | Why |
 |---|---|
-| **REAL** | Daily weather Jan 1 – Aug 31 2026 from NOAA GHCN-Daily station `USW00014837` (Madison Dane County Regional Airport; `tavg_f` derived as (tmax+tmin)/2 where NOAA omits it). The three plants (Charter Street Heating Plant, Walnut Street Heating Plant, West Campus Cogeneration Facility) and the campus building names. The outage facts: $15.8M total, ~$10.0M rentals, ~$4.0M extra deterioration found, ~$1.8M line repair, ~30 chillers, 23 closed + 11 partial, Jun 17 → reopen Aug 10 (Cap Times Oct 8 2026; WPR; UW News). FP&M's work-order ID format `WO 26-0NNNNN` and preventive-maintenance asset categories (May 2021 Physical Plant Operations Report). |
-| **SYNTHETIC** | All sensor readings (pressure, flow imbalance, ΔT, vibration, daily energy) — UW does not publish building-automation data. The chilled-water loop layout (3 plants → 6 segments → buildings) and the building-to-segment assignment. The planted failures **F1–F5** and decoys **D1–D4**. |
-| **ESTIMATE** | `$3,704` per rental chiller per day (= $10M ÷ ~30 chillers ÷ ~90 days). `~$111K/day` campus rental burn in June (same arithmetic). `$0.10/kWh` for energy-waste dollars. 400 tons per rental chiller. Building `peak_load_tons` (gsf/250 for labs and patient care, gsf/400 otherwise). |
+| **Everything is precomputed over the whole replay** (`RiskScore`, `RiskForecast` rows per asset per day). | The UI's date scrubber must be instant on a projector. Every page call is a read; nothing heavy runs during the demo. |
+| **One C3 package, entity types in `src/`, seed JSON in `data/`, React in `ui/react/`.** | C3 Code builds, syncs and serves all three together; one place to deploy. |
+| **A frozen data contract (`docs/CONTRACT.md`) with fixtures for every call.** | Four people and four coding agents built in parallel. Field names, units, enums and payload shapes were fixed first so the UI could be built against fixtures while the backend was being written, then flipped to live calls with no page changes. |
+| **API methods return `json` in exactly the fixture shape.** | Avoids ~25 result types and keeps the contract the single source of truth. |
+| **Each asset is compared with its own 30-day normal, and energy is weather-normalised** (degree-day regression). | A 1965 pipe and a 2014 chiller have different normals; a heat wave raises every chiller's energy without anything being wrong. Both are handled by construction, not by hand-tuned thresholds. |
+| **Status needs persistence** (two consecutive days over threshold) **with hysteresis**. | A one-day spike is noise. A naive alarm fires on it; this does not. |
+| **Four forecasting methods, shown side by side, with a consensus.** | One probability is a black box. When a calibrated rule, a classifier and a Monte Carlo simulation agree and the age-only baseline does not, the disagreement itself is the insight ("age-based maintenance would have missed this"). |
+| **The agent drafts, a person approves.** | Every work order is `PENDING_APPROVAL` until a manager clicks Approve. Nothing is auto-executed. |
+| **Colour means status only.** Systems are icons. One status pill everywhere. One global as-of date. | Projector-first design; a manager reads colour as "how bad", never as "which system". |
+| **Provenance stated in the pitch, not on every card.** | An earlier version carried REAL / SYNTHETIC / ESTIMATE chips on every panel; they cluttered the screens. The honesty is now in §4 of this file and in the spoken pitch. |
 
-Two further caveats, stated rather than hidden:
+## 4. Data: what is real, what is synthetic, how it gets in
 
-- `F4` on `S3-PIPE` is labeled **"Reenactment of the real June 17 event"**, and `R1` (the actual
-  break, `synthetic = false`) is drawn as a separate black marker. The reenactment's sensor drift is
-  planted from May 30.
-- In the interim seed currently in the package, building `year_built` / `gsf` carry
-  `source: placeholder` (fixture-derived) pending the real pull described in `docs/DATA.md` §1;
-  names and plant identities are real.
+### Provenance (say this before the judges ask)
 
-**The failures were planted; this proves the pipeline, not that the real break was predictable.**
+| | Source |
+|---|---|
+| **Real** | Daily weather, Jan 1 to Aug 31 2026: NOAA GHCN-Daily station `USW00014837`, Madison Dane County Regional Airport (`tavg_f` derived as the mean of max and min where NOAA omits it). The three plants and the campus building names. The outage facts: $15.8M total, ~$10M rentals, ~$4M deterioration found, ~$1.8M line repair, ~30 chillers, 23 closed + 11 partial, Jun 17 to Aug 10 (Cap Times, WPR, UW News). FP&M's work-order number format `WO 26-0NNNNN` and preventive-maintenance asset categories. |
+| **Synthetic** | All sensor readings: UW does not publish building-automation data. The chilled-water loop layout (3 plants, 6 loops, which buildings each loop serves). The five planted failures and four decoys, including the June 17 reenactment. |
+| **Estimate** | $3,704 per rental chiller per day ($10M ÷ ~30 chillers ÷ ~90 days); ~$111K/day campus rental burn; $0.10/kWh; 400 tons per rental chiller; building peak load from square footage. |
 
----
+**The failures were planted. The backtest proves the pipeline detects physically shaped degradation
+and ignores the decoys; it does not prove the real June 17 break was predictable.**
 
-## 3. Architecture
+### Ingestion strategy
 
-One C3 AI package, `pkg22bc8209/`. Backend = C3 entity types + Python implementations in `src/`;
-seed JSON in `data/<Type>/`; React (TypeScript, Vite) in `ui/react/src/`. All risk and forecast
-rows are precomputed over the whole replay, so every UI call is a cheap read and the as-of scrubber
-is instant — nothing heavy runs during the demo. Root folders (`docs/`, `contract/`, `tools/`) hold
-docs, fixtures and the generator only.
+1. **Seed files are the source of truth.** Every table is a JSON array in `pkg22bc8209/data/<Type>/`
+   (string ids, references as plain id strings, null keys omitted, `SensorReading` chunked by month).
+   `upsertSeedData` loads them into the C3 entity types.
+2. **Weather is pulled, not typed.** `tools/datagen/interim_generator.py` fetches NOAA GHCN-Daily over
+   HTTP (cached in `tools/datagen/raw/`), derives `tavg_f`, and writes `WeatherDay/weather_2026.json`
+   with the station in `source`.
+3. **Sensors are generated with physics, driven by the real weather.** The same script writes one
+   row per asset per day for 20 assets × 243 days: each asset type reports only the sensors it would
+   really have (a chilled-water main: pressure, flow imbalance, ΔT, pumping energy; a chiller: ΔT,
+   vibration, energy); healthy values are a fixed per-asset baseline plus Gaussian noise at realistic
+   σ (ISO 10816 vibration bands); daily energy follows the ASHRAE degree-day form (cooling scales with
+   CDD base 55 °F, heating with HDD base 60 °F, AHUs both ways with a weekend dip); ~2% of readings
+   are missing at random. Failure modes follow the LBNL/PNNL chiller-plant fault taxonomy (leak →
+   pressure + flow imbalance; bearing → vibration + energy; fouling → ΔT + energy) and ramp convexly
+   from `onset_date` to the failure day. Decoys D1 (one-day vibration spike), D2 (five-day sensor
+   dropout) and D4 (slow year-long aging drift) are planted; D3 is the **real** July 12 to 17 heat wave.
+   The generator is deterministic (`SEED = 20260617`) and reads the events from
+   `data/FailureEvent/events.json`, so changing an event changes the data.
+4. **Derived tables are computed, never seeded.** After any seed change, one call at a time:
+   `upsertSeedData` → `RiskModel.score_all(3.0)` → `RiskModel.forecast_all()` → `Backtest.run(3.0)`.
+   Both compute steps wipe their table before writing (a partial merge would keep stale fields).
+5. **Swapping in real data needs no code change.** A production feed (building-automation history,
+   a work-order system) maps onto the same `SensorReading` / `WorkOrder` shapes, so the path to adoption
+   is a C3 integration into those two types, then the same run order. Devansh's fuller generator (real
+   building facts, ~25 buildings, ~60 assets) overwrites the same file names and ids.
 
-### Entity types (`src/*.c3typ`, contract snake_case)
+## 5. The model
 
-| Type | Purpose | Provenance |
-|---|---|---|
-| `Plant` | Utility plant (`CHARTER`, `WALNUT`, `WCCF`) with lat/lon | REAL |
-| `LoopSegment` | Chilled-water loop segment `S1`…`S6`, fed by one plant; `S3` is the reenactment segment | SYNTHETIC topology |
-| `Building` | Campus building (slug id), segment, criticality, year/gsf, `peak_load_tons`, `source` | names REAL; assignment SYNTHETIC |
-| `Asset` | Monitored equipment or pipe (`S3-PIPE`, `WAL-CHL-2`, …); `system`, `asset_type`, age | SYNTHETIC inventory, REAL categories |
-| `WeatherDay` | One real day of Madison weather (id = date) | REAL |
-| `SensorReading` | One synthetic daily sensor row per asset (id `<asset>_<date>`; missing = null, never 0) | SYNTHETIC |
-| `FailureEvent` | Ground truth: `failure` F1–F5, `decoy` D1–D4, `real_reference` R1 | planted / REAL marker |
-| `RiskScore` | Model output per asset-day: risk, status, driver, z-scores, contributions, expected energy — **computed, not seeded** | derived |
-| `RiskForecast` | Per asset-day-method failure probabilities (7/14/30 d), days-to-failure, confidence — computed | derived |
-| `WorkOrder` | Agent-drafted order, `PENDING_APPROVAL` → `approve(approver)` / `dismiss(reason)` members | REAL id format |
+### Stage 1: the risk score (`RiskModel.score_all`, `src/RiskModel.py`)
 
-### API types and the contract calls they implement (`docs/CONTRACT.md` §5.2)
+For each asset and day:
 
-Each static method returns `json` in the exact shape of its fixture in `contract/fixtures/`.
-Arguments go to `c3Action` as a positional array.
+1. **Weather-normalised energy baseline.** Regress daily energy on degree-days over a trailing
+   60-day window ending 7 days before the scored day (so a slow degradation never teaches the baseline
+   that "bad is normal"). `energy_over_expected_pct = (actual − expected) / expected`. A slope is
+   trusted only with real degree-day support (≥ 5 days with degree-days > 0 and ≥ 1 degree-day of
+   spread) and is never extrapolated more than 5 degree-days past the window; otherwise expected is
+   **unknown** and energy is excluded that day. Without that rule the first warm days of spring read as
+   "+300% energy" on every chiller: the single biggest source of false alarms found while building.
+2. **Z-scores per signal** against the asset's own previous 30 days, direction-adjusted so positive is
+   bad (pressure falling, flow imbalance rising, ΔT shrinking, vibration rising, energy rising),
+   clipped at zero, smoothed with a 3-day rolling **median** (kills a one-day spike, passes drift).
+3. **Risk** = 0.6 × weighted mean (pressure .25, flow .25, ΔT .15, vibration .15, energy .20, renormalised
+   over present signals) + 0.4 × max z (so a bearing failure visible only in vibration is not diluted),
+   × (1 + age/60), × 1.3 for heating below 0 °F, × 1.2 for cooling above 85 °F. All-null days decay the
+   previous risk by 10% and never raise it.
+4. **Status.** `WATCH` at risk ≥ 2.0; `INSPECTION_DUE` at risk ≥ 3.0 on two consecutive days, held while
+   ≥ 2.0, cleared after two days below; `FAILED` inside a failure event's window; else `HEALTHY`.
+5. **Ranking.** Inspection due first, then failed, then risk × impact, where impact weights the
+   buildings served by criticality (patient care 4, lab 3, instruction 2, office 1) and peak load.
 
-| Contract call | C3 call | Page(s) |
-|---|---|---|
-| `campusSnapshot(asOf)` | `CampusSnapshot.compute(as_of)` | Shell, Overview, Buildings |
-| `building(buildingId, asOf)` | `BuildingDashboard.compute(building_id, as_of)` | Building dashboard |
-| `assetHistory(assetId)` | `AssetHistory.get(asset_id)` | Asset detail |
-| `briefing(assetId, asOf)` | `Briefing.generate(asset_id, as_of)` — template text; drafts a `PENDING_APPROVAL` work order | Asset detail |
-| `simulatePlanB(seg, tempF, priorityOnly)` | `PlanB.simulate(segment_id, temp_f, priority_only)` | Plan B, Building dashboard |
-| `backtest(threshold)` | `Backtest.run(threshold)` | Backtest |
-| `workOrders()` | built-in `WorkOrder.fetch` | Work Orders |
-| `approveWorkOrder` / `dismissWorkOrder` | member `WorkOrder.approve(approver)` / `WorkOrder.dismiss(reason)` | Asset detail, Work Orders |
-| `ask(question, asOf)` | `FacilitiesAgent.ask(question, as_of)` — intents: inspect / Plan B / energy; proposed actions never executed | Agent drawer |
-| `events()` | built-in `FailureEvent.fetch` | Scrubber markers, charts |
-| `riskForecast(assetId, asOf)` | `RiskForecast.compare(asset_id, as_of)` | Asset detail (four probabilities side by side) |
-| `riskForecastCampus(asOf)` | `RiskForecast.campus(as_of)` | Predictions |
-| — | `RiskModel.score_all(threshold)` / `RiskModel.forecast_all()` | offline, writes `RiskScore` / `RiskForecast` |
-
-### React UI (`ui/react/src/`)
-
-- **Routes** (`App.tsx`): `/` → `/overview` · `/overview` · `/buildings` · `/building/:buildingId` ·
-  `/asset/:assetId` · `/planb/:segment?` · `/workorders` · `/predictions` · `/backtest` · `*` not found.
-  Pages are code-split with a per-route error boundary and a one-time chunk reload on load failure.
-- **Side nav** (`config/navigation.ts`): Overview, Buildings, Plan B, Work orders (badge = pending
-  approvals), Predictions, Backtest.
-- **Global as-of scrubber** (`contexts/AsOfProvider.tsx`, rendered in `TopNav` outside the router):
-  one `asOf` date for the whole app (Jan 1 → Aug 31 2026, ◀ ▶ step a day, Play = 1 day / 300 ms),
-  failure markers in red and the "Real break" in black — clicking a marker lands 8 days before it,
-  so the demo lands on the warning, not the failure. One debounced `campusSnapshot(asOf)` per date is
-  shared by shell, Overview and Buildings; `asOf` persists in sessionStorage. The weather chip shows
-  the real `tmax_f` for the day with a REAL chip. Threshold (default 3.0) changes only on Backtest.
-- **Data layer**: pages never call `c3Action` directly; everything goes through `shared/api/`
-  (`index.ts`, `anuva.ts`, `forecast.ts`). `VITE_USE_FIXTURES=true` swaps in `contract/fixtures/*.json`
-  for development without a backend; it defaults off and is never committed on.
-- **Design rules**: color means status only (`StatusPill`: Healthy / Watch / Inspection due /
-  Failed); systems use icons, never color; REAL / SYNTHETIC / ESTIMATE `ProvenanceChip`s on costs,
-  weather, sensor charts and derived dollars; light theme, projector-first; every panel has
-  loading / empty / error states.
-
----
-
-## 4. The ML path
-
-Specified in `docs/ML.md`; implemented in `src/RiskModel.py` (pandas/numpy) and `src/RiskForecast.py`.
-
-### Stage 1 — `RiskScore`: how abnormal is this asset today? (`RiskModel.score_all(threshold)`)
-
-1. **Weather-normalized energy baseline** (degree-day regression, ASHRAE Guideline 14 style).
-   Cooling `expected = a + b × CDD`, `CDD = max(0, tavg_f − 55)`; heating `a + b × HDD`,
-   `HDD = max(0, 60 − tavg_f)`; air uses both. Fit on a trailing 60-day window ending 7 days before
-   the scored day, so a slow degradation never teaches the baseline that "bad is normal". Days inside
-   a FAILED window are excluded from every baseline window.
-   **No degree-day support → expected is unknown:** a slope is trusted only when the fit window has
-   ≥ 5 days with degree-days > 0 and ≥ 1 degree-day of spread, and is extrapolated at most 5
-   degree-days past the window's range. Otherwise `expected` is null, the energy signal is excluded
-   that day and the weights renormalise. Without this rule the first warm days of spring (a winter
-   of zero CDD behind them) read as "+300% energy" on every chiller — the single largest source of
-   false alarms found in testing. It is also what keeps the real July heat wave (D3) from firing.
-2. **30-day z-scores per signal** against the asset's own previous 30 days (excluding today), with
-   floors (pressure 0.5 psi, flow 0.2%, ΔT 0.5 °F, vibration 0.1 mm/s, energy-pct 1.0);
-   direction-adjusted so positive = bad (pressure falling, flow imbalance rising, ΔT shrinking,
-   vibration rising, energy over expected rising); negatives clipped to 0; then a **3-day rolling
-   median** (a median removes a one-day spike outright — decoy D1 — while monotone drift passes).
-3. **Risk** = `0.6 × weighted mean + 0.4 × max z`, weights pressure 0.25 · flow imbalance 0.25 ·
-   ΔT 0.15 · vibration 0.15 · energy 0.20, renormalized over non-null signals. The max term exists
-   because a pure weighted mean diluted a bearing failure visible only in vibration (F3 was missed).
-   Multipliers: `× (1 + age_years / 60)`; heating `× 1.3` when `tavg_f < 0`; cooling `× 1.2` when
-   `tmax_f > 85`. A day with all signals null carries forward the previous risk × 0.9 (D2).
-   `driver` = largest weighted contribution; `contrib_*` sum to 1.
-4. **Status machine** (`docs/CONTRACT.md` §2): `WATCH` at risk ≥ 2.0; `INSPECTION_DUE` at risk ≥
-   threshold (default 3.0) on 2 consecutive days, held while risk ≥ 2.0 and cleared after 2
-   consecutive days below; `FAILED` from a failure event's date through its `end_date`; else `HEALTHY`.
-5. **Ranking** (`CampusSnapshot`): `INSPECTION_DUE` first, then `FAILED`, then `risk × impact` desc,
-   where `impact = Σ CRITICALITY_WEIGHT × peak_load_tons / 500` over buildings served
-   (patient_care 4, research_lab 3, instruction 2, office 1) and, for cooling only,
-   `cost_per_day_usd = Σ ceil(peak_load_tons / 400) × 3704`.
-
-Output: 4,860 `RiskScore` rows (20 assets × 243 days) in ~4 s.
-
-### Stage 2 — `RiskForecast`: how likely is it to fail in 7 / 14 / 30 days? (`RiskModel.forecast_all()`)
-
-Four independent methods per asset-day, so the UI shows the spread rather than one opaque number:
+### Stage 2: four failure probabilities (`RiskModel.forecast_all` → `RiskForecast`)
 
 | Method | What it is | Trained on |
 |---|---|---|
-| `heuristic` | Logistic calibration of `RiskScore.risk` (capped at 8) vs "failed within horizon" | planted F1–F5, leave-one-failure-out |
-| `classifier` | L2 logistic regression on 8 condition features: risk, 3- and 7-day slopes, max z, number of elevated signals, energy over expected, days at WATCH, age | planted F1–F5, leave-one-failure-out |
-| `monte_carlo` | 1,000 forward paths of the age-normalised risk from the asset's own trailing 14-day drift and noise, drift growing 3%/day; probability = share of paths reaching the failure level (median pre-failure risk of the *other* failures); also p10/p50/p90 days to first crossing | nothing — the asset's own history |
-| `weibull` | ASHRAE median service life by equipment type, Weibull shape 2.5 (pipes) / 3.0, conditional on survival to `age_years` | population estimate, no sensors |
+| **Calibrated risk** | Logistic calibration of the risk score against "failed within 7 / 14 / 30 days" | planted F1–F5, leave-one-failure-out |
+| **Classifier** | L2 logistic regression on 8 condition features (risk, 3- and 7-day slopes, max z, number of elevated signals, energy over expected, days at WATCH, age) | planted F1–F5, leave-one-failure-out |
+| **Monte Carlo** | 1,000 forward paths of the asset's own trailing 14-day drift and noise; probability = share reaching the failure level; also p10 / p50 / p90 days to failure | nothing: the asset's own history |
+| **Age baseline** | Weibull from ASHRAE median service lives, conditional on surviving to the asset's age | population estimate, no sensors |
 
-`consensus` = mean of the three condition-based methods; **Weibull is excluded** and shown as the
-"age alone" reference. Each row carries `confidence` (low / medium / high), a one-line `basis` and a
-`trained_on` honesty label for the UI chip. Output: 19,440 rows (4,860 × 4 methods) in ~10 s.
+The **consensus** is the mean of the three condition-based methods; the age baseline is shown as
+"what age alone would predict". Every row carries a confidence, a one-line basis and a `trained_on`
+label. The default C3 Python runtime has numpy / pandas / scipy but no scikit-learn, so the logistic
+fits use `scipy.optimize`.
 
-### Runtime notes
+### Results (backtest at threshold 3.0 on the current seed)
 
-- The default C3 Python runtime has numpy / pandas / scipy but **no scikit-learn**, so the logistic
-  models are fit with `scipy.optimize` (L-BFGS) — a hackathon trade-off, not a design choice.
-- Both `score_all` and `forecast_all` wipe their table before writing (`removeAll`), because
-  `mergeBatch` only touches non-null fields and would keep a stale number from a previous run.
-- **Run order after any seed change, one call at a time** (two concurrent `forecast_all` calls race
-  on the wipe):
-
-  ```
-  upsertSeedData  →  RiskModel.score_all(3.0)  →  RiskModel.forecast_all()  →  Backtest.run(3.0)
-  ```
-
----
-
-## 5. Data generation
-
-`tools/datagen/interim_generator.py` (repo root, outside the package; pure Python stdlib;
-deterministic, `SEED = 20260617`) writes the two large seed tables into `pkg22bc8209/data/`:
-
-- **`WeatherDay/weather_2026.json` — REAL.** Pulls NOAA GHCN-Daily for station `USW00014837`
-  (TMAX/TMIN/TAVG, 2026-01-01 → 2026-08-31; a cached copy lives in `tools/datagen/raw/`), derives
-  `tavg_f` where missing, and attaches a label (heat / hot / bitter cold / cold / cool / mild) for
-  the scrubber's weather chip.
-- **`SensorReading/sensors_2026-MM.json` (one file per month) — SYNTHETIC**, physically shaped per
-  `docs/DATA.md` §4: each asset type reports only the sensors it physically has (a chilled-water
-  main has pressure, flow imbalance, ΔT and pumping energy; a chiller has ΔT, vibration, energy; the
-  rest are null). Healthy values are a fixed per-asset baseline plus Gaussian noise (pressure σ 0.8
-  psi, flow σ 0.3%, vibration σ 0.15 mm/s, ISO 10816 bands). Daily energy is **driven by the real
-  weather** in ASHRAE degree-day form (CDD base 55 °F, HDD base 60 °F), with a weekend effect for
-  AHUs and ~2% of readings missing at random.
-- **Failure modes** come from the LBNL/PNNL chiller-plant FDD fault taxonomy (which signals move for
-  which fault; the dataset itself is not downloaded): leak → pressure + flow imbalance; bearing →
-  vibration + energy; fouling → ΔT + energy. Each planted failure ramps its 2–3 signals convexly
-  (exponent 1.9, faster near failure) from `onset_date` to the failure day, e.g. `S3-PIPE`: pressure
-  −8 psi, flow imbalance +4.5%, ΔT −1.2 °F, energy +6% over weather-expected.
-- **Events** are read from `data/FailureEvent/events.json`, not hardcoded: F1 `VIL-UH-2` (Jan 14 →
-  Jan 28), F2 `STE-HX-1` (Feb 2 → Feb 16), F3 `WIMR-AHU-3` (Apr 2 → Apr 14), F4 `S3-PIPE` (May 30 →
-  **Jun 17**, FAILED until Aug 10), F5 `WAL-CHL-2` (Jul 8 → Jul 22). Decoys D1 (one-day vibration
-  spike, `CHA-CHL-1`, Mar 3), D2 (5-day full sensor dropout, `VIL-AHU-1`, May 4–8) and D4 (slow
-  normal aging drift on `CHA-CHL-2` all year, never a step) are planted; **D3 needs no planting** —
-  the real NOAA heat wave of Jul 12–17 (90–95 °F) raises every cooling asset's raw energy by itself.
-  `R1` is the real break marker.
-
-The interim seed also contains 3 plants, 6 segments, 16 buildings (9 on S3) and 20 assets.
-Devansh's full generator (real building facts, ~25 buildings, ~60 assets per `docs/DATA.md`)
-**overwrites the same file names and ids** under `pkg22bc8209/data/`, so the model, API and UI need
-no changes when it lands; the run order in §4 re-derives everything.
-
----
-
-## 6. Running it
-
-**Inside C3 Code** (the intended environment)
-
-- Code sync to the C3 environment is automatic.
-- Frontend check: `cd pkg22bc8209/ui/react && VITE_C3_PKG=pkg22bc8209 npm run build` (runs lint +
-  `tsc` + the Vite bundle). The app is served at `http://localhost:9000`.
-- Backend, after any seed change, via the C3 console / `runJsCode`, one call at a time:
-  `upsertSeedData` → `RiskModel.score_all(3.0)` → `RiskModel.forecast_all()` → `Backtest.run(3.0)`.
-- Smoke checks used during the build: `CampusSnapshot.compute('2026-06-09')`,
-  `AssetHistory.get('S3-PIPE')`, `Briefing.generate('S3-PIPE','2026-06-09')`,
-  `PlanB.simulate('S3', 95, false)`, `Backtest.run(3.0)`, `RiskForecast.compare('S3-PIPE','2026-06-09')`,
-  `RiskForecast.campus('2026-06-09')`, `FacilitiesAgent.ask(...)`, `WorkOrder.fetch(...)` — all
-  return the contract keys from live seed.
-
-**Outside C3 Code** (UI only, no backend)
-
-```
-cd pkg22bc8209/ui/react
-npm install
-VITE_C3_PKG=pkg22bc8209 VITE_USE_FIXTURES=true npm run dev
-```
-
-Fixtures in `contract/fixtures/` are the exact shapes the backend returns. The switch defaults off
-and is shown in the side-nav footer when on; `main` never depends on it.
-
-**Regenerating the seed**: `python3 tools/datagen/interim_generator.py [--noaa-file tools/datagen/raw/noaa_USW00014837_2026.json]`,
-then the backend run order above.
-
----
-
-## 7. Results and known limitations
-
-### Backtest on the interim seed (`Backtest.run(3.0)`, 2026-10-19 — `docs/ML.md` §7)
-
-| | F1 `VIL-UH-2` | F2 `STE-HX-1` | F3 `WIMR-AHU-3` | F4 `S3-PIPE` | F5 `WAL-CHL-2` |
+| | F1 unit heater | F2 heat exchanger | F3 air handler | F4 chilled-water main | F5 chiller |
 |---|---|---|---|---|---|
-| system | heating | heating | air | cooling | cooling |
-| failure date | Jan 28 | Feb 16 | Apr 14 | **Jun 17** | Jul 22 |
-| first `INSPECTION_DUE` | Jan 22 | Feb 10 | Apr 8 | **Jun 8** | Jul 15 |
-| lead days | 6 | 6 | 6 | 9 | 7 |
+| failed | Jan 28 | Feb 16 | Apr 14 | **Jun 17** | Jul 22 |
+| first inspection due | Jan 22 | Feb 10 | Apr 8 | **Jun 8** | Jul 15 |
+| warning (days) | 6 | 6 | 6 | 9 | 7 |
 
-- Decoys D1–D4: all ignored.
-- **False-alarm days at 3.0: 2** — `S4-PIPE`, May 16–17: +7.9% energy in the first mid-May warm spell
-  on a 54-year-old main; clears in two days. Reported, not tuned away (`docs/ML.md` §5).
-- Threshold sweep: 2.5 → 7 false-alarm days; 3.25–3.5 → 0 false alarms with no misses; ≥ 3.75
-  misses F3.
-- Forecasts, `S3-PIPE` as of Jun 9 (8 days before F4): heuristic 0.92 · classifier 0.72 ·
-  Monte Carlo 0.94 (p10/p50/p90 = 1/3/11 days) · Weibull 0.002 → consensus 0.86, spread 0.22.
-  Every healthy asset that day: consensus ≤ 0.06.
+All four decoys ignored. **2 false-alarm days** in 4,860 asset-days (S4-PIPE, May 16 to 17, a +7.9%
+energy reading in the first mid-May warm spell on a 54-year-old main; reported, not tuned away). At
+3.25 to 3.5 there are zero false alarms with no misses; at 3.75 one failure is missed. S3-PIPE on
+June 9: calibrated risk 92%, classifier 72%, Monte Carlo 94%, age baseline 0.2%, **consensus 86%**;
+every healthy asset that day is at or below 6%.
 
-### Known limitations
+## 6. The pages, and what each one means
 
-- **2 false-alarm days at the default threshold** (above). A threshold of 3.25–3.5 gives zero on
-  this seed, but we ship 3.0 and show the slider rather than pick the flattering number.
-- **Monte Carlo median is early by design.** Its p50 days-to-failure (3 days for S3-PIPE on Jun 9,
-  actual 8) is the first crossing of a failure level derived from the *other* failures; it is a
-  lower-bound style estimate, which is why the UI shows the p10–p90 range and all four methods.
-- **The classifier and heuristic are trained on 5 planted failures**, leave-one-failure-out. That is
-  enough to demonstrate calibration, not to claim generalisation; the `trained_on` chip says so.
-- **The failures were planted.** Lead times measure that the pipeline detects the physically shaped
-  drift we generated; they say nothing about whether the real June 17 break was detectable.
-- **`Briefing.generate` drafts a duplicate `PENDING_APPROVAL` work order on every call.** The Asset
-  page calls it on every mount / as-of change, so repeated visits create duplicates for the same
-  asset. Open item: skip drafting when a pending order for that asset already exists.
-- **Interim seed**: building year/GSF are placeholders; 16 buildings and 20 assets rather than the
-  ~25 / ~60 in `docs/DATA.md`. The briefing and agent are template-generated (`generated_by:
-  template`), with an LLM rewrite specified as an optional upgrade.
-- In-container Playwright has no auth cookie, so browser-level API checks were replayed through
-  `runJsCode` instead (an environment limit, not an app bug).
+**Top bar (every page).** The **as-of scrubber** sets the one date the whole app shows: drag, step a day
+with the arrows, or press Play. Red ticks are the planted failures; the dark **Real break** flag is
+June 17. Clicking a marker lands 8 days *before* it, so you see the warning, not the failure. The
+weather chip shows that day's real high. **Ask the agent** opens the only agent drawer.
 
----
+| Page | Route | What it answers | What you see |
+|---|---|---|---|
+| **Overview** | `/overview` | What needs attention today? | Four numbers: inspections due (with change vs yesterday), on watch, energy wasted per day, cooling exposure per day. The **campus network**: plants feed loops that serve buildings; loop colour is the loop's worst status, dot colour the building's. **Inspect next**: the ranked queue with status, days in status, risk bar, driving signal, buildings served, $/day at stake and work-order state; filter by system. The agent's **morning brief** in one sentence. |
+| **Buildings** | `/buildings` | Which buildings are at risk right now? | Every building as a card (worst-first, searchable) **or** on the real campus map, one dot per building coloured by status, plants as grey squares, feed lines to their buildings. Click either to open the building. |
+| **Building** | `/building/:id` | How is this building doing, system by system? | Cooling / heating / air-handling cards with status, risk sparkline, energy over expected and each system's **chance of failure within 14 days**. Energy actual vs weather-expected for 90 days (the gap is waste). Every asset serving the building. The building's place in the outage plan. Its work orders. |
+| **Asset** | `/asset/:id` | Why is this flagged, and what do I do? | **Risk over time** with the threshold, shaded inspection-due spans, failure and decoy markers, and the as-of cursor (the future is greyed out). **Chance of failure**: consensus headline, one row per method with 7 / 14 / 30-day bars and days-to-failure, 30-day history. **What's driving it**: each signal's share of the risk and its deviation, with small charts against its normal band. **Agent briefing** and the drafted work order with Approve / Edit / Dismiss. Buildings served. |
+| **Outage plan** | `/planb/:loop?` | What happens if this loop fails? | Pick a loop and an outdoor temperature (today's real high or a 95 °F emergency). **Simulate failure** dims the buildings one by one in dispatch order while the table fills: labs and patient care first, then by load. Totals: rental chillers, $/day, and what one week of warning saves, beside **what actually happened** in June ($15.8M, ~30 chillers, 23 + 11 buildings). A toggle stages priority buildings only. |
+| **Work orders** | `/workorders` | What has the agent proposed, and what did we decide? | Pending / Approved / Dismissed. Each card: what to inspect, for which asset, priority, crew, estimate, drafted date, and actions. One open draft per asset; nothing is scheduled until approved. |
+| **Predictions** | `/predictions` | Who is most likely to fail next? | One card per system naming the most at-risk asset with its chance of failure, then every asset ranked by that chance with the range the methods disagree over and the likely time to failure. A switch reveals the four methods. |
+| **Backtest** | `/backtest` | How do we know it works? | Slide the inspection threshold 2.0 to 4.0 and watch warning time, false-alarm days and misses move. Risk curves for all five failures aligned on their failure day. The four decoys and why each was ignored. The sweep. The planted-failure table. |
 
-## 8. Team and repo map
+Cards on Buildings, Outage plan, Work orders, Predictions and Backtest can be dragged into your own
+order (grip handle on hover); the order is remembered per page.
 
-| Person | Owns |
+## 7. Backend contract (what the UI calls)
+
+Pages never call the platform directly; every call goes through `ui/react/src/shared/api/` as a
+one-liner from `docs/CONTRACT.md` §5.2, arguments as a positional array.
+
+| Call | Used by |
 |---|---|
-| Vibhrav | risk model, forecast layer, agent backend, contract/types, integration, pitch |
-| Devansh | real + synthetic data, loop topology, Plan B compute |
-| Arnav | UI shell (scrubber, nav), Overview, Plan B page, Backtest, Buildings index, shared tokens/StatusPill/Schematic/ProvenanceChip |
-| Anuva | UI Building dashboard, Asset detail, Work Orders, Agent drawer, RiskChart/Sparkline/SignalBars/WorkOrderCard |
+| `CampusSnapshot.compute(as_of)` | shell, Overview, Buildings |
+| `BuildingDashboard.compute(building_id, as_of)` | Building |
+| `AssetHistory.get(asset_id)` | Asset |
+| `Briefing.generate(asset_id, as_of)` (drafts or reuses the pending work order) | Asset |
+| `RiskForecast.compare(asset_id, as_of)` · `RiskForecast.campus(as_of)` | Asset, Building, Predictions |
+| `PlanB.simulate(segment_id, temp_f, priority_only)` | Outage plan, Building |
+| `Backtest.run(threshold)` | Backtest |
+| `WorkOrder.fetch` · member `approve(approver)` · member `dismiss(reason)` | Work orders, Asset, Building |
+| `FacilitiesAgent.ask(question, as_of)` | agent drawer |
+| `FailureEvent.fetch` · `Building.fetch` · `Plant.fetch` | scrubber markers, campus map |
+| `RiskModel.score_all(threshold)` · `RiskModel.forecast_all()` | offline, after a seed change |
+
+## 8. Running it
+
+**In C3 Code** (the intended environment): code sync is automatic. Frontend check:
+`cd pkg22bc8209/ui/react && VITE_C3_PKG=pkg22bc8209 npm run build` (lint + `tsc` + bundle). Backend,
+after any seed change, via the console or `runJsCode`, one call at a time:
+
+```
+upsertSeedData  →  RiskModel.score_all(3.0)  →  RiskModel.forecast_all()  →  Backtest.run(3.0)
+```
+
+**Regenerate the seed:** `python3 tools/datagen/interim_generator.py` (pulls NOAA, or pass
+`--noaa-file tools/datagen/raw/noaa_USW00014837_2026.json`), then the run order above.
+
+**UI outside C3 Code (no backend):**
+`cd pkg22bc8209/ui/react && npm install && VITE_C3_PKG=pkg22bc8209 VITE_USE_FIXTURES=true npm run dev`.
+Fixtures in `contract/fixtures/` are the exact shapes the backend returns. The switch defaults off and
+`main` never depends on it.
+
+The campus map uses OpenStreetMap tiles from the browser; if tiles are blocked, dots, lines and
+tooltips still render.
+
+## 9. Known limitations
+
+- **Two false-alarm days at the default threshold.** 3.25 to 3.5 gives zero on this seed; we ship 3.0 and
+  show the slider rather than pick the flattering number.
+- **Monte Carlo's median is early by design.** For S3-PIPE on June 9 it says about 3 days; the planted
+  failure is 8 days out. It is a first-crossing estimate against a level derived from the *other*
+  failures; the UI shows the p10 to p90 range and all four methods for that reason.
+- **The classifier and calibration are trained on five planted failures**, leave-one-failure-out. Enough
+  to demonstrate calibration, not to claim generalisation.
+- **The interim seed** has 16 buildings and 20 assets with placeholder year / square footage; the fuller
+  generator with cited building facts replaces it in place.
+- **Briefing and agent answers are template-generated** from the model's numbers (`generated_by:
+  template`); an LLM rewrite with the same template fallback is specified as an optional upgrade.
+- The seed re-load resets work orders to pending; the Work orders page collapses duplicates and the
+  briefing reuses an existing draft, so repeat visits never create another.
+
+## 10. Repo map and team
 
 ```
 /usr/workspace
-├── START_HERE.md, AGENTS.md          team start page; rules for coding agents
-├── docs/
-│   ├── PLAN.md                       problem, locked decisions, demo path, pitch, judge Q&A, sources
-│   ├── RUBRIC.md                     judging rubric and how each category is addressed
-│   ├── CONTRACT.md                   data contract: enums, constants, tables, calls, §5 C3 mapping
-│   ├── ML.md                         risk model + four forecast methods, acceptance results
-│   ├── DATA.md                       real sources, topology, synthetic sensor physics, events
-│   ├── FRONTEND.md                   pages, shell, design rules
-│   ├── RULES.md                      git, self-merge gate, schedule
-│   └── briefs/{vibhrav,devansh,arnav,anuva}.md
-├── contract/fixtures/*.json          exact payload shapes for every call (also loaded as seed v0)
-├── tools/datagen/
-│   ├── interim_generator.py          real NOAA pull + synthetic sensors → pkg22bc8209/data/
-│   └── raw/noaa_USW00014837_2026.json
-└── pkg22bc8209/                      the one C3 package (do not rename)
-    ├── pkg22bc8209.c3pkg.json
-    ├── src/                          *.c3typ types + *.py implementations, WORKSPACE_SUMMARY.md
-    ├── data/{Plant,LoopSegment,Building,Asset,WeatherDay,SensorReading,FailureEvent,WorkOrder,RiskScore}/
-    └── ui/react/src/                 App.tsx, config/navigation.ts, contexts/AsOfProvider.tsx,
-                                      shared/api/, components/, pages/{Overview,Buildings,Building,
-                                      Asset,PlanB,WorkOrders,Predictions,Backtest}/
+├── PROJECT.md                        this file
+├── START_HERE.md, AGENTS.md          team start page; rules for people and coding agents
+├── docs/                             PLAN (pitch, demo path, judge Q&A), RUBRIC, CONTRACT (data contract,
+│                                     §5 = C3 mapping), ML, DATA, FRONTEND, RULES, briefs/<name>.md
+├── contract/fixtures/*.json          exact payload shape for every call (also loaded as seed v0)
+├── tools/datagen/                    interim_generator.py (real NOAA + synthetic sensors), raw/ cache
+└── pkg22bc8209/                      the one C3 package
+    ├── src/                          *.c3typ entity + API types, *.py implementations, WORKSPACE_SUMMARY.md
+    ├── data/<Type>/*.json            seed: Plant, LoopSegment, Building, Asset, WeatherDay, SensorReading,
+    │                                 FailureEvent, WorkOrder (RiskScore / RiskForecast are computed)
+    └── ui/react/src/                 App.tsx, contexts/AsOfProvider, shared/api/, components/, pages/
 ```
 
----
+| Person | Owned |
+|---|---|
+| Vibhrav | risk model, forecast layer, agent backend, contract and types, integration, pitch |
+| Devansh | real and synthetic data, loop topology, Plan B compute |
+| Arnav | UI shell (scrubber, nav), Overview, Outage plan, Backtest, Buildings, shared tokens and components |
+| Anuva | Building dashboard, Asset detail, Work orders, agent drawer, risk chart and signal components |
 
-## 9. Judge Q&A (honest answers)
+## 11. Judge Q&A
 
 | Question | Answer |
 |---|---|
 | Would this have caught the June break? | We don't know. UW is still investigating. Leaks often show first as pressure loss and flow imbalance, which we watch. Our June 17 is a labeled reenactment on synthetic data. |
-| Is the data real? | Weather, buildings, plants, costs and FP&M's work-order format are real. Sensor readings, loop layout and failures are synthetic because UW doesn't publish them. The failures were planted — this proves the pipeline, not that the real break was predictable. |
+| Is the data real? | Weather, buildings, plants, costs and FP&M's work-order format are real. Sensor readings, loop layout and failures are synthetic because UW doesn't publish them. The failures were planted; this proves the pipeline, not that the real break was predictable. |
 | Where does $111K/day come from? | Our estimate: ~$10M rentals ÷ ~30 chillers ÷ ~90 days. |
 | Why not a threshold alarm? | Each asset is compared with its own normal, energy is weather-adjusted, and drift must persist. The Backtest page shows a one-day spike, a sensor dropout and a heat wave all ignored. |
-| Isn't this just predictive maintenance? | The ranking is by what's at stake across the whole campus network, and Plan B is ready before the failure — that's where 63% of the $15.8M went. |
-| What would UW need to adopt it? | Read access to building-automation and work-order data, and a manager to approve work orders. No new hardware if pressure/flow are already logged — a question for FP&M. |
-| Why C3? | Predictive maintenance on a utility network is C3's pattern; C3 Code built the data model, model and agent in a day. |
+| How good is the model? | Five of five planted failures caught 6 to 9 days early, two false-alarm days in 4,860 asset-days, zero decoys fired, all on the Backtest page with the threshold as a slider you can move. |
+| Why four probabilities? | One number is a black box. When a calibrated rule, a classifier and a Monte Carlo simulation agree and the age-only baseline doesn't, that disagreement is the finding: age-based maintenance would have missed it. |
+| Isn't this just predictive maintenance? | The ranking is by what's at stake across the whole campus network, and the outage plan is ready before the failure. That's where 63% of the $15.8M went. |
+| What would UW need to adopt it? | Read access to building-automation and work-order data, and a manager to approve work orders. No new hardware if pressure and flow are already logged. |
+| Why C3? | Predictive maintenance on a utility network is C3's pattern; C3 Code built the data model, model, agent and UI in a day. |
 
-Sources (cited in `docs/PLAN.md` §10): UW News Jun–Aug 2026; WPR Jun 30 2026 and Feb 8 2019;
-Cap Times Oct 8 2026; WMTV Jul 1 and Jul 15 2026; FP&M Physical Plant May 2021 Operations Report;
-NOAA GHCN-Daily, Madison Dane County Regional Airport.
+Sources: UW News (Jun to Aug 2026); WPR (Jun 30 2026; Feb 8 2019); Cap Times (Oct 8 2026); WMTV (Jul 1
+and Jul 15 2026); FP&M Physical Plant May 2021 Operations Report; NOAA GHCN-Daily, Madison Dane
+County Regional Airport.
