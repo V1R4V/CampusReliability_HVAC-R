@@ -1,0 +1,224 @@
+/*
+ * Before It Breaks — app-level design tokens + the handful of styles Tailwind
+ * cannot express cleanly (range sliders, status→colour resolution, motion).
+ * Layered on top of the C3 design system (styles/tokens.css). Owner: Arnav.
+ *
+ * Rule (docs/FRONTEND.md §2): colour means STATUS and nothing else. Equipment
+ * systems are told apart by icons (SystemIcon), never by colour.
+ */
+
+:root {
+  /* Status palette — the only semantic colours in the app */
+  --bib-status-healthy: #2e7d32;
+  --bib-status-watch: #f59e0b;
+  --bib-status-due: #dc2626;
+  --bib-status-failed: #111827;
+  --bib-status-offline: #9ca3af;
+
+  /* Soft tints behind pills and row washes */
+  --bib-status-healthy-soft: #e7f2e8;
+  --bib-status-watch-soft: #fdf0d5;
+  --bib-status-due-soft: #fde2e2;
+  --bib-status-failed-soft: #e5e7eb;
+  --bib-status-offline-soft: #f3f4f6;
+
+  /* Work orders: outline = pending approval, solid = approved */
+  --bib-wo: #2563eb;
+  --bib-wo-soft: #dbeafe;
+
+  /* Ink and surfaces */
+  --bib-ink: #111827;
+  --bib-ink-muted: #6b7280;
+  --bib-surface: #ffffff;
+  --bib-canvas: #f7f7f5;
+  --bib-border: #e5e7eb;
+  --bib-grid: #ececea;
+  --bib-axis: #9ca3af;
+
+  /* Chart series — identity only (Backtest aligned curves). Validated with the
+     dataviz palette checker on a white surface: all hard gates pass; the
+     contrast WARN on slots 3–5 is relieved by the legend + failures table. */
+  --bib-series-1: #2a78d6;
+  --bib-series-2: #eb6834;
+  --bib-series-3: #1baf7a;
+  --bib-series-4: #eda100;
+  --bib-series-5: #e87ba4;
+
+  /* Projector type scale (FRONTEND §2: body ≥ 16, labels ≥ 13, KPI ≥ 40) */
+  --bib-text-label: 13px;
+  --bib-text-body: 16px;
+  --bib-text-lead: 18px;
+  --bib-text-title: 22px;
+  --bib-text-kpi: 40px;
+  --bib-text-hero: 48px;
+
+  /* Resolved per element by the [data-status] rules below. Any element with a
+     data-status attribute (and its descendants) can use
+     bg-[var(--bib-status-color)] / bg-[var(--bib-status-soft)]. */
+  --bib-status-color: var(--bib-status-offline);
+  --bib-status-soft: var(--bib-status-offline-soft);
+}
+
+[data-status='HEALTHY'] {
+  --bib-status-color: var(--bib-status-healthy);
+  --bib-status-soft: var(--bib-status-healthy-soft);
+}
+[data-status='WATCH'] {
+  --bib-status-color: var(--bib-status-watch);
+  --bib-status-soft: var(--bib-status-watch-soft);
+}
+[data-status='INSPECTION_DUE'] {
+  --bib-status-color: var(--bib-status-due);
+  --bib-status-soft: var(--bib-status-due-soft);
+}
+[data-status='FAILED'] {
+  --bib-status-color: var(--bib-status-failed);
+  --bib-status-soft: var(--bib-status-failed-soft);
+}
+[data-status='OFFLINE'] {
+  --bib-status-color: var(--bib-status-offline);
+  --bib-status-soft: var(--bib-status-offline-soft);
+}
+
+/* ─── StatusPill ──────────────────────────────────────────────────────────── */
+.bib-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9999px;
+  background: var(--bib-status-soft);
+  color: var(--bib-ink);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+.bib-pill::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--bib-status-color);
+}
+.bib-pill[data-size='sm'] {
+  height: 22px;
+  padding: 0 9px;
+  font-size: 13px;
+}
+.bib-pill[data-size='md'] {
+  height: 26px;
+  padding: 0 11px;
+  font-size: 14px;
+}
+.bib-pill[data-size='lg'] {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 16px;
+}
+
+/* ─── Range slider (date scrubber, temperature, threshold) ────────────────── */
+.bib-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.bib-range:focus {
+  outline: none;
+}
+.bib-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--bib-border);
+}
+.bib-range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--bib-border);
+}
+.bib-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
+  border-radius: 9999px;
+  background: var(--bib-ink);
+  border: 3px solid var(--bib-surface);
+  box-shadow: 0 0 0 1.5px var(--bib-ink);
+}
+.bib-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--bib-ink);
+  border: 3px solid var(--bib-surface);
+  box-shadow: 0 0 0 1.5px var(--bib-ink);
+}
+.bib-range:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 1.5px var(--bib-ink),
+    0 0 0 6px var(--bib-wo-soft);
+}
+.bib-range:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 0 0 1.5px var(--bib-ink),
+    0 0 0 6px var(--bib-wo-soft);
+}
+.bib-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ─── Motion ──────────────────────────────────────────────────────────────── */
+@keyframes bib-pulse {
+  from {
+    box-shadow: 0 0 0 0 rgb(220 38 38 / 0.45);
+  }
+  to {
+    box-shadow: 0 0 0 12px rgb(220 38 38 / 0);
+  }
+}
+.bib-pulse {
+  animation: bib-pulse 1.8s ease-out infinite;
+}
+
+@keyframes bib-rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.bib-rise {
+  animation: bib-rise 0.25s ease-out both;
+}
+
+@keyframes bib-skeleton {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+.bib-skeleton {
+  background: var(--bib-border);
+  border-radius: 6px;
+  animation: bib-skeleton 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-pulse,
+  .bib-rise,
+  .bib-skeleton {
+    animation: none;
+  }
+}

@@ -283,3 +283,98 @@ export interface AskResponse {
   proposed_actions: AskProposedAction[];
   generated_by: string;
 }
+
+// ---------------------------------------------------------------------------
+// Failure-probability forecasts (docs/ML.md §8, CONTRACT §5.2 additive rows)
+// ---------------------------------------------------------------------------
+
+/** The four independent forecasting methods stored per asset-day in `RiskForecast`. */
+export type ForecastMethod = 'heuristic' | 'classifier' | 'monte_carlo' | 'weibull';
+export type ForecastConfidence = 'low' | 'medium' | 'high';
+
+/** Monte Carlo first-crossing day / Weibull conditional quantiles, in days from `as_of`. */
+export interface DaysToFailure {
+  p10: number | null;
+  p50: number | null;
+  p90: number | null;
+}
+
+/** One method's row in `RiskForecast.compare(...).methods`. */
+export interface ForecastMethodRow {
+  method: ForecastMethod;
+  label: string;
+  p_fail_7d: number | null;
+  p_fail_14d: number | null;
+  p_fail_30d: number | null;
+  days_to_failure: DaysToFailure | null;
+  confidence: ForecastConfidence | null;
+  basis: string | null;
+  trained_on: string | null;
+}
+
+/** Mean of the condition-based methods (heuristic, classifier, monte_carlo); Weibull is reference only. */
+export interface ForecastConsensus {
+  p_fail_7d: number | null;
+  p_fail_14d: number | null;
+  p_fail_30d: number | null;
+  spread_14d: number | null;
+  n_methods: number;
+  note: string;
+}
+
+/** One day of trailing `p_fail_14d` per method, for the history chart. */
+export interface ForecastHistoryPoint {
+  date: string;
+  heuristic: number | null;
+  classifier: number | null;
+  monte_carlo: number | null;
+  weibull: number | null;
+  consensus: number | null;
+}
+
+export interface ForecastNextFailure {
+  event_id: string;
+  date: string;
+  days_from_as_of: number;
+  synthetic: boolean | null;
+}
+
+/** `RiskForecast.compare(asset_id, as_of)`. */
+export interface RiskForecastCompare {
+  asset_id: string;
+  name: string;
+  as_of: string;
+  as_of_used: string | null;
+  status: AssetStatus | null;
+  risk: number | null;
+  threshold: number;
+  methods: ForecastMethodRow[];
+  consensus: ForecastConsensus;
+  history: ForecastHistoryPoint[];
+  next_failure: ForecastNextFailure | null;
+}
+
+/** One asset row in `RiskForecast.campus(as_of).assets`, ranked by `consensus_14d`. */
+export interface ForecastCampusAsset {
+  asset_id: string;
+  name: string;
+  system: SystemType;
+  type: string;
+  building_id: string | null;
+  status: AssetStatus | null;
+  risk: number | null;
+  consensus_14d: number | null;
+  heuristic_14d: number | null;
+  classifier_14d: number | null;
+  monte_carlo_14d: number | null;
+  weibull_14d: number | null;
+  days_to_failure_p50: number | null;
+  confidence: ForecastConfidence | null;
+  spread_14d: number | null;
+}
+
+/** `RiskForecast.campus(as_of)`. */
+export interface RiskForecastCampus {
+  as_of: string;
+  assets: ForecastCampusAsset[];
+}

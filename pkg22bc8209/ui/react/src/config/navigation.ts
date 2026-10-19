@@ -7,7 +7,7 @@
  * This material may be covered by one or more patents or pending patent applications.
  */
 
-import { House } from 'lucide-react';
+import { ClipboardList, House, TrendingUp } from 'lucide-react';
 
 import { NavigationItem } from '@/types/navigation';
 
@@ -26,6 +26,25 @@ export const navigationConfig: NavigationItem[] = [
     iconActive: House,
     label: 'Dashboard',
     tooltip: 'Dashboard Overview',
+  },
+  // Anuva's top-level page (CONTRACT §5.4 — nav lives in Arnav's navigation.ts; added
+  // directly since no shell PR has landed yet. Building/Asset are detail pages, not navs.
+  {
+    id: 'workorders',
+    path: '/workorders',
+    icon: ClipboardList,
+    iconActive: ClipboardList,
+    label: 'Work Orders',
+    tooltip: 'Work Orders',
+  },
+  // Vibhrav's Predictions page (RiskForecast.campus, ML.md §8) — same cross-boundary note as above.
+  {
+    id: 'predictions',
+    path: '/predictions',
+    icon: TrendingUp,
+    iconActive: TrendingUp,
+    label: 'Predictions',
+    tooltip: 'Failure probabilities by method',
   },
 
   /*

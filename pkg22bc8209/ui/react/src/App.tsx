@@ -13,6 +13,14 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import SideNav from './components/SideNav/SideNav';
 import TopNav from './components/TopNav/TopNav';
 import ErrorReporterProvider from './components/ErrorBoundary/ErrorBoundary';
+// Anuva's pages (Building dashboard, Asset detail, Work Orders) — CONTRACT §5.4 has these
+// routes/App.tsx under Arnav's shell ownership; added here directly since no separate shell
+// PR has landed yet. Fold into his routing pass when the shell/scrubber ships; do not duplicate.
+import Building from './pages/Building/Building';
+import Asset from './pages/Asset/Asset';
+import WorkOrders from './pages/WorkOrders/WorkOrders';
+// Vibhrav's Predictions page (RiskForecast.campus — ML.md §8); same cross-boundary note as above.
+import Predictions from './pages/Predictions/Predictions';
 
 /**
  * Application shell.
@@ -36,6 +44,10 @@ export default function App() {
               <Routes>
                 {/* Add page routes here */}
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/building/:buildingId" element={<Building />} />
+                <Route path="/asset/:assetId" element={<Asset />} />
+                <Route path="/workorders" element={<WorkOrders />} />
+                <Route path="/predictions" element={<Predictions />} />
                 <Route
                   path="*"
                   element={
