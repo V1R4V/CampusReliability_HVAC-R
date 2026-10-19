@@ -1,0 +1,68 @@
+/**
+ * The risk model's output for one {@link Asset} on one day (id `<asset_id>_<date>`), written
+ * by {@link RiskModel#score_all} and read by every API call so the UI's as-of scrubber is
+ * instant — nothing heavy runs during the demo.
+ *
+ * Status rules (`docs/CONTRACT.md` §2): `WATCH` when risk ≥ 2.0; `INSPECTION_DUE` when risk ≥
+ * the threshold (default 3.0) on 2 consecutive days, held while risk ≥ 2.0 and cleared after
+ * 2 consecutive days below it; `FAILED` from a {@link FailureEvent}'s date through its end
+ * date; otherwise `HEALTHY`.
+ */
+entity type RiskScore {
+  /** The scored asset. */
+  asset: !Asset
+
+  /** ISO date `YYYY-MM-DD`. */
+  date: !string
+
+  /** Composite risk score ≥ 0: weighted, direction-adjusted, 3-day-smoothed z-scores × age/weather multipliers. */
+  risk: double
+
+  /** Status at the default inspection threshold. */
+  status: string enum('HEALTHY', 'WATCH', 'INSPECTION_DUE', 'FAILED')
+
+  /** The signal with the largest weighted contribution — shown as "driving signal". */
+  driver: string enum('pressure', 'flow_imbalance', 'delta_t', 'vibration', 'energy')
+
+  /** Human label for the driver's deviation from the asset's 30-day normal, e.g. "pressure ↓ 6 psi", "vibration ↑ 3.9 mm/s", "energy +8.5%". */
+  driver_label: string
+
+  /** Direction-adjusted z-score of pressure vs the asset's own previous 30 days (positive = falling = bad). Null if the asset has no pressure sensor. */
+  z_pressure: double
+
+  /** Direction-adjusted z-score of flow imbalance (positive = rising). */
+  z_flow_imbalance: double
+
+  /** Direction-adjusted z-score of ΔT (positive = shrinking). */
+  z_delta_t: double
+
+  /** Direction-adjusted z-score of vibration (positive = rising). Null for non-rotating assets. */
+  z_vibration: double
+
+  /** Direction-adjusted z-score of energy-over-expected (positive = rising). */
+  z_energy: double
+
+  /** Share of {@link #risk} attributable to pressure; the five `contrib_*` sum to 1 over non-null signals. */
+  contrib_pressure: double
+
+  /** Share of risk from flow imbalance. */
+  contrib_flow_imbalance: double
+
+  /** Share of risk from ΔT. */
+  contrib_delta_t: double
+
+  /** Share of risk from vibration. */
+  contrib_vibration: double
+
+  /** Share of risk from energy over expected. */
+  contrib_energy: double
+
+  /** Weather-normalized expected energy, kWh (degree-day fit on a trailing window ending 7 days earlier). */
+  expected_energy_kwh: double
+
+  /** `(actual − expected) / expected × 100`. The "energy wasted while it degrades" figure. */
+  energy_over_expected_pct: double
+
+  /** Consecutive days (including this one) the asset has held its current {@link #status}. */
+  days_in_status: int
+}

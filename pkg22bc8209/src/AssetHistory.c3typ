@@ -1,0 +1,19 @@
+/**
+ * API for the Asset detail page: the full replay series for one asset plus its events. Shape
+ * fixed by `contract/fixtures/asset_history_S3-PIPE.json`. Not date-filtered — the UI greys
+ * out points after its as-of date so the chart only "knows" the past.
+ */
+type AssetHistory {
+  /**
+   * Returns `{ asset{asset_id,name,system,type,segment_id,building_id,age_years,install_year,
+   * buildings_served[{building_id,name,criticality}]}, threshold, series[{date,risk,status,
+   * driver,z{pressure,flow_imbalance,delta_t,vibration,energy},contrib{…},sensors{pressure_psi,
+   * flow_imbalance_pct,delta_t_f,vibration_mm_s,energy_kwh},band{pressure_psi:[lo,hi],…},
+   * energy_over_expected_pct}], events[Event] }`.
+   *
+   * `series` joins {@link RiskScore} and {@link SensorReading} by date; `band` is the asset's
+   * own trailing 30-day mean ± 2 std per sensor (the "normal" shading), null for sensors the
+   * asset lacks. `events` are the asset's {@link FailureEvent}s plus campus-wide decoys.
+   */
+  get: function(asset_id: string): json py
+}

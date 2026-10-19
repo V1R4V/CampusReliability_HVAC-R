@@ -1,0 +1,24 @@
+/**
+ * "What happens if I don't?" — simulate the loss of a {@link LoopSegment} and stage temporary
+ * chillers for its buildings. Shape fixed by `contract/fixtures/plan_b_S3.json`. The real
+ * lesson of June 2026 was that ~63% of the $15.8M went to renting chillers because campus was
+ * caught unprepared; this call makes that plan exist *before* the failure.
+ */
+type PlanB {
+  /**
+   * Returns `{ segment_id, plant_id, temp_f, priority_only, load_factor,
+   * buildings[{order,building_id,name,criticality,peak_load_tons,chillers_needed,
+   * cost_per_day_usd,staged}], totals{buildings,chillers,cost_per_day_usd,cost_per_week_usd},
+   * reference{label,total_usd,rental_usd,deterioration_usd,repair_usd,chillers,usd_per_day,
+   * buildings_closed,buildings_partial,start_date,reopen_date,source} }`.
+   *
+   * Order: `CRITICALITY_WEIGHT` desc, then `peak_load_tons` desc.
+   * `load_factor = clamp((temp_f − 55) / 40, 0.3, 1.0)`;
+   * `chillers_needed = ceil(peak_load_tons × load_factor / 400)` (400 tons per rental chiller —
+   * assumption); `cost_per_day_usd = chillers_needed × 3704` (estimate: $10M ÷ ~30 chillers ÷
+   * ~90 days). With `priority_only`, only `patient_care` and `research_lab` buildings are staged
+   * (`staged = false` for the rest, excluded from totals). `reference` is the real June 2026
+   * outage (Cap Times Oct 8 2026; WPR; UW News) — `usd_per_day` is our estimate.
+   */
+  simulate: function(segment_id: string, temp_f: double, priority_only: boolean): json py
+}

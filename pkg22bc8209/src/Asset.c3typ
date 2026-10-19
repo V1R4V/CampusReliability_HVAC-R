@@ -1,0 +1,39 @@
+/**
+ * A monitored piece of campus utility equipment or pipe — the unit the risk model scores and
+ * the agent writes work orders against. Ids follow `<LOC>-<TYPE>-<n>` (`S3-PIPE`, `WAL-CHL-2`,
+ * `VIL-UH-2`, `WIMR-AHU-3`); the built-in `name` holds the human label
+ * ("Chilled water main, segment S3").
+ *
+ * Asset categories follow FP&M's real preventive-maintenance program (May 2021 Physical Plant
+ * Operations Report) plus chillers, unit heaters and AHUs. Note the category field is
+ * `asset_type` (not `type`, which is reserved on the platform); API payloads built from this
+ * type still expose it under the contract key `type`.
+ */
+entity type Asset {
+  /** Which building system the asset belongs to. Drives icons, filters and weather multipliers. */
+  system: !string enum('cooling', 'heating', 'air')
+
+  /** Equipment category. Determines which sensors are present (see `docs/DATA.md` §4). */
+  asset_type: !string enum('chw_main', 'chiller', 'chw_pump', 'isolation_valve', 'heat_exchanger', 'steam_line', 'steam_trap', 'condensate_pump', 'unit_heater', 'ahu')
+
+  /** The loop segment the asset sits on. Required for every asset, including plant chillers. */
+  segment: !LoopSegment
+
+  /**
+   * The building the asset serves, or null when it serves the whole segment (chilled-water
+   * mains, plant chillers). Segment-level assets count every building on the segment as served.
+   */
+  building: Building
+
+  /** Age in years as of 2026. Older equipment gets a `× (1 + age_years / 60)` risk multiplier. */
+  age_years: int
+
+  /** Year the asset was installed. */
+  install_year: int
+
+  /** Daily synthetic sensor rows. Inverse of {@link SensorReading#asset}. */
+  readings: [SensorReading](asset)
+
+  /** Daily model output. Inverse of {@link RiskScore#asset}. */
+  risk_scores: [RiskScore](asset)
+}

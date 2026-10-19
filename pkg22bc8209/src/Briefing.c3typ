@@ -1,0 +1,21 @@
+/**
+ * The agent's briefing for one asset on one date, plus the work order it drafts. Shape fixed
+ * by `contract/fixtures/briefing_S3-PIPE.json`. The template version must always work; an LLM
+ * rewrite is an optional upgrade (`generated_by` = `template` | `llm`) that may only use the
+ * numbers the template computed — no invented facts.
+ */
+type Briefing {
+  /**
+   * Returns `{ asset_id, as_of, status, headline, text, bullets[], driver,
+   * energy_over_expected_pct, buildings_served[names], cost_per_day_usd, generated_by,
+   * work_order: WorkOrder }`.
+   *
+   * Template: headline "Inspection due: {name}, {age} years old."; text "{driver_label} for
+   * {n} days. Running {pct}% over its normal energy use. Serves {n} buildings, including {top 2
+   * by criticality}. If it fails: {chillers} temporary chillers, about ${cost}/day." (last
+   * sentence cooling only). Reuses the asset's existing `PENDING_APPROVAL` {@link WorkOrder}
+   * if one exists, otherwise drafts one (`WO 26-0NNNNN`, `drafted_by = agent`,
+   * `status = PENDING_APPROVAL`) and persists it. Never approves anything.
+   */
+  generate: function(asset_id: string, as_of: string): json py
+}

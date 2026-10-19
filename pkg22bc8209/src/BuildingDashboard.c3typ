@@ -1,0 +1,20 @@
+/**
+ * API for the Building dashboard page: one building's systems, energy, assets, work orders and
+ * Plan B line as of a date. Shape fixed by `contract/fixtures/building_van_vleck_hall.json`.
+ */
+type BuildingDashboard {
+  /**
+   * Returns `{ as_of, building{building_id,name,segment_id,criticality,year_built,gsf,
+   * peak_load_tons,lat,lon,source}, served_by{plant_id,plant_name,segment_id,segment_name},
+   * systems{cooling|heating|air: {status,risk,via_asset_id,energy_over_expected_pct,
+   * sparkline[{date,risk}]} | null}, energy_series[{date,actual_kwh,expected_kwh}] (90 days),
+   * assets[QueueItem], work_orders[WorkOrder], plan_b{segment_id,priority_rank,chillers_needed,
+   * cost_per_day_usd} | null }`.
+   *
+   * A system card reports the worst-status asset serving the building for that system,
+   * counting segment-level assets (the chilled-water main) as serving every building on the
+   * segment. `plan_b` comes from {@link PlanB#simulate} on the building's segment at 95 °F and
+   * is null for buildings with no cooling asset.
+   */
+  compute: function(building_id: string, as_of: string): json py
+}

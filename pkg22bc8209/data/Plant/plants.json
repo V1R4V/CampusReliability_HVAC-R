@@ -1,0 +1,20 @@
+[
+  {
+    "id": "CHARTER",
+    "name": "Charter Street Heating Plant",
+    "lat": 43.0686,
+    "lon": -89.4068
+  },
+  {
+    "id": "WALNUT",
+    "name": "Walnut Street Heating Plant",
+    "lat": 43.076,
+    "lon": -89.4262
+  },
+  {
+    "id": "WCCF",
+    "name": "West Campus Cogeneration Facility",
+    "lat": 43.077,
+    "lon": -89.433
+  }
+]

@@ -1,0 +1,104 @@
+{
+  "events": [
+    {
+      "event_id": "F1",
+      "kind": "failure",
+      "asset_id": "VIL-UH-2",
+      "onset_date": "2026-01-14",
+      "date": "2026-01-28",
+      "end_date": "2026-02-02",
+      "label": "Vilas Hall unit heater failure (cold snap)",
+      "synthetic": true
+    },
+    {
+      "event_id": "F2",
+      "kind": "failure",
+      "asset_id": "STE-HX-1",
+      "onset_date": "2026-02-02",
+      "date": "2026-02-16",
+      "end_date": "2026-02-20",
+      "label": "Sterling Hall heat exchanger failure",
+      "synthetic": true
+    },
+    {
+      "event_id": "F3",
+      "kind": "failure",
+      "asset_id": "WIMR-AHU-3",
+      "onset_date": "2026-04-02",
+      "date": "2026-04-14",
+      "end_date": "2026-04-18",
+      "label": "WIMR air handler bearing failure",
+      "synthetic": true
+    },
+    {
+      "event_id": "F4",
+      "kind": "failure",
+      "asset_id": "S3-PIPE",
+      "onset_date": "2026-05-30",
+      "date": "2026-06-17",
+      "end_date": "2026-08-10",
+      "label": "Reenactment of the real June 17 event",
+      "synthetic": true
+    },
+    {
+      "event_id": "F5",
+      "kind": "failure",
+      "asset_id": "WAL-CHL-2",
+      "onset_date": "2026-07-08",
+      "date": "2026-07-22",
+      "end_date": "2026-07-29",
+      "label": "43-year-old chiller failure",
+      "synthetic": true
+    },
+    {
+      "event_id": "D1",
+      "kind": "decoy",
+      "asset_id": "CHA-CHL-1",
+      "onset_date": null,
+      "date": "2026-03-03",
+      "end_date": null,
+      "label": "One-day vibration spike: ignored",
+      "synthetic": true
+    },
+    {
+      "event_id": "D2",
+      "kind": "decoy",
+      "asset_id": "VIL-AHU-1",
+      "onset_date": "2026-05-04",
+      "date": "2026-05-08",
+      "end_date": null,
+      "label": "5-day sensor dropout: ignored",
+      "synthetic": true
+    },
+    {
+      "event_id": "D3",
+      "kind": "decoy",
+      "asset_id": null,
+      "onset_date": "2026-06-10",
+      "date": "2026-06-14",
+      "end_date": "2026-06-16",
+      "label": "Heat wave: weather-adjusted, ignored",
+      "synthetic": false
+    },
+    {
+      "event_id": "D4",
+      "kind": "decoy",
+      "asset_id": "CHA-CHL-2",
+      "onset_date": "2026-01-01",
+      "date": "2026-08-31",
+      "end_date": null,
+      "label": "Slow normal aging: ignored",
+      "synthetic": true
+    },
+    {
+      "event_id": "R1",
+      "kind": "real_reference",
+      "asset_id": "S3-PIPE",
+      "onset_date": null,
+      "date": "2026-06-17",
+      "end_date": "2026-08-10",
+      "label": "Real break: chilled water main near Charter St",
+      "synthetic": false
+    }
+  ]
+}

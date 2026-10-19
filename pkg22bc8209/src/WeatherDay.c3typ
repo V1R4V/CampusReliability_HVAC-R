@@ -1,0 +1,28 @@
+/**
+ * One day of **real** outdoor weather for Madison, WI, from NOAA GHCN-Daily station
+ * `USW00014837` (Dane County Regional Airport). The id equals {@link #date}.
+ *
+ * Weather drives the synthetic energy signal (cooling load ∝ `max(0, tavg − 55)`, heating
+ * ∝ `max(0, 60 − tavg)`) and the weather-normalized energy baseline in {@link RiskModel}, which
+ * is what keeps the real June 2026 heat wave (decoy `D3`) from raising risk. Replay window is
+ * 2026-01-01 → 2026-08-31.
+ */
+entity type WeatherDay {
+  /** ISO date `YYYY-MM-DD`. Same value as the id. */
+  date: !string
+
+  /** Daily maximum temperature, °F. Shown in the shell weather chip with a REAL label. */
+  tmax_f: double
+
+  /** Daily minimum temperature, °F. */
+  tmin_f: double
+
+  /** Daily mean temperature, °F — the degree-day driver for expected energy. */
+  tavg_f: double
+
+  /** Human label for the day: `cold snap`, `heat` or `normal`. */
+  label: string
+
+  /** Provenance, e.g. `NOAA GHCN-Daily USW00014837`, or a note if a fallback year was used. */
+  source: string
+}

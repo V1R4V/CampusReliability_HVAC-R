@@ -1,0 +1,19 @@
+/**
+ * The facilities agent behind the "Ask the agent" drawer. Answers questions about the campus
+ * state as of a date using only numbers returned by {@link CampusSnapshot#compute},
+ * {@link AssetHistory#get} and {@link PlanB#simulate}, and proposes actions that are **never
+ * executed** — every proposed work order is `PENDING_APPROVAL` until a human approves it.
+ * Shape fixed by `contract/fixtures/ask.json`.
+ */
+type FacilitiesAgent {
+  /**
+   * Returns `{ question, as_of, answer, entities[{kind: asset|building|segment, id, label}],
+   * proposed_actions[{kind: "draft_work_order", work_order: WorkOrder}], generated_by }`.
+   *
+   * The template answer ranks the as-of queue and proposes inspections for the top due/watch
+   * assets ("What should 2 crews inspect this week?" → top 2). An LLM path (`generated_by =
+   * llm`) may rephrase using tool results only; on any LLM failure the template answer is
+   * returned so the drawer never errors out.
+   */
+  ask: function(question: string, as_of: string): json py
+}

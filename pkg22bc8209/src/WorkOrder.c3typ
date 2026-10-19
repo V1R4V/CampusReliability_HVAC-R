@@ -1,0 +1,58 @@
+/**
+ * A work order drafted by the agent for a human facilities manager to approve. Ids use FP&M's
+ * real format `WO 26-0NNNNN` (e.g. `WO 26-071213`, from the May 2021 Physical Plant Operations
+ * Report). **Nothing is ever auto-executed**: every agent-drafted order is created as
+ * `PENDING_APPROVAL` and only {@link #approve} / {@link #dismiss}, invoked from the UI, move it.
+ */
+entity type WorkOrder {
+  /** The asset to inspect. */
+  asset: !Asset
+
+  /** Ids of the buildings affected (all buildings served by the asset). */
+  building_ids: [string]
+
+  /** Short title, e.g. "Inspect chilled water main, segment S3". */
+  title: string
+
+  /** Why: the driving signals and what to check. */
+  description: string
+
+  /** 1 high … 3 low. 1 when `INSPECTION_DUE` and impact in the top quartile, else 2; decoy drafts 3. */
+  priority: int
+
+  /** Crew assignment, e.g. "Utilities – Piping" or "HVAC – Mechanical". */
+  crew: string
+
+  /** Estimated labor hours (4–8 for inspections). */
+  est_hours: int
+
+  /** Approval state. Agent drafts always start `PENDING_APPROVAL`. */
+  status: string enum('PENDING_APPROVAL', 'APPROVED', 'DISMISSED')
+
+  /** Who drafted it — `agent` for all drafts produced by {@link Briefing#generate} / {@link FacilitiesAgent#ask}. */
+  drafted_by: string
+
+  /** ISO date the draft was created (the as-of date in replay). */
+  drafted_on: string
+
+  /** Approver display name; null until approved. */
+  approved_by: string
+
+  /** ISO date of approval; null until approved. */
+  approved_on: string
+
+  /** Required reason when dismissed; null otherwise. */
+  dismiss_reason: string
+
+  /**
+   * Approve this work order: sets status `APPROVED`, {@link #approved_by} = `approver` and
+   * {@link #approved_on} = today, persists the change and returns the updated order.
+   */
+  approve: member function(approver: string): WorkOrder py
+
+  /**
+   * Dismiss this work order with a mandatory `reason`: sets status `DISMISSED` and
+   * {@link #dismiss_reason}, persists and returns the updated order. Throws if `reason` is empty.
+   */
+  dismiss: member function(reason: string): WorkOrder py
+}

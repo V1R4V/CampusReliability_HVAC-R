@@ -1,0 +1,33 @@
+/**
+ * Ground-truth events for the backtest and the UI timeline markers.
+ *
+ * - `failure` (`F1`…`F5`): planted degradations ending in failure. `F4` on `S3-PIPE` is labeled
+ *   "Reenactment of the real June 17 event" — it keeps the hook while staying honest that the
+ *   sensor data is synthetic.
+ * - `decoy` (`D1`…`D4`): things a naive threshold alarm would fire on and the model must ignore
+ *   (one-day spike, sensor dropout, the real June heat wave, slow normal aging).
+ * - `real_reference` (`R1`): the actual Charter Street chilled-water main break, Jun 17 →
+ *   Aug 10 2026, `synthetic = false`, drawn as the black "Real break" tick on the scrubber.
+ */
+entity type FailureEvent {
+  /** Event category — see type comment. */
+  kind: !string enum('failure', 'decoy', 'real_reference')
+
+  /** The asset involved, or null for campus-wide decoys such as the heat wave. */
+  asset: Asset
+
+  /** ISO date degradation starts (planted failures) or the decoy begins; null if instantaneous. */
+  onset_date: string
+
+  /** ISO date of the failure (or the decoy's reference day). */
+  date: !string
+
+  /** ISO date the `FAILED` period ends; null if not applicable. */
+  end_date: string
+
+  /** Short UI label, e.g. "Reenactment of the real June 17 event". */
+  label: string
+
+  /** True for planted/synthetic events; false for `R1` and the real heat wave `D3`. */
+  synthetic: boolean
+}

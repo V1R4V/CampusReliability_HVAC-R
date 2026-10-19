@@ -1,0 +1,192 @@
+[
+  {
+    "id": "S1-PIPE",
+    "name": "Chilled water main, segment S1",
+    "system": "cooling",
+    "asset_type": "chw_main",
+    "segment": "S1",
+    "age_years": 48,
+    "install_year": 1978
+  },
+  {
+    "id": "S2-PIPE",
+    "name": "Chilled water main, segment S2",
+    "system": "cooling",
+    "asset_type": "chw_main",
+    "segment": "S2",
+    "age_years": 41,
+    "install_year": 1985
+  },
+  {
+    "id": "S3-PIPE",
+    "name": "Chilled water main, segment S3",
+    "system": "cooling",
+    "asset_type": "chw_main",
+    "segment": "S3",
+    "age_years": 61,
+    "install_year": 1965
+  },
+  {
+    "id": "S4-PIPE",
+    "name": "Chilled water main, segment S4",
+    "system": "cooling",
+    "asset_type": "chw_main",
+    "segment": "S4",
+    "age_years": 54,
+    "install_year": 1972
+  },
+  {
+    "id": "S5-PIPE",
+    "name": "Chilled water main, segment S5",
+    "system": "cooling",
+    "asset_type": "chw_main",
+    "segment": "S5",
+    "age_years": 35,
+    "install_year": 1991
+  },
+  {
+    "id": "S6-PIPE",
+    "name": "Chilled water main, segment S6",
+    "system": "cooling",
+    "asset_type": "chw_main",
+    "segment": "S6",
+    "age_years": 31,
+    "install_year": 1995
+  },
+  {
+    "id": "CHA-CHL-1",
+    "name": "Chiller 1, Charter Street plant",
+    "system": "cooling",
+    "asset_type": "chiller",
+    "segment": "S3",
+    "age_years": 18,
+    "install_year": 2008
+  },
+  {
+    "id": "CHA-CHL-2",
+    "name": "Chiller 2, Charter Street plant",
+    "system": "cooling",
+    "asset_type": "chiller",
+    "segment": "S3",
+    "age_years": 38,
+    "install_year": 1988
+  },
+  {
+    "id": "WAL-CHL-2",
+    "name": "Chiller 2, Walnut Street plant",
+    "system": "cooling",
+    "asset_type": "chiller",
+    "segment": "S4",
+    "age_years": 43,
+    "install_year": 1983
+  },
+  {
+    "id": "WCCF-CHL-1",
+    "name": "Chiller 1, West Campus Cogeneration Facility",
+    "system": "cooling",
+    "asset_type": "chiller",
+    "segment": "S6",
+    "age_years": 12,
+    "install_year": 2014
+  },
+  {
+    "id": "VIL-AHU-1",
+    "name": "Air handler 1, Vilas Hall",
+    "system": "air",
+    "asset_type": "ahu",
+    "segment": "S6",
+    "building": "vilas_hall",
+    "age_years": 22,
+    "install_year": 2004
+  },
+  {
+    "id": "VIL-UH-2",
+    "name": "Unit heater 2, Vilas Hall",
+    "system": "heating",
+    "asset_type": "unit_heater",
+    "segment": "S6",
+    "building": "vilas_hall",
+    "age_years": 31,
+    "install_year": 1995
+  },
+  {
+    "id": "VV-HX-1",
+    "name": "Heat exchanger 1, Van Vleck Hall",
+    "system": "heating",
+    "asset_type": "heat_exchanger",
+    "segment": "S3",
+    "building": "van_vleck_hall",
+    "age_years": 27,
+    "install_year": 1999
+  },
+  {
+    "id": "VV-AHU-1",
+    "name": "Air handler 1, Van Vleck Hall",
+    "system": "air",
+    "asset_type": "ahu",
+    "segment": "S3",
+    "building": "van_vleck_hall",
+    "age_years": 19,
+    "install_year": 2007
+  },
+  {
+    "id": "STE-HX-1",
+    "name": "Heat exchanger 1, Sterling Hall",
+    "system": "heating",
+    "asset_type": "heat_exchanger",
+    "segment": "S3",
+    "building": "sterling_hall",
+    "age_years": 35,
+    "install_year": 1991
+  },
+  {
+    "id": "WIMR-AHU-3",
+    "name": "Air handler 3, WIMR",
+    "system": "air",
+    "asset_type": "ahu",
+    "segment": "S4",
+    "building": "wimr",
+    "age_years": 14,
+    "install_year": 2012
+  },
+  {
+    "id": "CHM-AHU-1",
+    "name": "Air handler 1, Chemistry Building",
+    "system": "air",
+    "asset_type": "ahu",
+    "segment": "S3",
+    "building": "chemistry_building",
+    "age_years": 24,
+    "install_year": 2002
+  },
+  {
+    "id": "GRA-AHU-1",
+    "name": "Air handler 1, Grainger Hall",
+    "system": "air",
+    "asset_type": "ahu",
+    "segment": "S3",
+    "building": "grainger_hall",
+    "age_years": 15,
+    "install_year": 2011
+  },
+  {
+    "id": "BAS-AHU-1",
+    "name": "Air handler 1, Bascom Hall",
+    "system": "air",
+    "asset_type": "ahu",
+    "segment": "S3",
+    "building": "bascom_hall",
+    "age_years": 32,
+    "install_year": 1994
+  },
+  {
+    "id": "ENG-AHU-1",
+    "name": "Air handler 1, Engineering Hall",
+    "system": "air",
+    "asset_type": "ahu",
+    "segment": "S5",
+    "building": "engineering_hall",
+    "age_years": 38,
+    "install_year": 1988
+  }
+]

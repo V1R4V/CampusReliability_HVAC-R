@@ -1,0 +1,33 @@
+/**
+ * One **synthetic** daily sensor row for an {@link Asset} (id `<asset_id>_<date>`, one row per
+ * asset per day over the replay window). UW does not publish building-automation data, so
+ * these values are generated to behave like real equipment (`docs/DATA.md` §4): healthy
+ * assets are baseline + noise; planted failures ramp the 2–3 signals that fit the failure mode
+ * from the event's `onset_date` to its failure date.
+ *
+ * Sensors an asset type does not have are **null, never 0** — e.g. a chilled-water main has
+ * pressure, flow imbalance, ΔT and pumping energy but no vibration. About 2% of readings are
+ * missing at random; decoy `D2` is a 5-day dropout.
+ */
+entity type SensorReading {
+  /** The asset this reading belongs to. */
+  asset: !Asset
+
+  /** ISO date `YYYY-MM-DD`. */
+  date: !string
+
+  /** Supply pressure, psi. Falling pressure is the primary leak signal (mains, pumps, steam, HX). */
+  pressure_psi: double
+
+  /** `(supply − return) / supply × 100`. Rising imbalance is the second leak signal. */
+  flow_imbalance_pct: double
+
+  /** Supply/return temperature difference, °F. Shrinking ΔT indicates lost capacity. */
+  delta_t_f: double
+
+  /** Vibration, mm/s RMS (ISO 10816 bands). Rotating equipment only; >4.5 concerning, >7.1 unacceptable. */
+  vibration_mm_s: double
+
+  /** Raw daily energy, kWh — weather-driven and NOT normalized; the model normalizes it. */
+  energy_kwh: double
+}

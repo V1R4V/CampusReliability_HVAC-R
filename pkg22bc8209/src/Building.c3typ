@@ -1,0 +1,43 @@
+/**
+ * A real UW–Madison campus building (id is a slug such as `van_vleck_hall`), assigned to a
+ * synthetic {@link LoopSegment}.
+ *
+ * Names and coordinates are real; `year_built` and `gsf` are real where findable, otherwise
+ * estimates — {@link #source} says which, so the UI can show REAL / ESTIMATE provenance chips.
+ * `criticality` drives Plan B staging order and the impact term of the risk ranking
+ * (`CRITICALITY_WEIGHT`: patient_care 4, research_lab 3, instruction 2, office 1).
+ */
+entity type Building {
+  /** The loop segment that supplies this building's chilled water. Synthetic assignment. */
+  segment: !LoopSegment
+
+  /**
+   * How much is at stake if this building loses a system. Only label `patient_care` for
+   * verified clinical space; labs → `research_lab`; classrooms → `instruction`; else `office`.
+   */
+  criticality: !string enum('patient_care', 'research_lab', 'instruction', 'office')
+
+  /** Year the building was completed. Real, cited in {@link #source}. */
+  year_built: int
+
+  /** Gross square feet. Real where findable, else an estimate flagged in {@link #source}. */
+  gsf: int
+
+  /**
+   * Design cooling load in tons. Derived: `gsf / 250` for `research_lab` and `patient_care`,
+   * `gsf / 400` otherwise. Feeds `impact`, `cost_per_day_usd` and Plan B chiller counts.
+   */
+  peak_load_tons: double
+
+  /** Latitude (WGS84, OpenStreetMap). */
+  lat: double
+
+  /** Longitude (WGS84, OpenStreetMap). */
+  lon: double
+
+  /** Provenance of the building facts: a citation, `estimate`, or `placeholder`. Never empty. */
+  source: string
+
+  /** Equipment located in this building. Inverse of {@link Asset#building}. */
+  assets: [Asset](building)
+}

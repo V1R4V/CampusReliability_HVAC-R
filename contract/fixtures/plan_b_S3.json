@@ -1,0 +1,119 @@
+{
+  "segment_id": "S3",
+  "plant_id": "CHARTER",
+  "temp_f": 95,
+  "priority_only": false,
+  "load_factor": 1.0,
+  "buildings": [
+    {
+      "order": 1,
+      "building_id": "chemistry_building",
+      "name": "Chemistry Building",
+      "criticality": "research_lab",
+      "peak_load_tons": 1400.0,
+      "chillers_needed": 4,
+      "cost_per_day_usd": 14816,
+      "staged": true
+    },
+    {
+      "order": 2,
+      "building_id": "birge_hall",
+      "name": "Birge Hall",
+      "criticality": "research_lab",
+      "peak_load_tons": 620.0,
+      "chillers_needed": 2,
+      "cost_per_day_usd": 7408,
+      "staged": true
+    },
+    {
+      "order": 3,
+      "building_id": "sterling_hall",
+      "name": "Sterling Hall",
+      "criticality": "research_lab",
+      "peak_load_tons": 480.0,
+      "chillers_needed": 2,
+      "cost_per_day_usd": 7408,
+      "staged": true
+    },
+    {
+      "order": 4,
+      "building_id": "grainger_hall",
+      "name": "Grainger Hall",
+      "criticality": "instruction",
+      "peak_load_tons": 900.0,
+      "chillers_needed": 3,
+      "cost_per_day_usd": 11112,
+      "staged": true
+    },
+    {
+      "order": 5,
+      "building_id": "van_hise_hall",
+      "name": "Van Hise Hall",
+      "criticality": "instruction",
+      "peak_load_tons": 700.0,
+      "chillers_needed": 2,
+      "cost_per_day_usd": 7408,
+      "staged": true
+    },
+    {
+      "order": 6,
+      "building_id": "van_vleck_hall",
+      "name": "Van Vleck Hall",
+      "criticality": "instruction",
+      "peak_load_tons": 375.0,
+      "chillers_needed": 1,
+      "cost_per_day_usd": 3704,
+      "staged": true
+    },
+    {
+      "order": 7,
+      "building_id": "science_hall",
+      "name": "Science Hall",
+      "criticality": "instruction",
+      "peak_load_tons": 250.0,
+      "chillers_needed": 1,
+      "cost_per_day_usd": 3704,
+      "staged": true
+    },
+    {
+      "order": 8,
+      "building_id": "music_hall",
+      "name": "Music Hall",
+      "criticality": "instruction",
+      "peak_load_tons": 120.0,
+      "chillers_needed": 1,
+      "cost_per_day_usd": 3704,
+      "staged": true
+    },
+    {
+      "order": 9,
+      "building_id": "bascom_hall",
+      "name": "Bascom Hall",
+      "criticality": "office",
+      "peak_load_tons": 450.0,
+      "chillers_needed": 2,
+      "cost_per_day_usd": 7408,
+      "staged": true
+    }
+  ],
+  "totals": {
+    "buildings": 9,
+    "chillers": 18,
+    "cost_per_day_usd": 66672,
+    "cost_per_week_usd": 466704
+  },
+  "reference": {
+    "label": "Real June 2026 outage",
+    "total_usd": 15800000,
+    "rental_usd": 10000000,
+    "deterioration_usd": 4000000,
+    "repair_usd": 1800000,
+    "chillers": 30,
+    "usd_per_day": 111000,
+    "buildings_closed": 23,
+    "buildings_partial": 11,
+    "start_date": "2026-06-17",
+    "reopen_date": "2026-08-10",
+    "source": "Cap Times Oct 8 2026; WPR Jun 30 2026; UW News. usd_per_day is our estimate."
+  }
+}

@@ -1,0 +1,19 @@
+/**
+ * A campus utility plant that produces chilled water and steam for UW–Madison.
+ *
+ * The three real plants are seeded from `data/Plant/`: `CHARTER` (Charter Street Heating
+ * Plant — the real June 17, 2026 chilled-water main break happened near it), `WALNUT`
+ * (Walnut Street Heating Plant) and `WCCF` (West Campus Cogeneration Facility). The built-in
+ * `name` field holds the display name. Plants feed {@link LoopSegment}s, which in turn serve
+ * {@link Building}s; that topology is synthetic (see `docs/DATA.md` §2).
+ */
+entity type Plant {
+  /** Latitude of the plant (WGS84, from OpenStreetMap). Used by the campus schematic/map. */
+  lat: double
+
+  /** Longitude of the plant (WGS84, from OpenStreetMap). */
+  lon: double
+
+  /** Loop segments fed by this plant. Inverse of {@link LoopSegment#plant}. */
+  segments: [LoopSegment](plant)
+}

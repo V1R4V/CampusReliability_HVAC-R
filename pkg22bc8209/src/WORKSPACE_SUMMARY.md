@@ -1,37 +1,44 @@
-# Workspace Summary
+# Workspace Summary — Before It Breaks (team zeroday@c3)
 
-> This is the **work-to-date** summary of this workspace. It starts from the template's initial
-> state below and **you (the agent) keep it updated** as you make meaningful changes (new/renamed
-> types, new UI pages/routes, seed/data, key decisions). Read it first at the start of a chat to
-> recall what has been done; update it as you go. Keep it concise — a map, not a transcript.
+> Work-to-date map of the C3 package `pkg22bc8209`. Each owner edits **only their own section**.
+> Plan, contract and rules live at the repo root: `docs/PLAN.md`, `docs/CONTRACT.md` (§5 = C3 mapping),
+> `docs/RULES.md`, `AGENTS.md`.
 
-## Current state
+## Vibhrav (types, model, agent, integration)
 
-Fresh **blank package** workspace — no application work has been done yet.
+**Backend types (`src/*.c3typ`, snake_case per contract):**
+- Entities: `Plant`, `LoopSegment`, `Building`, `Asset` (category field is `asset_type`), `WeatherDay`,
+  `SensorReading`, `RiskScore` (+ `driver_label`, `days_in_status`), `FailureEvent`, `WorkOrder`
+  (member `approve(approver)`, `dismiss(reason)`).
+- API types (static methods returning `json` in the exact fixture shapes): `CampusSnapshot.compute(as_of)`
+  + `CampusSnapshot.queue(as_of)` (shared ranking), `BuildingDashboard.compute(building_id, as_of)`,
+  `AssetHistory.get(asset_id)`, `Briefing.generate(asset_id, as_of)` (template; drafts a PENDING_APPROVAL
+  WorkOrder), `PlanB.simulate(segment_id, temp_f, priority_only)`, `Backtest.run(threshold)`,
+  `FacilitiesAgent.ask(question, as_of)` (template; intents: inspect / plan B / energy).
+- `RiskModel.score_all(threshold)` — ML.md §1–2 implemented in pandas/numpy; writes `RiskScore` rows.
+  **Not yet run** (only 31 fixture days of S3-PIPE sensors exist); run after Devansh's full sensor seed.
+- All Python impls in `src/*.py`; fetch helpers return Python lists (C3 arrays have no `.sort`).
 
-- **Backend (`src/`):** not created yet — the template has no top-level `src/` (only `ui/react/src/`); create `<pkg>/src/` for C3 types.
-- **UI:** the blank React shell — one "Demo" nav item; `<Routes>` has only a catch-all `path="*"` fallback, no application pages/routes wired.
-- **Seed/data:** none.
+**Smoke tests (runJsCode, 2026-06-09):** all 7 API calls return contract keys; PlanB S3 = 18 chillers /
+$66,672/day (matches fixture); BuildingDashboard van_vleck_hall plan_b = rank 6 / 1 chiller / $3,704;
+Backtest F4 lead_days 8, first_due 2026-06-09; WorkOrder approve/dismiss persist and reload.
 
-See `resource/TEMPLATE_SUMMARY.md` for the full template initial state (structure, the `c3Action`
-API, how to add a route + nav item, which examples to copy).
+**Key decisions:** one package; contract snake_case kept; API methods return `json` (keeps the `type`
+key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precomputed; merge-not-rebase.
 
-## Packages
+## Devansh (data, network, Plan B)
 
-- (the main package) — blank; nothing built yet.
+- Seed JSON currently **fixture-derived placeholders** (`source: placeholder…`) in `data/{Plant,LoopSegment,
+  Building,Asset,FailureEvent,WeatherDay,SensorReading,RiskScore}/`: 3 plants, 6 segments, 16 buildings,
+  20 assets, 10 events, 1 weather day, 31 S3-PIPE sensor + risk days. Replace with the real pulls +
+  generator output (`tools/datagen/`). Omit null keys; chunk `SensorReading` by month.
+- `src/PlanB.py` implements the contract formula; refine freely.
 
-## Backend types
+## Arnav (shell, Overview, Plan B, Backtest, Buildings)
 
-- _none yet_
+- UI: blank template shell (`App.tsx`, `config/navigation.ts`, `components/{SideNav,TopNav}`); no app
+  routes yet. Backend calls per `docs/CONTRACT.md` §5.2.
 
-## UI pages / routes
+## Anuva (Building dashboard, Asset detail, Work Orders, Agent drawer)
 
-- _none yet (`<Routes>` has only a catch-all `path="*"` fallback; single "Demo" nav item)_
-
-## Seed / data
-
-- _none yet_
-
-## Key decisions
-
-- _none yet_
+- Nothing yet. Backend calls per `docs/CONTRACT.md` §5.2.

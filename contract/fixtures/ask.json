@@ -1,0 +1,44 @@
+{
+  "question": "What should 2 crews inspect this week?",
+  "as_of": "2026-06-09",
+  "answer": "Send crew 1 to the S3 chilled water main: it is inspection due, serves 9 buildings including 3 research labs, and a failure would need about 18 rental chillers (~$67K/day). Send crew 2 to Walnut Street chiller 2: it is on watch with vibration rising and is 43 years old.",
+  "entities": [
+    {
+      "kind": "asset",
+      "id": "S3-PIPE",
+      "label": "S3 chilled water main"
+    },
+    {
+      "kind": "asset",
+      "id": "WAL-CHL-2",
+      "label": "Walnut St chiller 2"
+    },
+    {
+      "kind": "segment",
+      "id": "S3",
+      "label": "Segment S3"
+    }
+  ],
+  "proposed_actions": [
+    {
+      "kind": "draft_work_order",
+      "work_order": {
+        "wo_id": "WO 26-071214",
+        "asset_id": "WAL-CHL-2",
+        "building_ids": [],
+        "title": "Inspect chiller 2, Walnut Street plant",
+        "description": "Vibration rising 3 days; 43 years old.",
+        "priority": 2,
+        "crew": "HVAC – Mechanical",
+        "est_hours": 4,
+        "status": "PENDING_APPROVAL",
+        "drafted_by": "agent",
+        "drafted_on": "2026-06-09",
+        "approved_by": null,
+        "approved_on": null,
+        "dismiss_reason": null
+      }
+    }
+  ],
+  "generated_by": "template"
+}

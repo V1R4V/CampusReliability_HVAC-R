@@ -1,0 +1,56 @@
+[
+  {
+    "id": "WO 26-071213",
+    "asset": "S3-PIPE",
+    "building_ids": [
+      "chemistry_building",
+      "birge_hall",
+      "sterling_hall",
+      "grainger_hall",
+      "van_hise_hall",
+      "van_vleck_hall",
+      "science_hall",
+      "music_hall",
+      "bascom_hall"
+    ],
+    "title": "Inspect chilled water main, segment S3",
+    "description": "Pressure falling 4 days and flow imbalance rising (leak signal). Inspect segment S3 supply line and isolation valves.",
+    "priority": 1,
+    "crew": "Utilities – Piping",
+    "est_hours": 6,
+    "status": "PENDING_APPROVAL",
+    "drafted_by": "agent",
+    "drafted_on": "2026-06-09"
+  },
+  {
+    "id": "WO 26-070118",
+    "asset": "VIL-UH-2",
+    "building_ids": [
+      "vilas_hall"
+    ],
+    "title": "Inspect unit heater 2, Vilas Hall",
+    "description": "Heat output (ΔT) falling and fan vibration rising during cold snap.",
+    "priority": 1,
+    "crew": "HVAC – Mechanical",
+    "est_hours": 4,
+    "status": "APPROVED",
+    "drafted_by": "agent",
+    "drafted_on": "2026-01-21",
+    "approved_by": "Facilities manager",
+    "approved_on": "2026-01-21"
+  },
+  {
+    "id": "WO 26-070342",
+    "asset": "CHA-CHL-1",
+    "building_ids": [],
+    "title": "Inspect chiller 1, Charter Street plant",
+    "description": "One-day vibration spike.",
+    "priority": 3,
+    "crew": "HVAC – Mechanical",
+    "est_hours": 2,
+    "status": "DISMISSED",
+    "drafted_by": "agent",
+    "drafted_on": "2026-03-03",
+    "dismiss_reason": "Spike cleared next day; sensor recalibrated."
+  }
+]

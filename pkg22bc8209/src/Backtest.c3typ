@@ -1,0 +1,21 @@
+/**
+ * "How we know" — evaluate the risk model against the planted {@link FailureEvent}s over the
+ * whole replay. Shape fixed by `contract/fixtures/backtest.json`. Honesty rule: if a decoy
+ * fires or a false-alarm day exists, report it — an explained false alarm beats a suspicious zero.
+ */
+type Backtest {
+  /**
+   * Returns `{ threshold, failures[{event_id,asset_id,system,failure_date,first_due_date,
+   * lead_days,energy_over_expected_pct_at_flag}], false_alarm_days, healthy_assets,
+   * decoys[{event_id,label,ignored,reason}], sweep[{threshold,mean_lead_days,min_lead_days,
+   * false_alarm_days,missed}], aligned_curves[{event_id,asset_id,points[{days_before,risk}]}] }`.
+   *
+   * `first_due_date` = first day at or above `threshold` on 2 consecutive days within the 30
+   * days before the failure; `lead_days = failure_date − first_due_date`. A false-alarm day is
+   * an asset-day in `INSPECTION_DUE` with no failure on that asset within the following 21 days.
+   * A decoy is `ignored` if its asset never went due within ±5 days of the decoy. `sweep` runs
+   * thresholds 2.0 → 4.0 step 0.25 from the stored {@link RiskScore#risk} series;
+   * `aligned_curves` give risk from −21 to 0 days before each failure.
+   */
+  run: function(threshold: double): json py
+}

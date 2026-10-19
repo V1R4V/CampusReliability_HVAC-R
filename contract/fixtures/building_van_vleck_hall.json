@@ -1,0 +1,51 @@
+{
+  "as_of": "2026-06-09",
+  "building": {
+    "building_id": "van_vleck_hall", "name": "Van Vleck Hall", "segment_id": "S3", "criticality": "instruction",
+    "year_built": 1963, "gsf": 150000, "peak_load_tons": 375.0, "lat": 43.0747, "lon": -89.4045,
+    "source": "FIXTURE PLACEHOLDER — real values come from data/seed/buildings.csv"
+  },
+  "served_by": { "plant_id": "CHARTER", "plant_name": "Charter Street Heating Plant", "segment_id": "S3", "segment_name": "Bascom Hill loop" },
+  "systems": {
+    "cooling": {
+      "status": "INSPECTION_DUE", "risk": 3.21, "via_asset_id": "S3-PIPE", "energy_over_expected_pct": 8.5,
+      "sparkline": [
+        { "date": "2026-06-03", "risk": 1.6 }, { "date": "2026-06-04", "risk": 1.9 }, { "date": "2026-06-05", "risk": 2.2 },
+        { "date": "2026-06-06", "risk": 2.5 }, { "date": "2026-06-07", "risk": 2.8 }, { "date": "2026-06-08", "risk": 3.1 },
+        { "date": "2026-06-09", "risk": 3.21 }
+      ]
+    },
+    "heating": {
+      "status": "HEALTHY", "risk": 0.8, "via_asset_id": "VV-HX-1", "energy_over_expected_pct": 1.0,
+      "sparkline": [ { "date": "2026-06-08", "risk": 0.8 }, { "date": "2026-06-09", "risk": 0.8 } ]
+    },
+    "air": {
+      "status": "WATCH", "risk": 2.1, "via_asset_id": "VV-AHU-1", "energy_over_expected_pct": 4.0,
+      "sparkline": [ { "date": "2026-06-08", "risk": 1.9 }, { "date": "2026-06-09", "risk": 2.1 } ]
+    }
+  },
+  "energy_series": [
+    { "date": "2026-06-07", "actual_kwh": 5120, "expected_kwh": 4790 },
+    { "date": "2026-06-08", "actual_kwh": 5260, "expected_kwh": 4850 },
+    { "date": "2026-06-09", "actual_kwh": 5410, "expected_kwh": 4980 }
+  ],
+  "assets": [
+    {
+      "asset_id": "S3-PIPE", "name": "Chilled water main, segment S3", "system": "cooling", "type": "chw_main",
+      "segment_id": "S3", "building_id": null, "status": "INSPECTION_DUE", "risk": 3.21, "days_in_status": 1,
+      "driver": "pressure", "driver_label": "pressure ↓ 6 psi", "energy_over_expected_pct": 8.5,
+      "impact": 41.2, "rank_score": 132.3, "buildings_served": 9, "cost_per_day_usd": 66672,
+      "work_order_status": "PENDING_APPROVAL"
+    }
+  ],
+  "work_orders": [
+    {
+      "wo_id": "WO 26-071213", "asset_id": "S3-PIPE", "building_ids": ["chemistry_building", "van_vleck_hall", "bascom_hall"],
+      "title": "Inspect chilled water main, segment S3",
+      "description": "Pressure falling 4 days and flow imbalance rising (leak signal). Inspect segment S3 supply line and isolation valves.",
+      "priority": 1, "crew": "Utilities – Piping", "est_hours": 6, "status": "PENDING_APPROVAL",
+      "drafted_by": "agent", "drafted_on": "2026-06-09", "approved_by": null, "approved_on": null, "dismiss_reason": null
+    }
+  ],
+  "plan_b": { "segment_id": "S3", "priority_rank": 6, "chillers_needed": 1, "cost_per_day_usd": 3704 }
+}

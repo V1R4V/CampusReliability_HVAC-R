@@ -1,0 +1,281 @@
+[
+  {
+    "id": "S3-PIPE_2026-05-20",
+    "asset": "S3-PIPE",
+    "date": "2026-05-20",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-21",
+    "asset": "S3-PIPE",
+    "date": "2026-05-21",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-22",
+    "asset": "S3-PIPE",
+    "date": "2026-05-22",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-23",
+    "asset": "S3-PIPE",
+    "date": "2026-05-23",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-24",
+    "asset": "S3-PIPE",
+    "date": "2026-05-24",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-25",
+    "asset": "S3-PIPE",
+    "date": "2026-05-25",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-26",
+    "asset": "S3-PIPE",
+    "date": "2026-05-26",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-27",
+    "asset": "S3-PIPE",
+    "date": "2026-05-27",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-28",
+    "asset": "S3-PIPE",
+    "date": "2026-05-28",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-29",
+    "asset": "S3-PIPE",
+    "date": "2026-05-29",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-30",
+    "asset": "S3-PIPE",
+    "date": "2026-05-30",
+    "pressure_psi": 78.0,
+    "flow_imbalance_pct": 0.5,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3100.0
+  },
+  {
+    "id": "S3-PIPE_2026-05-31",
+    "asset": "S3-PIPE",
+    "date": "2026-05-31",
+    "pressure_psi": 77.9,
+    "flow_imbalance_pct": 0.53,
+    "delta_t_f": 12.4,
+    "energy_kwh": 3103.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-01",
+    "asset": "S3-PIPE",
+    "date": "2026-06-01",
+    "pressure_psi": 77.8,
+    "flow_imbalance_pct": 0.59,
+    "delta_t_f": 12.3,
+    "energy_kwh": 3108.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-02",
+    "asset": "S3-PIPE",
+    "date": "2026-06-02",
+    "pressure_psi": 77.6,
+    "flow_imbalance_pct": 0.67,
+    "delta_t_f": 12.3,
+    "energy_kwh": 3115.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-03",
+    "asset": "S3-PIPE",
+    "date": "2026-06-03",
+    "pressure_psi": 77.4,
+    "flow_imbalance_pct": 0.77,
+    "delta_t_f": 12.2,
+    "energy_kwh": 3124.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-04",
+    "asset": "S3-PIPE",
+    "date": "2026-06-04",
+    "pressure_psi": 77.2,
+    "flow_imbalance_pct": 0.89,
+    "delta_t_f": 12.1,
+    "energy_kwh": 3134.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-05",
+    "asset": "S3-PIPE",
+    "date": "2026-06-05",
+    "pressure_psi": 76.9,
+    "flow_imbalance_pct": 1.02,
+    "delta_t_f": 12.1,
+    "energy_kwh": 3145.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-06",
+    "asset": "S3-PIPE",
+    "date": "2026-06-06",
+    "pressure_psi": 76.6,
+    "flow_imbalance_pct": 1.16,
+    "delta_t_f": 12.0,
+    "energy_kwh": 3158.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-07",
+    "asset": "S3-PIPE",
+    "date": "2026-06-07",
+    "pressure_psi": 76.2,
+    "flow_imbalance_pct": 1.32,
+    "delta_t_f": 11.9,
+    "energy_kwh": 3172.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-08",
+    "asset": "S3-PIPE",
+    "date": "2026-06-08",
+    "pressure_psi": 75.9,
+    "flow_imbalance_pct": 1.49,
+    "delta_t_f": 11.7,
+    "energy_kwh": 3187.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-09",
+    "asset": "S3-PIPE",
+    "date": "2026-06-09",
+    "pressure_psi": 75.5,
+    "flow_imbalance_pct": 1.67,
+    "delta_t_f": 11.6,
+    "energy_kwh": 3203.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-10",
+    "asset": "S3-PIPE",
+    "date": "2026-06-10",
+    "pressure_psi": 75.0,
+    "flow_imbalance_pct": 1.86,
+    "delta_t_f": 11.5,
+    "energy_kwh": 3220.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-11",
+    "asset": "S3-PIPE",
+    "date": "2026-06-11",
+    "pressure_psi": 74.6,
+    "flow_imbalance_pct": 2.07,
+    "delta_t_f": 11.4,
+    "energy_kwh": 3238.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-12",
+    "asset": "S3-PIPE",
+    "date": "2026-06-12",
+    "pressure_psi": 74.1,
+    "flow_imbalance_pct": 2.28,
+    "delta_t_f": 11.2,
+    "energy_kwh": 3257.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-13",
+    "asset": "S3-PIPE",
+    "date": "2026-06-13",
+    "pressure_psi": 73.7,
+    "flow_imbalance_pct": 2.51,
+    "delta_t_f": 11.1,
+    "energy_kwh": 3276.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-14",
+    "asset": "S3-PIPE",
+    "date": "2026-06-14",
+    "pressure_psi": 73.1,
+    "flow_imbalance_pct": 2.74,
+    "delta_t_f": 10.9,
+    "energy_kwh": 3297.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-15",
+    "asset": "S3-PIPE",
+    "date": "2026-06-15",
+    "pressure_psi": 72.6,
+    "flow_imbalance_pct": 2.98,
+    "delta_t_f": 10.7,
+    "energy_kwh": 3318.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-16",
+    "asset": "S3-PIPE",
+    "date": "2026-06-16",
+    "pressure_psi": 72.1,
+    "flow_imbalance_pct": 3.24,
+    "delta_t_f": 10.6,
+    "energy_kwh": 3340.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-17",
+    "asset": "S3-PIPE",
+    "date": "2026-06-17",
+    "pressure_psi": 71.5,
+    "flow_imbalance_pct": 3.5,
+    "delta_t_f": 10.4,
+    "energy_kwh": 3364.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-18",
+    "asset": "S3-PIPE",
+    "date": "2026-06-18",
+    "pressure_psi": 71.5,
+    "flow_imbalance_pct": 3.5,
+    "delta_t_f": 10.4,
+    "energy_kwh": 3364.0
+  },
+  {
+    "id": "S3-PIPE_2026-06-19",
+    "asset": "S3-PIPE",
+    "date": "2026-06-19",
+    "pressure_psi": 71.5,
+    "flow_imbalance_pct": 3.5,
+    "delta_t_f": 10.4,
+    "energy_kwh": 3364.0
+  }
+]

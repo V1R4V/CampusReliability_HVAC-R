@@ -1,0 +1,25 @@
+/**
+ * The degradation risk model (`docs/ML.md`). Runs once over the whole replay window and
+ * persists one {@link RiskScore} per asset per day, so every API call is a cheap read.
+ *
+ * Method, per asset and day:
+ * 1. Weather-normalized expected energy: degree-day regression (`a + b × CDD` for cooling,
+ *    `a + b × HDD` for heating, both for air) fit on a trailing 60-day window ending 7 days
+ *    before the scored day, so slow degradation never teaches the baseline that bad is normal.
+ * 2. Per-signal z-score against the asset's own previous 30 days (floors: pressure 0.5 psi,
+ *    flow 0.2%, ΔT 0.5 °F, vibration 0.1 mm/s, energy-pct 1.0), direction-adjusted so
+ *    positive = bad, negatives clipped to 0, 3-day rolling mean.
+ * 3. Weighted sum (pressure .25, flow .25, ΔT .15, vibration .15, energy .20, renormalized over
+ *    non-null signals) × `(1 + age_years / 60)`, × 1.3 for heating when `tavg_f < 0`, × 1.2 for
+ *    cooling when `tmax_f > 85`.
+ * 4. Status per `docs/CONTRACT.md` §2 (`WATCH_THRESHOLD` 2.0, `PERSISTENCE_DAYS` 2, hysteresis,
+ *    `FAILED` from {@link FailureEvent}s). A day with all signals missing carries the previous
+ *    risk × 0.9 and never raises it.
+ */
+type RiskModel {
+  /**
+   * Score every asset for every day that has a {@link SensorReading}, replacing existing
+   * {@link RiskScore} rows, at inspection `threshold` (default 3.0). Returns the number of rows written.
+   */
+  score_all: function(threshold: double): int py
+}

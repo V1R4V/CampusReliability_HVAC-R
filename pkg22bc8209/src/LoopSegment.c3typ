@@ -1,0 +1,23 @@
+/**
+ * A segment of the campus chilled-water distribution loop, fed by exactly one {@link Plant}
+ * and serving a group of {@link Building}s (ids `S1`…`S6`).
+ *
+ * The topology is **synthetic but plausible** — UW does not publish its loop layout — and is
+ * grouped by geography. `S3` ("Bascom Hill loop", fed from Charter Street) is the reenactment
+ * segment: its chilled-water main asset `S3-PIPE` is planted to fail on June 17, 2026, and it
+ * must serve the real closures Bascom Hall, Science Hall and Grainger Hall (see `docs/DATA.md` §2).
+ * Plan B simulations ({@link PlanB#simulate}) and the Overview schematic are keyed by segment.
+ */
+entity type LoopSegment {
+  /** The plant that feeds this segment. Required; `CHARTER`, `WALNUT` or `WCCF`. */
+  plant: !Plant
+
+  /** Buildings served by this segment. Inverse of {@link Building#segment}. */
+  buildings: [Building](segment)
+
+  /**
+   * Assets attached to this segment — the segment's own chilled-water main (`S<n>-PIPE`,
+   * with no building) plus building-level equipment. Inverse of {@link Asset#segment}.
+   */
+  assets: [Asset](segment)
+}

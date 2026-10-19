@@ -1,0 +1,32 @@
+[
+  {
+    "id": "S1",
+    "name": "Lakeshore loop",
+    "plant": "CHARTER"
+  },
+  {
+    "id": "S2",
+    "name": "Library Mall loop",
+    "plant": "CHARTER"
+  },
+  {
+    "id": "S3",
+    "name": "Bascom Hill loop",
+    "plant": "CHARTER"
+  },
+  {
+    "id": "S4",
+    "name": "West loop",
+    "plant": "WALNUT"
+  },
+  {
+    "id": "S5",
+    "name": "Engineering loop",
+    "plant": "WALNUT"
+  },
+  {
+    "id": "S6",
+    "name": "Southeast loop",
+    "plant": "WCCF"
+  }
+]

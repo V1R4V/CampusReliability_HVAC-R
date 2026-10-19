@@ -1,0 +1,33 @@
+/**
+ * API for the Overview page, the shell and the Buildings index: the state of the whole campus
+ * as of one date. Payload shape is fixed by `docs/CONTRACT.md` §4 / `contract/fixtures/campus_snapshot.json`
+ * and is returned as `json` so the UI gets the contract keys verbatim.
+ */
+type CampusSnapshot {
+  /**
+   * Build the campus snapshot for `as_of` (ISO `YYYY-MM-DD`). Reads {@link RiskScore} rows for
+   * that date (assets without a row are `HEALTHY`, risk 0), {@link WeatherDay}, {@link Asset},
+   * {@link Building}, {@link LoopSegment}, {@link Plant} and {@link WorkOrder}.
+   *
+   * Returns `{ as_of, weather{tmax_f,tmin_f,tavg_f,label,source}, kpis{inspection_due,
+   * inspection_due_delta, watch, failed, energy_waste_usd_per_day, assets_over_5pct_energy,
+   * cooling_exposure_usd_per_day}, queue[QueueItem], buildings[{building_id,name,segment_id,
+   * criticality,worst_status}], segments[{segment_id,plant_id,name,worst_status}],
+   * plants[{plant_id,name}], morning_brief }`.
+   *
+   * QueueItem = `{asset_id, name, system, type, segment_id, building_id, status, risk,
+   * days_in_status, driver, driver_label, energy_over_expected_pct, impact, rank_score,
+   * buildings_served, cost_per_day_usd, work_order_status}`. Ranking: `INSPECTION_DUE` first,
+   * then `FAILED`, then `rank_score = risk × impact` descending, where
+   * `impact = Σ CRITICALITY_WEIGHT × peak_load_tons / 500` over buildings served and
+   * `cost_per_day_usd = Σ ceil(peak_load_tons / 400) × 3704` (cooling assets only).
+   */
+  compute: function(as_of: string): json py
+
+  /**
+   * The ranked `queue[QueueItem]` for `as_of` on its own (same ranking rules as
+   * {@link #compute}). Shared by {@link BuildingDashboard#compute}, {@link Briefing#generate}
+   * and {@link FacilitiesAgent#ask} so every surface ranks assets identically.
+   */
+  queue: function(as_of: string): json py
+}
