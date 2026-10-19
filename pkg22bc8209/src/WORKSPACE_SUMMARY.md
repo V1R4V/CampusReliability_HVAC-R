@@ -15,8 +15,19 @@
   `AssetHistory.get(asset_id)`, `Briefing.generate(asset_id, as_of)` (template; drafts a PENDING_APPROVAL
   WorkOrder), `PlanB.simulate(segment_id, temp_f, priority_only)`, `Backtest.run(threshold)`,
   `FacilitiesAgent.ask(question, as_of)` (template; intents: inspect / plan B / energy).
-- `RiskModel.score_all(threshold)` — ML.md §1–2 implemented in pandas/numpy; writes `RiskScore` rows.
-  **Not yet run** (only 31 fixture days of S3-PIPE sensors exist); run after Devansh's full sensor seed.
+- `RiskModel.score_all(threshold)` — ML.md §1–2 in pandas/numpy; writes `RiskScore` rows (4,860 rows,
+  ~4 s). Energy baseline returns NaN when the day's degree-days are outside the fitted range (no
+  extrapolation → energy excluded that day).
+- **Forecast layer (ML.md §8):** `RiskModel.forecast_all()` → `RiskForecast` rows (asset × day × method,
+  19,440 rows, ~12 s) with P(fail within 7/14/30 d) from four methods — `heuristic` (logistic
+  calibration of risk), `classifier` (L2 logistic on 8 features), `monte_carlo` (1,000 paths of
+  age-normalised risk drift; p10/p50/p90 days to failure), `weibull` (ASHRAE age baseline). Trained
+  methods are leave-one-failure-out; numpy/scipy only (no sklearn in the default runtime).
+  API: `RiskForecast.compare(asset_id, as_of)` and `RiskForecast.campus(as_of)` (CONTRACT §5.2).
+  Run order after a seed change: `upsertSeedData` → `score_all(3.0)` → `forecast_all()`.
+- Seed: `WeatherDay` is **real** NOAA GHCN-Daily USW00014837 (tavg derived); `SensorReading` is synthetic
+  from `tools/datagen/interim_generator.py` (stdlib only; F1–F5, D1/D2/D4 planted; D3 is the real
+  Jul 12–17 heat wave).
 - All Python impls in `src/*.py`; fetch helpers return Python lists (C3 arrays have no `.sort`).
 
 **Smoke tests (runJsCode, 2026-06-09):** all 7 API calls return contract keys; PlanB S3 = 18 chillers /

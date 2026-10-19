@@ -236,6 +236,10 @@ def score_all(cls, threshold):
     for c in ["pressure_psi", "flow_imbalance_pct", "delta_t_f", "vibration_mm_s", "energy_kwh"]:
         df[c] = pd.to_numeric(df[c], errors="coerce")
 
+    # Full rewrite, not a merge: mergeBatch only touches non-null fields, so a value that becomes
+    # unknown in this run (e.g. expected_energy_kwh on a day with no weather-comparable history)
+    # would otherwise keep the stale number from the previous run.
+    c3.RiskScore.removeAll({}, True)
     written = 0
     for aid, g in df.groupby("asset"):
         a = assets.get(aid)
@@ -503,16 +507,16 @@ def forecast_all(cls):
     df = _add_labels(df, failures)
     fail_assets = sorted(failures)
 
-    # risk level at which the planted failures actually happened (day before failure), per asset
+    # age-normalised risk level at which the planted failures actually happened (day before failure)
     pre_fail = {}
     for aid, evs in failures.items():
         g = df[df["asset"] == aid]
         for fd, _ in evs:
             prev = g[g["date"] == (fd - dt.timedelta(days=1)).isoformat()]
             if len(prev):
-                pre_fail[aid] = float(prev["risk"].iat[0])
+                pre_fail[aid] = float(prev["raw_risk"].iat[0])
 
-    heur, _ = _loo_predict(df, ["risk"], fail_assets, L2_HEURISTIC)
+    heur, _ = _loo_predict(df, HEURISTIC_FEATURES, fail_assets, L2_HEURISTIC)
     clf, contrib = _loo_predict(df, CLF_FEATURES, fail_assets, L2_CLASSIFIER)
 
     rows = []
@@ -521,7 +525,7 @@ def forecast_all(cls):
         idx = g.index.values
         others = [v for k, v in pre_fail.items() if k != aid]
         fail_level = float(np.median(others)) if others else FAIL_LEVEL_DEFAULT
-        mc = _monte_carlo(g["risk"].values.astype(float), fail_level, seed=abs(hash(aid)) % (2 ** 32))
+        mc = _monte_carlo(g["raw_risk"].values.astype(float), fail_level, seed=sum(ord(ch) for ch in aid))
         wp, wq, wbasis = _weibull(a.asset_type, a.age_years)
         for j, i in enumerate(idx):
             date = df.at[i, "date"]
@@ -543,6 +547,8 @@ def forecast_all(cls):
                 rows.append(_row(aid, date, "monte_carlo", p, q, conf, basis))
             rows.append(_row(aid, date, "weibull", wp, wq, "low", wbasis))
 
+    # Full rewrite (same reason as score_all: mergeBatch would keep stale fields from a previous run).
+    c3.RiskForecast.removeAll({}, True)
     written = 0
     for k in range(0, len(rows), BATCH):
         chunk = [c3.RiskForecast.make(r) for r in rows[k:k + BATCH]]

@@ -146,6 +146,8 @@ UI reads only these. Fixtures for each live in `contract/fixtures/`. "Owner" bui
 | `workOrders()` / `approveWorkOrder(woId, approver)` / `dismissWorkOrder(woId, reason)` | Vibhrav | `work_orders.json` | Work Orders, Asset detail |
 | `ask(question, asOf)` | Vibhrav | `ask.json` | Agent drawer |
 | `events()` | Devansh | `events.json` | Shell scrubber markers, charts |
+| `riskForecast(assetId, asOf)` *(additive, ML.md §8)* | `RiskForecast.compare(asset_id, as_of)` | `c3Action('RiskForecast', 'compare', [assetId, asOf])` → `{ asset_id, name, as_of, as_of_used, status, risk, threshold, methods[{method, label, p_fail_7d, p_fail_14d, p_fail_30d, days_to_failure{p10,p50,p90}\|null, confidence, basis, trained_on}], consensus{p_fail_7d, p_fail_14d, p_fail_30d, spread_14d, n_methods, note}, history[{date, heuristic, classifier, monte_carlo, weibull, consensus}], next_failure{event_id, date, days_from_as_of, synthetic}\|null }`. Fixture: `forecast_compare_S3-PIPE.json` |
+| `riskForecastCampus(asOf)` *(additive)* | `RiskForecast.campus(as_of)` | `c3Action('RiskForecast', 'campus', [asOf])` → `{ as_of, assets[{asset_id, name, system, type, building_id, status, risk, consensus_14d, heuristic_14d, classifier_14d, monte_carlo_14d, weibull_14d, days_to_failure_p50, confidence, spread_14d}] }` ranked by `consensus_14d` desc |
 
 ### Shared object shapes
 
