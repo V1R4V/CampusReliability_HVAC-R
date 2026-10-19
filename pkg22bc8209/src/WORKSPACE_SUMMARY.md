@@ -157,25 +157,36 @@ All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint +
   side panel, calls `FacilitiesAgent.ask`, renders entity chips + proposed work orders).
 - **Pages**: `pages/Asset/Asset.tsx` (`/asset/:assetId`), `pages/Building/Building.tsx`
   (`/building/:buildingId`), `pages/WorkOrders/WorkOrders.tsx` (`/workorders`, tabs by status).
-  All fetch live via `shared/api/anuva.ts` (no mock data); loading/empty/error states on every panel.
-- **TEMPORARY local design tokens**: `components/RiskChart/statusColors.ts` + `Tags.tsx`
-  (`StatusTag`/`WorkOrderStatusTag`/`ProvenanceTag`) hold the FRONTEND §2 hex values until Arnav's
-  real tokens/`StatusPill`/`ProvenanceChip` ship — swap imports then, don't fork further.
-- **TEMPORARY `asOf`**: no global scrubber yet (`contexts/AsOfProvider` is Arnav's, unbuilt), so each
-  page keeps its own `asOf` in the URL query string (`?asOf=`), default `2026-06-09`. Swap the local
-  `useAsOf()` hook in each page for his context in one line once it ships.
-- **Cross-boundary edit (flagged, not silent):** added the three routes above + a "Work Orders" nav
-  item directly to `App.tsx` / `config/navigation.ts` (Arnav's files) since no shell PR had landed —
-  brief explicitly allows this ("or agree he adds them now"). Arnav: please fold into your routing
-  pass and remove this note once reconciled.
-- **Verified:** `npm run build` (lint + tsc + vite) green. `runJsCode` smoke-tested
-  `BuildingDashboard.compute`, `AssetHistory.get`, `Briefing.generate`, `WorkOrder.fetch`
-  (id/asset.id → wo_id/asset_id remap correct), `FacilitiesAgent.ask` — all return contract shapes.
-  Browser check via Playwright confirmed routing/shell/error-states render correctly, but that
-  Playwright session has no Genesis auth cookie (`document.cookie` is empty) so its own API calls
-  redirect to Okta/CORS-fail — an environment/session limitation, not an app bug; did not work
-  around it with a `c3auth` cookie bootstrap (forbidden).
+  All fetch live via `shared/api/anuva.ts` (no mock data); loading/empty/error states on every panel;
+  all read `asOf` (and the inspection `threshold`) from Arnav's `AsOfProvider` — no per-page date
+  control. Routes + the "Work orders" nav item live in Arnav's `App.tsx` / `config/navigation.ts`.
+- **Building dashboard (FRONTEND §5.3)** — rebuilt on Arnav's shared components once his shell landed
+  (`0b5b609`): header = worst-system `StatusPill` + `CriticalityBadge` + facts with a `ProvenanceChip`
+  whose kind follows `building.source` (RULES §4: the payload's source is currently "placeholder…",
+  so it reads SYNTHETIC and flips to REAL by itself when Devansh lands cited facts); three system cards
+  (`SystemIcon`, `StatusPill`, risk vs the global threshold, `Sparkline`, energy vs expected,
+  `ForecastBadge`; whole card → `/asset/:via_asset_id`; "Not tracked" when null); energy panel =
+  `ComposedChart` with ink / ink-muted lines (no status colour on data series) and a range `Area`
+  shading only the gap above the weather-expected baseline, beside a `KpiTile` "Energy over expected"
+  (kWh, ≈$ at `ENERGY_USD_PER_KWH`, ESTIMATE chip); assets table worst-first (`STATUS_RANK`, then
+  risk), row click → `/asset/:id`, capped at 100 rows; work orders via `WorkOrderCard`
+  (Approve/Dismiss → refetch); "If cooling fails" `KpiTile` ($/day, priority rank, chillers for the
+  peak load, ESTIMATE chip) + `Button asChild` → `/planb/:segment`. Scrubbing the date keeps the
+  previous dashboard dimmed while the new one loads, with an inline error + Retry if it fails.
+- **Tokens**: pages use the `--bib-*` CSS vars. `components/RiskChart/statusColors.ts` + `Tags.tsx`
+  still hold the FRONTEND §2 hex values (identical to the tokens) for the SVG-heavy
+  `RiskChart`/`Sparkline`/`SignalBars` and the Asset page. Follow-up: switch those strokes to
+  `var(--bib-…)` like Arnav's charts and replace `Tags.tsx` with `StatusPill`/`ProvenanceChip`.
+- **Verified:** `npm run build` (lint + tsc + vite) green. `runJsCode`:
+  `BuildingDashboard.compute('van_vleck_hall','2026-06-09')` → cooling INSPECTION_DUE 3.21 via
+  S3-PIPE (7-pt sparkline), heating/air HEALTHY (empty sparklines), 21-day energy series
+  (May 20 – Jun 9, net +452 kWh), 5 assets, 2 work orders, plan_b S3 priority #6 · 1 chiller ·
+  $3,704/day; `AssetHistory.get`, `Briefing.generate`, `WorkOrder.fetch` (id/asset.id →
+  wo_id/asset_id remap) and `FacilitiesAgent.ask` return the contract shapes. Playwright renders the
+  routes and error states, but that session has no Okta/Genesis cookie so its own API calls 302 — an
+  environment limitation, not an app bug; no `c3auth` cookie bootstrap (forbidden).
 - **Noted for Vibhrav:** `Briefing.generate` drafts a new PENDING_APPROVAL `WorkOrder` on *every*
   call — the Asset page calls it on every mount/asOf change, so repeated visits/demo runs will draft
   duplicate work orders for the same asset. Worth a dedup check (e.g. skip drafting if a pending WO
-  for that asset already exists) before the demo.
+  for that asset already exists) before the demo. Also: `BuildingDashboard.assets` rows are
+  `QueueItem`s with no `age_years`, so the §5.3 "age" column is omitted rather than invented.
