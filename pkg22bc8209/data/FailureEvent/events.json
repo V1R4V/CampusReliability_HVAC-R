@@ -69,10 +69,10 @@
   {
     "id": "D3",
     "kind": "decoy",
-    "onset_date": "2026-06-10",
-    "date": "2026-06-14",
-    "end_date": "2026-06-16",
-    "label": "Heat wave: weather-adjusted, ignored",
+    "onset_date": "2026-07-12",
+    "date": "2026-07-15",
+    "end_date": "2026-07-17",
+    "label": "Heat wave (real, NOAA 90-95 F Jul 12-17): weather-adjusted, ignored",
     "synthetic": false
   },
   {

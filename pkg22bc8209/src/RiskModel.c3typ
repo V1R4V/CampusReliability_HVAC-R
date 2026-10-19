@@ -26,4 +26,15 @@ type RiskModel {
    * {@link RiskScore} rows, at inspection `threshold` (default 3.0). Returns the number of rows written.
    */
   score_all: function(threshold: double): int py
+
+  /**
+   * Second stage, run after {@link #score_all}: turn the stored {@link RiskScore} series into
+   * failure probabilities with four independent methods and persist one {@link RiskForecast} row
+   * per asset, day and method (`docs/ML.md` §8). Methods: logistic calibration of the risk score;
+   * L2 logistic regression on eight condition features; a 1,000-path Monte Carlo drift simulation
+   * (also yields p10/p50/p90 days to failure); and an ASHRAE-based Weibull age baseline. The two
+   * trained methods use leave-one-failure-out so no asset is scored by a model that saw its own
+   * failure. Returns the number of rows written.
+   */
+  forecast_all: function(): int py
 }

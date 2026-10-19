@@ -1,0 +1,82 @@
+/**
+ * One forecasting method's failure probabilities for one {@link Asset} on one day
+ * (id `<asset_id>_<date>_<method>`). Written by {@link RiskModel#forecast_all} over the whole
+ * replay so the UI can show several independent probabilities side by side without running
+ * anything during the demo.
+ *
+ * Four methods are stored per asset-day (see `docs/ML.md` §8):
+ * - `heuristic` — the {@link RiskScore#risk} score passed through a logistic calibration fitted
+ *   against the planted failures (what "risk 3.4" means as a probability).
+ * - `classifier` — an L2-regularised logistic regression on eight condition features (risk,
+ *   3/7-day slopes, max z, number of elevated signals, energy over expected, days at WATCH, age).
+ * - `monte_carlo` — 1,000 simulated 30-day paths of the risk score from the asset's own trailing
+ *   14-day drift and noise; probability = share of paths that reach the failure level, plus the
+ *   p10/p50/p90 of the first-crossing day.
+ * - `weibull` — an age-only population baseline from ASHRAE median service lives (conditional on
+ *   having survived to `age_years`), shown as the "what you'd expect from age alone" reference.
+ *
+ * Honesty: `heuristic` and `classifier` are trained on **synthetic planted failures F1–F5**, with
+ * the asset being scored always left out of training; every row carries `trained_on` so the UI
+ * can label it. Nothing here claims the real June 17 break was predictable.
+ */
+entity type RiskForecast {
+  /** The forecasted asset. */
+  asset: !Asset
+
+  /** Forecast date (ISO `YYYY-MM-DD`); probabilities look forward from the end of this day. */
+  date: !string
+
+  /** Which method produced this row; see the type comment for what each one does. */
+  method: !string enum('heuristic', 'classifier', 'monte_carlo', 'weibull')
+
+  /** Probability (0–1) that the asset fails within the next 7 days. 1.0 while the asset is in a `FAILED` window. */
+  p_fail_7d: double
+
+  /** Probability (0–1) that the asset fails within the next 14 days — the headline number the UI compares across methods. */
+  p_fail_14d: double
+
+  /** Probability (0–1) that the asset fails within the next 30 days. */
+  p_fail_30d: double
+
+  /** 10th percentile of days until failure. Only `monte_carlo` (first-crossing day) and `weibull` (conditional quantile) produce one; null otherwise or when too few paths cross within 30 days. */
+  days_to_failure_p10: double
+
+  /** Median days until failure (see {@link #days_to_failure_p10}). */
+  days_to_failure_p50: double
+
+  /** 90th percentile of days until failure (see {@link #days_to_failure_p10}). */
+  days_to_failure_p90: double
+
+  /**
+   * How much to trust this row: `low` in the first 30 days of history or when fewer than 5 risk
+   * points exist (and always for `weibull`, which is population-level); `high` for `monte_carlo`
+   * when the fitted drift is clearly positive (> 2 standard errors); `medium` otherwise.
+   */
+  confidence: string enum('low', 'medium', 'high')
+
+  /** One-line, human-readable explanation of what drove the number, e.g. "risk 3.41, drift +0.21/day (σ 0.18) over 14 d; 612 of 1000 paths reach 5.2 within 14 d". */
+  basis: string
+
+  /** Honesty label naming the training data or table behind the method, e.g. "planted failures F1–F5 (synthetic; leave-one-failure-out)" or "ASHRAE service-life medians (estimate)". */
+  trained_on: string
+
+  /**
+   * All four methods side by side for one asset on one day, for the Asset detail page.
+   * Returns `{ asset_id, name, as_of, status, risk, threshold, methods[{method, label, p_fail_7d,
+   * p_fail_14d, p_fail_30d, days_to_failure{p10,p50,p90}|null, confidence, basis, trained_on}],
+   * consensus{p_fail_7d, p_fail_14d, p_fail_30d, spread_14d, n_methods, note},
+   * history[{date, heuristic, classifier, monte_carlo, weibull, consensus}] (trailing 30 days of
+   * `p_fail_14d`), next_failure{event_id, date, days_from_as_of, synthetic}|null }`.
+   * The consensus is the mean of the three condition-based methods (`weibull` is a reference only).
+   * If no forecast exists for `as_of`, the latest earlier day is used and reported in `as_of_used`.
+   */
+  compare: function(asset_id: string, as_of: string): json py
+
+  /**
+   * Every asset's probabilities on one day, ranked by consensus 14-day probability descending,
+   * for an Overview "who is most likely to fail next" panel. Returns `{ as_of, assets[{asset_id,
+   * name, system, type, building_id, status, risk, consensus_14d, heuristic_14d, classifier_14d,
+   * monte_carlo_14d, weibull_14d, days_to_failure_p50, confidence, spread_14d}] }`.
+   */
+  campus: function(as_of: string): json py
+}
