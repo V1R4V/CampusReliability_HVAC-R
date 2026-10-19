@@ -132,7 +132,7 @@ export default function OutageComparison({
             </div>
             <p className="mt-0.5 text-[15px] leading-5 text-[var(--bib-ink)]">
               {reference
-                ? `${reference.label} · ${formatDate(reference.start_date)} → reopened ${formatDate(reference.reopen_date)}${
+                ? `${reference.label} · ${formatDate(reference.start_date)} until buildings reopened ${formatDate(reference.reopen_date)}${
                     outageDays != null ? ` (${outageDays} days)` : ''
                   }`
                 : 'Real June 2026 outage'}

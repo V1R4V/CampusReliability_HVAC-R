@@ -22,15 +22,56 @@ import TopNav from './components/TopNav/TopNav';
 import { AsOfProvider, useAsOf } from './contexts/AsOfProvider';
 import './styles/before-it-breaks.css';
 
-const Overview = lazy(() => import('./pages/Overview/Overview'));
-const Buildings = lazy(() => import('./pages/Buildings/Buildings'));
-const PlanB = lazy(() => import('./pages/PlanB/PlanB'));
-const Backtest = lazy(() => import('./pages/Backtest/Backtest'));
-const Building = lazy(() => import('./pages/Building/Building'));
-const Asset = lazy(() => import('./pages/Asset/Asset'));
-const WorkOrders = lazy(() => import('./pages/WorkOrders/WorkOrders'));
-const Predictions = lazy(() => import('./pages/Predictions/Predictions'));
-const AgentDrawer = lazy(() => import('./components/AgentDrawer/AgentDrawer'));
+const RELOAD_FLAG_PREFIX = 'bib.chunkReload.';
+
+/**
+ * `React.lazy` that self-heals a failed chunk load. The dev server returns 500 for a module
+ * while another save is mid-flight (lint error, half-written file); `React.lazy` then caches
+ * the rejected import for the life of the page, so the route stays on "Failed to fetch
+ * dynamically imported module" even after the file is fixed. On the first failure we reload
+ * once (flag in sessionStorage); if it fails again the error surfaces in RouteErrorBoundary.
+ */
+function lazyWithReload<T extends React.ComponentType<unknown>>(
+  name: string,
+  loader: () => Promise<{ default: T }>,
+): React.LazyExoticComponent<T> {
+  const flag = RELOAD_FLAG_PREFIX + name;
+  return lazy(() =>
+    loader()
+      .then((mod) => {
+        try {
+          window.sessionStorage.removeItem(flag);
+        } catch {
+          // storage unavailable — nothing to clear
+        }
+        return mod;
+      })
+      .catch((err: unknown) => {
+        let reloaded = false;
+        try {
+          reloaded = window.sessionStorage.getItem(flag) === '1';
+          if (!reloaded) window.sessionStorage.setItem(flag, '1');
+        } catch {
+          // storage unavailable — fall through to a single reload attempt
+        }
+        if (!reloaded) {
+          window.location.reload();
+          return new Promise<{ default: T }>(() => undefined); // keep Suspense pending while reloading
+        }
+        throw err;
+      }),
+  );
+}
+
+const Overview = lazyWithReload('Overview', () => import('./pages/Overview/Overview'));
+const Buildings = lazyWithReload('Buildings', () => import('./pages/Buildings/Buildings'));
+const PlanB = lazyWithReload('PlanB', () => import('./pages/PlanB/PlanB'));
+const Backtest = lazyWithReload('Backtest', () => import('./pages/Backtest/Backtest'));
+const Building = lazyWithReload('Building', () => import('./pages/Building/Building'));
+const Asset = lazyWithReload('Asset', () => import('./pages/Asset/Asset'));
+const WorkOrders = lazyWithReload('WorkOrders', () => import('./pages/WorkOrders/WorkOrders'));
+const Predictions = lazyWithReload('Predictions', () => import('./pages/Predictions/Predictions'));
+const AgentDrawer = lazyWithReload('AgentDrawer', () => import('./components/AgentDrawer/AgentDrawer'));
 
 /** Pages that already mount their own <AgentDrawer> (Anuva's) — don't double it there. */
 const ROUTES_WITH_OWN_DRAWER = [/^\/building\//, /^\/asset\//, /^\/workorders/];

@@ -93,7 +93,7 @@ function QueueRow({
       >
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span className="text-[16px] font-semibold leading-6 text-[var(--bib-ink)]">{item.asset_id}</span>
-          <span className="truncate text-[16px] leading-6 text-[var(--bib-ink)]">{item.name}</span>
+          <span className="min-w-0 text-[16px] leading-6 text-[var(--bib-ink)]">{item.name}</span>
           <StatusPill status={item.status} size="sm" />
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] leading-5 text-[var(--bib-ink-muted)]">

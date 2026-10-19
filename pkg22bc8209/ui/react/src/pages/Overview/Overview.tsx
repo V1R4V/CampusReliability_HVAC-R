@@ -66,7 +66,7 @@ export default function Overview() {
         <div className="grid gap-4 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
           <Panel
             title="Campus network"
-            subtitle="Plants → chilled-water loops → buildings. Click a loop for Plan B, a building for its dashboard."
+            subtitle="Plants feed chilled-water loops that serve buildings. Click a loop for Plan B, a building for its dashboard."
             chip="SYNTHETIC"
             chipTitle="Loop topology is synthetic; plants and buildings are real."
           >

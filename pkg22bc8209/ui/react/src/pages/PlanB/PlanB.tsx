@@ -231,7 +231,7 @@ export default function PlanB() {
               </Button>
               {result ? (
                 <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
-                  load factor {result.load_factor.toFixed(2)} · chillers = ⌈tons × factor ÷ 400⌉
+                  load factor {result.load_factor.toFixed(2)} · chillers = tons × factor ÷ 400, rounded up
                 </span>
               ) : null}
             </div>
