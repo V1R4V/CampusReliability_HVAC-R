@@ -34,26 +34,29 @@ export default function AskAgentButton({ onOpen }: AskAgentButtonProps) {
   return (
     <Popover open={fallbackOpen} onOpenChange={setFallbackOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="solid"
-          appearance="accent"
-          size="md"
-          leadingIcon={<Sparkles />}
-          onClick={(event) => {
-            // Radix toggles the popover on trigger click; we decide ourselves below.
-            event.preventDefault();
-            handleClick();
-          }}
-        >
-          Ask the agent
-        </Button>
+        {/* The span takes Radix's anchor ref (the DS Button is a plain function component). */}
+        <span className="inline-flex">
+          <Button
+            variant="solid"
+            appearance="accent"
+            size="md"
+            leadingIcon={<Sparkles />}
+            onClick={(event) => {
+              // Radix toggles the popover on trigger click; we decide ourselves below.
+              event.preventDefault();
+              handleClick();
+            }}
+          >
+            Ask the agent
+          </Button>
+        </span>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[380px] p-4">
         <div className="flex flex-col gap-3">
           <div>
             <div className="text-[16px] font-semibold leading-6 text-[var(--bib-ink)]">Agent drawer unavailable here</div>
             <p className="mt-1 text-[14px] leading-5 text-[var(--bib-ink-muted)]">
-              The agent drawer did not open on this page. The ranked queue on the Overview is current — it is what the
+              The agent drawer did not open on this page. The ranked queue on the Overview is current; it is what the
               agent reasons over.
             </p>
           </div>

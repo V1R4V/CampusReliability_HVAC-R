@@ -117,7 +117,7 @@ export default function AlignedCurvesChart({ curves, threshold, height = 300 }: 
             ifOverflow="extendDomain"
             label={{
               value: `Inspection due ≥ ${formatThreshold(threshold)}`,
-              position: 'insideTopRight',
+              position: 'insideTopLeft',
               fill: 'var(--bib-status-due)',
               fontSize: 13,
             }}

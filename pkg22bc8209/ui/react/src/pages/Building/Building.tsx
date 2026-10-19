@@ -16,7 +16,8 @@
  * "If cooling fails" (Plan B estimate → simulate). Reads the global as-of date and inspection
  * threshold from AsOfProvider; keeps the previous dashboard dimmed while a new date loads.
  * Built entirely from the shared components (StatusPill, CriticalityBadge, SystemIcon,
- * KpiTile, Panel, ProvenanceChip, Sparkline, WorkOrderCard, ForecastBadge, AgentDrawer).
+ * KpiTile, Panel, ProvenanceChip, Sparkline, WorkOrderCard, ForecastBadge). The agent is
+ * the one global drawer in App.tsx, opened from the TopNav button — this page renders none.
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -40,7 +41,7 @@ import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
-import AgentDrawer from '@/components/AgentDrawer/AgentDrawer';
+// Vibhrav's per-system failure probability (RiskForecast.compare, ML.md §8) — embedded by owner request.
 import ForecastBadge from '@/components/ForecastPanel/ForecastBadge';
 import KpiTile from '@/components/KpiTile/KpiTile';
 import { Panel, PanelState } from '@/components/Panel/Panel';
@@ -50,6 +51,7 @@ import CriticalityBadge from '@/components/StatusPill/CriticalityBadge';
 import StatusPill from '@/components/StatusPill/StatusPill';
 import SystemIcon from '@/components/SystemIcon/SystemIcon';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
+// Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
 import { useAsOf } from '@/contexts/AsOfProvider';
 import {
   CHILLER_RENTAL_USD_PER_DAY,
@@ -551,8 +553,6 @@ export default function Building() {
           )}
         </section>
       </div>
-
-      <AgentDrawer asOf={asOf} />
     </div>
   );
 }

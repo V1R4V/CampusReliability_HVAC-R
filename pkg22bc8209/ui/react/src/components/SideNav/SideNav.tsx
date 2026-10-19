@@ -11,7 +11,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { SideNavPanelV2, SideNavPanelV2Item } from '@/components/ui/side-nav-panel-v2';
-import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import { navigationConfig } from '@/config/navigation';
 import { useAsOf } from '@/contexts/AsOfProvider';
 import { DATA_SOURCE } from '@/shared/api';
@@ -30,26 +29,11 @@ const readStoredExpanded = (): boolean => {
   }
 };
 
-function ProvenanceLegend() {
+/** Only ever visible when a developer runs with VITE_USE_FIXTURES=true; never in the live app. */
+function FixtureModeNotice() {
+  if (DATA_SOURCE !== 'fixtures') return null;
   return (
-    <div className="flex flex-col gap-2 px-2 text-[12px] leading-4 text-[var(--bib-ink-muted)]">
-      <span className="font-semibold uppercase tracking-[0.06em]">Data provenance</span>
-      <div className="flex items-start gap-2">
-        <ProvenanceChip kind="REAL" size="sm" />
-        <span>weather · buildings · plants · costs</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <ProvenanceChip kind="SYNTHETIC" size="sm" />
-        <span>sensors · loop layout · planted failures</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <ProvenanceChip kind="ESTIMATE" size="sm" />
-        <span>$/day figures</span>
-      </div>
-      {DATA_SOURCE === 'fixtures' ? (
-        <span className="font-semibold text-[var(--bib-status-due)]">Fixture mode — not live data</span>
-      ) : null}
-    </div>
+    <div className="px-2 text-[12px] font-semibold leading-4 text-[var(--bib-status-due)]">Fixture mode: not live data</div>
   );
 }
 
@@ -88,7 +72,7 @@ export default function SideNav() {
       value={activeValue}
       onValueChange={(path) => navigate(path)}
       className="shrink-0 border-r border-[var(--c3-style-basic-border-border)] bg-[var(--c3-style-basic-bg-primary)]"
-      footer={expanded ? <ProvenanceLegend /> : undefined}
+      footer={expanded && DATA_SOURCE === 'fixtures' ? <FixtureModeNotice /> : undefined}
     >
       {navigationConfig.map((item) => {
         const badge = badgeFor(item);

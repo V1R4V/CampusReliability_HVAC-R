@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
 import { Panel, PanelState } from '@/components/Panel/Panel';
 import SnapshotBanner from '@/components/Panel/SnapshotBanner';
-import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
+import Reorderable from '@/components/Reorderable/Reorderable';
 import Schematic from '@/components/Schematic/Schematic';
 import StatusPill from '@/components/StatusPill/StatusPill';
 import { useAsOf } from '@/contexts/AsOfProvider';
@@ -149,10 +149,10 @@ export default function PlanB() {
     <div className="flex min-h-full flex-col gap-4 p-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Plan B — if a chilled-water loop fails</h1>
+          <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Outage plan</h1>
           <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
-            Who loses cooling, in what order, how many rental chillers, and what it costs per day — ready before the
-            failure. As of <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>.
+            If a chilled-water loop fails: who loses cooling, in what order, how many rental chillers, what it costs
+            per day. As of <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>.
           </p>
         </div>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Loop segment">
@@ -217,8 +217,7 @@ export default function PlanB() {
                   onClick={() => pickTemp(realHigh)}
                   className="gap-1.5"
                 >
-                  Today’s real high · {realHigh}°F
-                  <ProvenanceChip kind="REAL" size="sm" title={snapshot?.weather.source} />
+                  Today&apos;s high · {realHigh}°F
                 </Button>
               ) : null}
               <Button
@@ -231,7 +230,7 @@ export default function PlanB() {
               </Button>
               {result ? (
                 <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
-                  load factor {result.load_factor.toFixed(2)} · chillers = ⌈tons × factor ÷ 400⌉
+                  load factor {result.load_factor.toFixed(2)} · one 400-ton chiller per 400 tons of load
                 </span>
               ) : null}
             </div>
@@ -264,54 +263,66 @@ export default function PlanB() {
         <PanelState state="error" message={error} onRetry={() => load(segmentId, tempF, priorityOnly)} />
       ) : null}
 
-      <div className={cn('flex flex-col gap-4 transition-opacity', loading && result ? 'opacity-70' : 'opacity-100')}>
-        <OutageComparison
-          result={result}
-          loading={loading && !result}
-          running={running}
-          tempF={tempF}
-          segmentLabel={segmentLabel}
-          priorityOnly={priorityOnly}
-          complete={complete}
+      <div className={cn('transition-opacity', loading && result ? 'opacity-70' : 'opacity-100')}>
+        <Reorderable
+          storageKey="planb"
+          className="grid gap-4 xl:grid-cols-2"
+          items={[
+            {
+              id: 'comparison',
+              className: 'xl:col-span-2',
+              node: (
+                <OutageComparison
+                  result={result}
+                  loading={loading && !result}
+                  running={running}
+                  tempF={tempF}
+                  segmentLabel={segmentLabel}
+                  priorityOnly={priorityOnly}
+                  complete={complete}
+                />
+              ),
+            },
+            {
+              id: 'loop',
+              node: (
+                <Panel
+                  title={segmentLabel}
+                  subtitle={plant ? `Fed from ${plant.name}. Dots go dark as buildings lose cooling.` : 'Buildings lose cooling in dispatch order'}
+                  actions={segment ? <StatusPill status={segment.worst_status} size="sm" /> : undefined}
+                  className="h-full"
+                >
+                  {snapshot ? (
+                    <Schematic
+                      plants={snapshot.plants}
+                      segments={snapshot.segments}
+                      buildings={snapshot.buildings}
+                      focusSegment={segmentId}
+                      highlightSegment={segmentId}
+                      darkened={darkened}
+                      onBuildingClick={(buildingId) => navigate(withAsOf(`/building/${buildingId}`, asOf))}
+                      showLegend={false}
+                    />
+                  ) : (
+                    <PanelState state="loading" lines={3} />
+                  )}
+                </Panel>
+              ),
+            },
+            {
+              id: 'who',
+              node: (
+                <Panel title="Who loses cooling" subtitle="Labs and patient care first, then by peak load" className="h-full">
+                  {result ? (
+                    <LoadShedTable rows={result.buildings} shown={shown} totals={result.totals} priorityOnly={result.priority_only} />
+                  ) : (
+                    <PanelState state="loading" lines={6} />
+                  )}
+                </Panel>
+              ),
+            },
+          ]}
         />
-
-        <div className="grid gap-4 xl:grid-cols-2">
-          <Panel
-            title={segmentLabel}
-            subtitle={plant ? `Fed from ${plant.name} — dots go dark as buildings lose cooling` : 'Buildings lose cooling in dispatch order'}
-            chip="SYNTHETIC"
-            chipTitle="Loop topology is synthetic; plants and buildings are real."
-            actions={segment ? <StatusPill status={segment.worst_status} size="sm" /> : undefined}
-          >
-            {snapshot ? (
-              <Schematic
-                plants={snapshot.plants}
-                segments={snapshot.segments}
-                buildings={snapshot.buildings}
-                focusSegment={segmentId}
-                highlightSegment={segmentId}
-                darkened={darkened}
-                onBuildingClick={(buildingId) => navigate(withAsOf(`/building/${buildingId}`, asOf))}
-                showLegend={false}
-              />
-            ) : (
-              <PanelState state="loading" lines={3} />
-            )}
-          </Panel>
-
-          <Panel
-            title="Who loses cooling"
-            subtitle="Dispatch order: criticality first, then peak load"
-            chip="ESTIMATE"
-            chipTitle="$/day assumes $3,704 per 400-ton rental chiller per day."
-          >
-            {result ? (
-              <LoadShedTable rows={result.buildings} shown={shown} totals={result.totals} priorityOnly={result.priority_only} />
-            ) : (
-              <PanelState state="loading" lines={6} />
-            )}
-          </Panel>
-        </div>
       </div>
     </div>
   );

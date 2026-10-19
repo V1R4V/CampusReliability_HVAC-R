@@ -28,9 +28,10 @@ export const navigationConfig: NavigationItem[] = [
   {
     id: 'planb',
     path: '/planb',
+    // Renamed from "Plan B" (owner's call): says what the page answers.
     icon: ShieldAlert,
-    label: 'Plan B',
-    tooltip: 'Simulate a chilled-water loop failure',
+    label: 'Outage plan',
+    tooltip: 'If a chilled-water loop fails',
   },
   {
     id: 'workorders',

@@ -1,20 +1,22 @@
 /*
- * Buildings index (FRONTEND §5.2) — every campus building as a card: name, use
- * (criticality), loop + plant, worst system status. Worst-first, searchable; click →
- * the building dashboard. Facts like year built / GSF render only if the snapshot
- * ever carries them (not in the contract today) — never invented.
+ * Buildings (FRONTEND §5.2): every campus building either as cards (worst-first, drag
+ * to reorder, searchable) or on the real campus map with one status-coloured dot per
+ * building. Click a card or a dot to open the building dashboard.
  */
 
-import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, LayoutGrid, Map as MapIcon } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { InputSearch } from '@/components/ui/input-search';
 import { cn } from '@/lib/utils';
+import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
+import CampusMap, { type MapBuilding } from '@/components/CampusMap/CampusMap';
 import { PanelState } from '@/components/Panel/Panel';
 import SnapshotBanner from '@/components/Panel/SnapshotBanner';
-import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
+import Reorderable from '@/components/Reorderable/Reorderable';
 import CriticalityBadge from '@/components/StatusPill/CriticalityBadge';
 import StatusPill from '@/components/StatusPill/StatusPill';
 import { useAsOf } from '@/contexts/AsOfProvider';
@@ -22,30 +24,37 @@ import {
   CRITICALITY_WEIGHT,
   STATUS_LABEL,
   STATUS_RANK,
-  formatCompact,
+  errorMessage,
   formatDate,
-  withAsOf,
   type SnapshotBuilding,
   type Status,
 } from '@/shared/api';
+import { fetchBuildingGeo, fetchPlantGeo, type BuildingGeo, type PlantGeo } from '@/shared/api/geo';
 
 const STATUS_ORDER: Status[] = ['FAILED', 'INSPECTION_DUE', 'WATCH', 'HEALTHY'];
+const VIEW_KEY = 'bib.buildings.view';
+type View = 'cards' | 'map';
+
+function readView(): View {
+  try {
+    return window.localStorage.getItem(VIEW_KEY) === 'map' ? 'map' : 'cards';
+  } catch {
+    return 'cards';
+  }
+}
 
 function BuildingCard({
   building,
   segmentName,
   plantName,
-  asOf,
 }: {
   building: SnapshotBuilding;
   segmentName: string | null;
   plantName: string | null;
-  asOf: string;
 }) {
-  const hasFacts = building.year_built != null || building.gsf != null;
   return (
     <Link
-      to={withAsOf(`/building/${building.building_id}`, asOf)}
+      to={`/building/${building.building_id}`}
       className="group block h-full rounded-[var(--c3-style-border-radius-6)] outline-none focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]"
     >
       <Card
@@ -54,7 +63,7 @@ function BuildingCard({
         size="md"
         className="h-full gap-3 transition-colors group-hover:border-[var(--bib-ink-muted)]"
       >
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3 pr-7">
           <h2 className="text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{building.name}</h2>
           <StatusPill status={building.worst_status} size="sm" />
         </div>
@@ -66,13 +75,6 @@ function BuildingCard({
           </span>
           {plantName ? <span>· {plantName}</span> : null}
         </div>
-        {hasFacts ? (
-          <div className="flex flex-wrap items-center gap-2 text-[14px] leading-5 text-[var(--bib-ink)]">
-            {building.year_built != null ? <span>Built {building.year_built}</span> : null}
-            {building.gsf != null ? <span>· {formatCompact(building.gsf)} GSF</span> : null}
-            <ProvenanceChip kind="REAL" size="sm" title={building.source} />
-          </div>
-        ) : null}
         <span className="mt-auto inline-flex items-center gap-1 text-[14px] font-medium leading-5 text-[var(--bib-ink-muted)] group-hover:text-[var(--bib-ink)]">
           Open dashboard <ArrowRight className="size-4" aria-hidden />
         </span>
@@ -82,8 +84,39 @@ function BuildingCard({
 }
 
 export default function Buildings() {
+  const navigate = useNavigate();
+  const { reportError } = useErrorReporter();
   const { asOf, snapshot, snapshotLoading, snapshotError, refreshSnapshot, segmentsById, plantsById } = useAsOf();
   const [query, setQuery] = useState('');
+  const [view, setView] = useState<View>(readView);
+  const [geo, setGeo] = useState<{ buildings: BuildingGeo[]; plants: PlantGeo[] } | null>(null);
+  const [geoError, setGeoError] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(VIEW_KEY, view);
+    } catch {
+      // Storage unavailable: the choice still holds for this session.
+    }
+  }, [view]);
+
+  // Coordinates don't change with the date; load once, only when the map is shown.
+  useEffect(() => {
+    if (view !== 'map' || geo) return;
+    let cancelled = false;
+    Promise.all([fetchBuildingGeo(), fetchPlantGeo()])
+      .then(([buildings, plants]) => {
+        if (!cancelled) setGeo({ buildings, plants });
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        reportError(err);
+        setGeoError(errorMessage(err));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [view, geo, reportError]);
 
   const buildings = useMemo(() => snapshot?.buildings ?? [], [snapshot]);
 
@@ -121,6 +154,40 @@ export default function Buildings() {
     [buildings],
   );
 
+  const mapBuildings = useMemo<MapBuilding[]>(() => {
+    if (!geo) return [];
+    const statusById = new Map(filtered.map((b) => [b.building_id, b] as const));
+    return geo.buildings
+      .map((g): MapBuilding | null => {
+        const snap = statusById.get(g.building_id);
+        if (!snap) return null;
+        const segment = segmentsById.get(snap.segment_id);
+        return {
+          building_id: g.building_id,
+          name: snap.name,
+          lat: g.lat,
+          lon: g.lon,
+          status: snap.worst_status,
+          subtitle: segment ? `${segment.segment_id} · ${segment.name}` : snap.segment_id,
+          plant_id: segment?.plant_id ?? null,
+        };
+      })
+      .filter((b): b is MapBuilding => b !== null);
+  }, [geo, filtered, segmentsById]);
+
+  const cardItems = useMemo(
+    () =>
+      filtered.map((building) => {
+        const segment = segmentsById.get(building.segment_id) ?? null;
+        const plant = segment ? plantsById.get(segment.plant_id) ?? null : null;
+        return {
+          id: building.building_id,
+          node: <BuildingCard building={building} segmentName={segment?.name ?? null} plantName={plant?.name ?? null} />,
+        };
+      }),
+    [filtered, segmentsById, plantsById],
+  );
+
   const firstLoad = snapshotLoading && !snapshot;
 
   return (
@@ -134,14 +201,38 @@ export default function Buildings() {
             {summary ? ` · ${summary}` : ''}
           </p>
         </div>
-        <div className="w-full max-w-[360px]">
-          <InputSearch
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onClear={() => setQuery('')}
-            placeholder="Search buildings or loops"
-            aria-label="Search buildings"
-          />
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="w-full max-w-[320px]">
+            <InputSearch
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onClear={() => setQuery('')}
+              placeholder="Search buildings or loops"
+              aria-label="Search buildings"
+            />
+          </div>
+          <div role="group" aria-label="View" className="flex gap-1">
+            <Button
+              size="md"
+              variant={view === 'cards' ? 'solid' : 'outline'}
+              appearance="secondary"
+              aria-pressed={view === 'cards'}
+              leadingIcon={<LayoutGrid />}
+              onClick={() => setView('cards')}
+            >
+              Cards
+            </Button>
+            <Button
+              size="md"
+              variant={view === 'map' ? 'solid' : 'outline'}
+              appearance="secondary"
+              aria-pressed={view === 'map'}
+              leadingIcon={<MapIcon />}
+              onClick={() => setView('map')}
+            >
+              Map
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -156,28 +247,38 @@ export default function Buildings() {
           state="empty"
           message={query ? `No buildings match “${query}”.` : `No buildings in the snapshot for ${formatDate(asOf)}.`}
         />
+      ) : view === 'map' ? (
+        geoError ? (
+          <PanelState state="error" message={geoError} onRetry={() => setGeoError(null)} />
+        ) : !geo ? (
+          <PanelState state="loading" lines={8} />
+        ) : (
+          <Card variant="outlined" size="sm" className="gap-2">
+            <div className="flex flex-wrap items-center gap-4 px-1 text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+              {STATUS_ORDER.map((status) => (
+                <span key={status} className="inline-flex items-center gap-1.5">
+                  <span className="inline-block size-3 rounded-full" data-status={status} style={{ backgroundColor: `var(--bib-status-${status === 'INSPECTION_DUE' ? 'due' : status.toLowerCase()})` }} aria-hidden />
+                  {STATUS_LABEL[status]}
+                </span>
+              ))}
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-3 w-4 rounded-[2px] bg-[var(--bib-ink-muted)]" aria-hidden /> Plant
+              </span>
+            </div>
+            <CampusMap
+              buildings={mapBuildings}
+              plants={geo.plants}
+              onSelect={(id) => navigate(`/building/${id}`)}
+              className={cn('h-[560px] w-full transition-opacity', snapshotLoading ? 'opacity-70' : 'opacity-100')}
+            />
+          </Card>
+        )
       ) : (
-        <ul
-          className={cn(
-            'grid gap-4 transition-opacity sm:grid-cols-2 xl:grid-cols-3',
-            snapshotLoading ? 'opacity-70' : 'opacity-100',
-          )}
-        >
-          {filtered.map((building) => {
-            const segment = segmentsById.get(building.segment_id) ?? null;
-            const plant = segment ? plantsById.get(segment.plant_id) ?? null : null;
-            return (
-              <li key={building.building_id} className="min-w-0">
-                <BuildingCard
-                  building={building}
-                  segmentName={segment?.name ?? null}
-                  plantName={plant?.name ?? null}
-                  asOf={asOf}
-                />
-              </li>
-            );
-          })}
-        </ul>
+        <Reorderable
+          storageKey="buildings"
+          items={cardItems}
+          className={cn('grid gap-4 transition-opacity sm:grid-cols-2 xl:grid-cols-3', snapshotLoading ? 'opacity-70' : 'opacity-100')}
+        />
       )}
     </div>
   );

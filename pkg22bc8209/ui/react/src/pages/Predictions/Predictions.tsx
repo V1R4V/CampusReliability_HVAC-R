@@ -1,32 +1,31 @@
 /*
- * Copyright 2009-2026 C3 AI (www.c3.ai). All Rights Reserved.
- * Confidential and Proprietary C3 Materials.
- * This material, including without limitation any software, is the confidential trade secret and proprietary
- * information of C3 and its licensors. Reproduction, use and/or distribution of this material in any form is
- * strictly prohibited except as set forth in a written license agreement with C3 and/or its authorized distributors.
- * This material may be covered by one or more patents or pending patent applications.
+ * Predictions: how likely each asset is to fail in the next 14 days (ML.md §8).
+ *
+ * One number per asset (the consensus of three condition-based methods), the range the
+ * methods disagree over, and days to failure where a method produces one. The per-method
+ * columns are off by default; a switch shows them. Three headline cards name the asset
+ * most likely to fail in each system. Cards can be dragged into your own order.
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Flame, Snowflake, Wind } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Spinner } from '@/components/ui/spinner';
+
+import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
+import { Panel, PanelState } from '@/components/Panel/Panel';
+import Reorderable from '@/components/Reorderable/Reorderable';
 import StatusPill from '@/components/StatusPill/StatusPill';
-import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
-import { fetchRiskForecastCampus } from '@/shared/api/forecast';
-import type { ForecastCampusAsset, RiskForecastCampus, SystemType } from '@/Interfaces';
-import { METHOD_COLOR, METHOD_SHORT, agreementLabel, formatProbability, probabilityColor } from '@/components/ForecastPanel/useRiskForecast';
-// Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
 import { useAsOf } from '@/contexts/AsOfProvider';
 import { formatDate } from '@/shared/api';
+import { fetchRiskForecastCampus } from '@/shared/api/forecast';
+import type { ForecastCampusAsset, RiskForecastCampus, SystemType } from '@/Interfaces';
+import { METHOD_COLOR, METHOD_SHORT, formatProbability, probabilityColor } from '@/components/ForecastPanel/useRiskForecast';
 
 const MAX_ROWS = 100;
-
 type SystemFilter = 'all' | SystemType;
 const SYSTEMS: SystemType[] = ['cooling', 'heating', 'air'];
 const SYSTEM_LABEL: Record<SystemType, string> = { cooling: 'Cooling', heating: 'Heating', air: 'Air handling' };
@@ -35,59 +34,64 @@ const SYSTEM_ICON: Record<SystemType, React.ComponentType<{ className?: string }
   heating: Flame,
   air: Wind,
 };
+const CONDITION_METHODS = ['heuristic', 'classifier', 'monte_carlo'] as const;
 
 function Pct({ value, bold = false }: { value: number | null; bold?: boolean }) {
   return (
-    <span className={`tabular-nums ${bold ? 'font-semibold' : ''}`} style={{ color: probabilityColor(value) }}>
+    <span className={bold ? 'font-semibold tabular-nums' : 'tabular-nums'} style={{ color: probabilityColor(value) }}>
       {formatProbability(value)}
     </span>
   );
 }
 
-/** One system's headline: the asset most likely to fail in that system and how the methods see it. */
-function SystemSummary({ system, assets, asOf }: { system: SystemType; assets: ForecastCampusAsset[]; asOf: string }) {
+/** Lowest and highest 14-day probability among the three condition-based methods. */
+function methodRange(a: ForecastCampusAsset): { lo: number; hi: number } | null {
+  const values = CONDITION_METHODS.map((m) => a[`${m}_14d`]).filter((v): v is number => v != null);
+  if (values.length === 0) return null;
+  return { lo: Math.min(...values), hi: Math.max(...values) };
+}
+
+function daysLabel(days: number | null): string {
+  if (days == null) return '';
+  return days < 1 ? 'under a day' : `about ${Math.round(days)} days`;
+}
+
+function SystemSummary({ system, assets }: { system: SystemType; assets: ForecastCampusAsset[] }) {
   const Icon = SYSTEM_ICON[system];
   const top = assets[0];
   return (
-    <Card variant="outlined" size="sm" className="flex-1">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-sm">
-          <Icon className="size-4 text-[#6B7280]" /> {SYSTEM_LABEL[system]}
-          <span className="text-xs font-normal text-[#6B7280]">· {assets.length} assets</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-2">
-        {!top ? (
-          <div className="text-sm text-[#6B7280]">No assets tracked</div>
-        ) : (
-          <>
-            <div className="flex items-baseline justify-between gap-2">
-              <Link to={`/asset/${top.asset_id}?asOf=${asOf}`} className="truncate text-sm text-[#2563EB] hover:underline" title={top.name}>
-                {top.name}
-              </Link>
-              <span className="text-2xl font-semibold tabular-nums" style={{ color: probabilityColor(top.consensus_14d) }}>
-                {formatProbability(top.consensus_14d)}
-              </span>
-            </div>
-            <div className="text-xs text-[#6B7280]">most likely to fail within 14 days (consensus)</div>
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-[#374151]">
-              {(['heuristic', 'classifier', 'monte_carlo', 'weibull'] as const).map((m) => (
-                <span key={m} className="flex items-center gap-1" title={METHOD_SHORT[m]}>
-                  <span className="inline-block size-2 rounded-full" style={{ backgroundColor: METHOD_COLOR[m] }} aria-hidden />
-                  {formatProbability(top[`${m}_14d`])}
-                </span>
-              ))}
-              {top.days_to_failure_p50 != null ? <span>· ~{Math.round(top.days_to_failure_p50)} d to failure</span> : null}
-            </div>
-            {top.status ? <StatusPill status={top.status} size="sm" /> : null}
-          </>
-        )}
-      </CardContent>
+    <Card variant="outlined" size="md" className="h-full gap-2">
+      <div className="flex items-center gap-2 pr-7 text-[13px] font-semibold uppercase leading-4 tracking-[0.06em] text-[var(--bib-ink-muted)]">
+        <Icon className="size-4" aria-hidden /> {SYSTEM_LABEL[system]}
+        <span className="font-normal normal-case tracking-normal">· {assets.length} assets</span>
+      </div>
+      {!top ? (
+        <p className="text-[15px] text-[var(--bib-ink-muted)]">No assets tracked</p>
+      ) : (
+        <>
+          <div className="flex items-baseline justify-between gap-3">
+            <Link
+              to={`/asset/${top.asset_id}`}
+              className="truncate text-[17px] font-semibold leading-6 text-[var(--bib-ink)] underline-offset-2 hover:underline"
+              title={top.name}
+            >
+              {top.name}
+            </Link>
+            <span className="text-[40px] font-semibold leading-[44px] tabular-nums" style={{ color: probabilityColor(top.consensus_14d) }}>
+              {formatProbability(top.consensus_14d)}
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 text-[14px] leading-5 text-[var(--bib-ink-muted)]">
+            <span>chance of failure within 14 days</span>
+            {top.days_to_failure_p50 != null ? <span>· likely in {daysLabel(top.days_to_failure_p50)}</span> : null}
+          </div>
+          {top.status ? <StatusPill status={top.status} size="sm" /> : null}
+        </>
+      )}
     </Card>
   );
 }
 
-/** Predictions — every asset's failure probability by method, ranked by consensus (ML.md §8). */
 export default function Predictions() {
   const { asOf } = useAsOf();
   const { reportError } = useErrorReporter();
@@ -95,6 +99,7 @@ export default function Predictions() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<SystemFilter>('all');
+  const [showMethods, setShowMethods] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -107,7 +112,7 @@ export default function Predictions() {
       .catch((err) => {
         if (!cancelled) {
           reportError(err);
-          setError('Could not load campus failure probabilities.');
+          setError('Could not load predictions.');
         }
       })
       .finally(() => {
@@ -134,137 +139,126 @@ export default function Predictions() {
   const elevated = useMemo(() => (data?.assets ?? []).filter((a) => (a.consensus_14d ?? 0) >= 0.2).length, [data]);
 
   return (
-    <div className="flex flex-col gap-4 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex min-h-full flex-col gap-4 p-6">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold text-[#111827]">Predictions</h1>
-            <ProvenanceChip kind="SYNTHETIC" />
-          </div>
-          <div className="text-sm text-[#6B7280]">
-            Probability each asset fails within 14 days — four independent methods, ranked by their consensus.
-            {data ? ` ${elevated} of ${data.assets.length} assets above 20%.` : ''}
-          </div>
+          <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Predictions</h1>
+          <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
+            Chance each asset fails within 14 days, as of{' '}
+            <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>
+            {data ? `. ${elevated} of ${data.assets.length} assets above 20%.` : '.'}
+          </p>
         </div>
-        <div className="text-sm text-[#6B7280]">As of {formatDate(asOf)}</div>
-      </div>
+        <label className="flex items-center gap-3 text-[15px] leading-5 text-[var(--bib-ink)]">
+          <Switch id="bib-show-methods" checked={showMethods} onCheckedChange={setShowMethods} />
+          Show the four methods
+        </label>
+      </header>
 
       {loading ? (
-        <div className="flex h-64 items-center justify-center">
-          <Spinner label="Loading predictions" size="lg" />
-        </div>
+        <PanelState state="loading" lines={6} />
       ) : error || !data ? (
-        <div className="text-sm text-[#DC2626]">{error ?? 'Predictions could not be loaded.'}</div>
+        <PanelState state="error" message={error ?? undefined} />
       ) : data.assets.length === 0 ? (
-        <div className="text-sm text-[#6B7280]">
-          No forecasts for {asOf}. Pick a date inside the replay window (2026-01-01 → 2026-08-31).
-        </div>
+        <PanelState state="empty" message={`No predictions for ${formatDate(asOf)}. Pick a date inside Jan 1 to Aug 31, 2026.`} />
       ) : (
-        <>
-          <div className="flex flex-col gap-4 sm:flex-row">
-            {SYSTEMS.map((s) => (
-              <SystemSummary key={s} system={s} assets={bySystem[s]} asOf={asOf} />
-            ))}
-          </div>
-
-          <Card variant="outlined">
-            <CardHeader>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <CardTitle>All assets by consensus probability</CardTitle>
-                <Tabs value={filter} onValueChange={(v) => setFilter(v as SystemFilter)} size="sm">
-                  <TabsList>
-                    <TabsTrigger value="all">All</TabsTrigger>
-                    <TabsTrigger value="cooling">Cooling</TabsTrigger>
-                    <TabsTrigger value="heating">Heating</TabsTrigger>
-                    <TabsTrigger value="air">Air</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
-            </CardHeader>
-            <CardContent className="p-0">
-              <Table size="sm" hover>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Asset</TableHead>
-                    <TableHead>System</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Risk</TableHead>
-                    <TableHead className="text-right">Consensus 14 d</TableHead>
-                    <TableHead className="text-right" title="Logistic calibration of the risk score">
-                      {METHOD_SHORT.heuristic}
-                    </TableHead>
-                    <TableHead className="text-right" title="L2 logistic regression on 8 condition features">
-                      {METHOD_SHORT.classifier}
-                    </TableHead>
-                    <TableHead className="text-right" title="1,000 simulated drift paths">
-                      {METHOD_SHORT.monte_carlo}
-                    </TableHead>
-                    <TableHead className="text-right" title="ASHRAE age-only Weibull baseline (reference)">
-                      {METHOD_SHORT.weibull}
-                    </TableHead>
-                    <TableHead className="text-right">Days to failure (p50)</TableHead>
-                    <TableHead>Agreement</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {rows.map((a) => {
-                    const agreement = agreementLabel(a.spread_14d);
-                    return (
-                      <TableRow key={a.asset_id}>
-                        <TableCell>
-                          <Link to={`/asset/${a.asset_id}?asOf=${asOf}`} className="text-[#2563EB] hover:underline">
-                            {a.name}
-                          </Link>
-                          <div className="text-xs text-[#6B7280]">{a.asset_id}</div>
-                        </TableCell>
-                        <TableCell>{SYSTEM_LABEL[a.system] ?? a.system}</TableCell>
-                        <TableCell>{a.status ? <StatusPill status={a.status} size="sm" /> : '—'}</TableCell>
-                        <TableCell className="text-right tabular-nums">{a.risk == null ? '—' : a.risk.toFixed(2)}</TableCell>
-                        <TableCell className="text-right">
-                          <Pct value={a.consensus_14d} bold />
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Pct value={a.heuristic_14d} />
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Pct value={a.classifier_14d} />
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Pct value={a.monte_carlo_14d} />
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Pct value={a.weibull_14d} />
-                        </TableCell>
-                        <TableCell className="text-right tabular-nums">
-                          {a.days_to_failure_p50 == null ? '—' : `~${Math.round(a.days_to_failure_p50)} d`}
-                        </TableCell>
-                        <TableCell>
-                          {agreement ? (
-                            <Badge variant="outline" appearance="secondary" size="sm">
-                              {agreement}
-                              {a.confidence ? ` · ${a.confidence} conf.` : ''}
-                            </Badge>
-                          ) : (
-                            '—'
-                          )}
-                        </TableCell>
+        <Reorderable
+          storageKey="predictions"
+          className="grid gap-4 xl:grid-cols-3"
+          items={[
+            ...SYSTEMS.map((s) => ({ id: `system-${s}`, node: <SystemSummary system={s} assets={bySystem[s]} /> })),
+            {
+              id: 'table',
+              className: 'xl:col-span-3',
+              node: (
+                <Panel
+                  title="All assets"
+                  subtitle="Ranked by chance of failure within 14 days"
+                  actions={
+                    <Tabs value={filter} onValueChange={(v) => setFilter(v as SystemFilter)} size="sm">
+                      <TabsList>
+                        <TabsTrigger value="all">All</TabsTrigger>
+                        <TabsTrigger value="cooling">Cooling</TabsTrigger>
+                        <TabsTrigger value="heating">Heating</TabsTrigger>
+                        <TabsTrigger value="air">Air</TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+                  }
+                  contentClassName="-mx-4 -mb-4"
+                >
+                  <Table size="sm" hover>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Asset</TableHead>
+                        <TableHead>System</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Fails within 14 days</TableHead>
+                        {showMethods ? (
+                          <>
+                            {CONDITION_METHODS.map((m) => (
+                              <TableHead key={m} className="text-right">
+                                <span className="inline-flex items-center gap-1.5">
+                                  <span className="inline-block size-2 rounded-full" style={{ backgroundColor: METHOD_COLOR[m] }} aria-hidden />
+                                  {METHOD_SHORT[m]}
+                                </span>
+                              </TableHead>
+                            ))}
+                            <TableHead className="text-right">
+                              <span className="inline-flex items-center gap-1.5">
+                                <span className="inline-block size-2 rounded-full" style={{ backgroundColor: METHOD_COLOR.weibull }} aria-hidden />
+                                {METHOD_SHORT.weibull}
+                              </span>
+                            </TableHead>
+                          </>
+                        ) : (
+                          <TableHead className="text-right">Methods range</TableHead>
+                        )}
+                        <TableHead className="text-right">Likely when</TableHead>
                       </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              {(data.assets.length > MAX_ROWS) ? (
-                <div className="p-3 text-xs text-[#6B7280]">Showing the top {MAX_ROWS}; filter by system to see more.</div>
-              ) : null}
-            </CardContent>
-          </Card>
-
-          <div className="text-xs text-[#6B7280]">
-            Calibrated risk and classifier are trained on the planted failures F1–F5 (synthetic, leave-one-failure-out);
-            Monte Carlo extrapolates each asset&apos;s own last 14 days; the age baseline uses ASHRAE median service lives
-            and is shown for reference only. This proves the pipeline, not that the real June 17 break was predictable.
-          </div>
-        </>
+                    </TableHeader>
+                    <TableBody>
+                      {rows.map((a) => {
+                        const range = methodRange(a);
+                        return (
+                          <TableRow key={a.asset_id}>
+                            <TableCell>
+                              <Link to={`/asset/${a.asset_id}`} className="font-medium text-[var(--bib-ink)] underline-offset-2 hover:underline">
+                                {a.name}
+                              </Link>
+                              <div className="text-[12px] text-[var(--bib-ink-muted)]">{a.asset_id}</div>
+                            </TableCell>
+                            <TableCell>{SYSTEM_LABEL[a.system] ?? a.system}</TableCell>
+                            <TableCell>{a.status ? <StatusPill status={a.status} size="sm" /> : null}</TableCell>
+                            <TableCell className="text-right text-[16px]">
+                              <Pct value={a.consensus_14d} bold />
+                            </TableCell>
+                            {showMethods ? (
+                              <>
+                                {CONDITION_METHODS.map((m) => (
+                                  <TableCell key={m} className="text-right">
+                                    <Pct value={a[`${m}_14d`]} />
+                                  </TableCell>
+                                ))}
+                                <TableCell className="text-right">
+                                  <Pct value={a.weibull_14d} />
+                                </TableCell>
+                              </>
+                            ) : (
+                              <TableCell className="text-right tabular-nums text-[var(--bib-ink-muted)]">
+                                {range ? `${formatProbability(range.lo)} to ${formatProbability(range.hi)}` : ''}
+                              </TableCell>
+                            )}
+                            <TableCell className="text-right text-[var(--bib-ink-muted)]">{daysLabel(a.days_to_failure_p50)}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </Panel>
+              ),
+            },
+          ]}
+        />
       )}
     </div>
   );

@@ -95,6 +95,15 @@ type Geometry = (typeof GEOMETRY)[keyof typeof GEOMETRY];
 
 const LEGEND_STATUSES: Status[] = ['HEALTHY', 'WATCH', 'INSPECTION_DUE', 'FAILED'];
 
+/** Label width by how crowded the loop is: sparse loops can spell names out. */
+function labelWidthClass(count: number): string {
+  if (count <= 1) return 'max-w-[220px]';
+  if (count === 2) return 'max-w-[180px]';
+  if (count === 3) return 'max-w-[130px]';
+  if (count === 4) return 'max-w-[100px]';
+  return '';
+}
+
 /** "Chemistry Building" → "Chemistry"; long multi-word names → initials ("WIMR"). */
 export function shortBuildingName(name: string): string {
   const trimmed = name.replace(/\s+(Hall|Building)$/i, '').trim();
@@ -108,11 +117,13 @@ interface BuildingNodeProps {
   building: SchematicBuilding;
   geometry: Geometry;
   labelOnTop: boolean;
+  /** Overrides the geometry's label max-width on sparse loops. */
+  labelWidth: string;
   dark: boolean;
   onClick?: (buildingId: string) => void;
 }
 
-function BuildingNode({ building, geometry, labelOnTop, dark, onClick }: BuildingNodeProps) {
+function BuildingNode({ building, geometry, labelOnTop, labelWidth, dark, onClick }: BuildingNodeProps) {
   const status: Status = dark ? 'FAILED' : building.worst_status;
   const due = !dark && building.worst_status === 'INSPECTION_DUE';
   const criticality = CRITICALITY_LABEL[building.criticality as Criticality] ?? building.criticality;
@@ -143,7 +154,7 @@ function BuildingNode({ building, geometry, labelOnTop, dark, onClick }: Buildin
             <button
               type="button"
               onClick={() => onClick(building.building_id)}
-              aria-label={`${building.name} — ${statusText}. Open building dashboard`}
+              aria-label={`${building.name}, ${statusText}. Open building dashboard`}
               className={cn(
                 hitClasses,
                 'hover:bg-[var(--c3-style-basic-bg-hover)] focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]',
@@ -169,6 +180,7 @@ function BuildingNode({ building, geometry, labelOnTop, dark, onClick }: Buildin
         className={cn(
           'pointer-events-none absolute left-1/2 w-max -translate-x-1/2 truncate text-center',
           geometry.label,
+          labelWidth,
           labelOnTop ? geometry.labelTop : geometry.labelBottom,
           dark ? 'text-[var(--bib-ink-muted)]' : 'text-[var(--bib-ink)]',
           due ? 'font-semibold' : 'font-normal',
@@ -200,6 +212,7 @@ function SegmentRow({
   onSegmentClick,
 }: SegmentRowProps) {
   const zigzag = buildings.length > 4;
+  const labelWidth = labelWidthClass(buildings.length);
   const lineContent = (
     <>
       <span
@@ -224,7 +237,7 @@ function SegmentRow({
         <button
           type="button"
           onClick={() => onSegmentClick(segment.segment_id)}
-          aria-label={`${segment.segment_id} · ${segment.name} — ${statusLabel(segment.worst_status)}. Open Plan B for this loop`}
+          aria-label={`${segment.segment_id} · ${segment.name}, ${statusLabel(segment.worst_status)}. Open the outage plan for this loop`}
           className={cn(
             'absolute inset-0 z-0 rounded-md text-left outline-none hover:bg-[var(--c3-style-basic-bg-hover)] focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]',
             highlighted && 'bg-[var(--bib-canvas)]',
@@ -243,6 +256,7 @@ function SegmentRow({
             building={building}
             geometry={geometry}
             labelOnTop={zigzag && index % 2 === 0}
+            labelWidth={labelWidth}
             dark={darkened.has(building.building_id)}
             onClick={onBuildingClick}
           />

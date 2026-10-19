@@ -82,11 +82,11 @@ export default function DateScrubber() {
         <ChevronLeft />
       </Button>
 
-      <div className="relative min-w-0 flex-1 pb-4 pt-5">
-        {/* Event markers sit above the track; each is a 20px hit target around a thin tick. */}
-        <div className="absolute inset-x-[10px] top-0 h-5">
+      <div className="relative min-w-0 flex-1 pb-4 pt-7">
+        {/* Event markers: a quiet tick per planted failure, a labelled flag for the real break. */}
+        <div className="absolute inset-x-[10px] top-0 h-7">
           {eventsError && markers.length === 0 ? (
-            <span className="absolute left-0 top-0 text-[12px] leading-5 text-[var(--bib-ink-muted)]">
+            <span className="absolute left-0 top-2 text-[12px] leading-5 text-[var(--bib-ink-muted)]">
               Event markers unavailable
             </span>
           ) : null}
@@ -100,24 +100,24 @@ export default function DateScrubber() {
                     type="button"
                     onClick={() => jumpToEvent(marker.events[0])}
                     style={{ left: positionOf(marker.index) }}
-                    aria-label={`${marker.events.map((e) => e.label).join('; ')} — ${formatDate(marker.date)}. Jump to ${formatDate(landing)}`}
-                    className="absolute top-0 flex h-5 w-5 -translate-x-1/2 items-end justify-center rounded-sm outline-none hover:bg-[var(--c3-style-basic-bg-hover)] focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]"
+                    aria-label={`${marker.events.map((e) => e.label).join('; ')}, ${formatDate(marker.date)}. Jump to ${formatDate(landing)}`}
+                    className="absolute top-0 flex h-7 w-6 -translate-x-1/2 flex-col items-center justify-end rounded-sm outline-none hover:bg-[var(--c3-style-basic-bg-hover)] focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]"
                   >
-                    <span
-                      aria-hidden
-                      className={cn(
-                        'block w-[3px] rounded-t-sm',
-                        real ? 'h-4 bg-[var(--bib-status-failed)]' : 'h-3 bg-[var(--bib-status-due)]',
-                      )}
-                    />
                     {real ? (
                       <span
                         aria-hidden
-                        className="absolute right-4 top-0 whitespace-nowrap text-[12px] font-semibold leading-5 text-[var(--bib-ink)]"
+                        className="mb-0.5 whitespace-nowrap rounded-[3px] bg-[var(--bib-ink)] px-1.5 text-[10px] font-semibold uppercase leading-4 tracking-[0.06em] text-white"
                       >
                         Real break
                       </span>
                     ) : null}
+                    <span
+                      aria-hidden
+                      className={cn(
+                        'block w-[2px] rounded-t-sm',
+                        real ? 'h-2.5 bg-[var(--bib-ink)]' : 'h-2.5 bg-[var(--bib-status-due)] opacity-80',
+                      )}
+                    />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
@@ -155,7 +155,7 @@ export default function DateScrubber() {
             <span
               key={tick.iso}
               style={{ left: positionOf(tick.index) }}
-              className="absolute -translate-x-1/2 text-[13px] leading-4 text-[var(--bib-ink-muted)]"
+              className="absolute -translate-x-1/2 whitespace-nowrap text-[12px] leading-4 text-[var(--bib-ink-muted)] max-xl:even:hidden"
             >
               {tick.label}
             </span>

@@ -115,7 +115,7 @@ export default function OutageComparison({
               label={`rental chillers · ${running.buildings} ${running.buildings === 1 ? 'building' : 'buildings'}`}
             />
             <Big value={formatUsd(running.cost_per_day_usd, { perDay: true })} label="rental burn rate" />
-            <Big value={formatUsd(weekly)} label="one week of warning ≈ rentals avoided" />
+            <Big value={formatUsd(weekly)} label="saved by one week of warning" />
           </div>
         )}
         <p className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
@@ -132,7 +132,7 @@ export default function OutageComparison({
             </div>
             <p className="mt-0.5 text-[15px] leading-5 text-[var(--bib-ink)]">
               {reference
-                ? `${reference.label} · ${formatDate(reference.start_date)} → reopened ${formatDate(reference.reopen_date)}${
+                ? `${reference.label} · ${formatDate(reference.start_date)} until buildings reopened ${formatDate(reference.reopen_date)}${
                     outageDays != null ? ` (${outageDays} days)` : ''
                   }`
                 : 'Real June 2026 outage'}

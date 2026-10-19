@@ -8,27 +8,27 @@
  */
 
 /*
- * Work Orders (FRONTEND §5.6, owner: Anuva) · `workOrders()` — every agent-drafted work
- * order, by status. Approve / Dismiss act in place and refetch; the list stays on screen
- * (dimmed) while it refreshes. Built from the shared Panel/PanelState + WorkOrderCard.
+ * Work orders (FRONTEND §5.6): everything the agent has drafted, by status. Nothing runs
+ * until a person approves it. Duplicate drafts for the same asset (the seed resets a work
+ * order to pending after it was approved, and the agent drafts a fresh one) collapse to
+ * the newest. Cards can be dragged into your own order.
+ *
+ * Colours come from the `--bib-*` tokens only (no raw hex) so the page follows light /
+ * night mode, and loading / empty / error all render through the shared `PanelState` —
+ * this tab is never a blank panel (FRONTEND §6).
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
-import AgentDrawer from '@/components/AgentDrawer/AgentDrawer';
 import { PanelState } from '@/components/Panel/Panel';
+import Reorderable from '@/components/Reorderable/Reorderable';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
 import { useAsOf } from '@/contexts/AsOfProvider';
 import { errorMessage } from '@/shared/api';
 import { approveWorkOrder, dismissWorkOrder, fetchWorkOrders } from '@/shared/api/anuva';
 import type { WorkOrder, WorkOrderStatus } from '@/Interfaces';
-
-const APPROVER = 'Facilities manager';
-/** Hard cap per tab so a long history can never flood the DOM (preview safety). */
-const MAX_PER_TAB = 100;
 
 const TABS: { value: WorkOrderStatus; label: string; empty: string }[] = [
   { value: 'PENDING_APPROVAL', label: 'Pending approval', empty: 'Nothing awaiting approval — the agent drafts a work order when an asset crosses the threshold.' },
@@ -36,14 +36,26 @@ const TABS: { value: WorkOrderStatus; label: string; empty: string }[] = [
   { value: 'DISMISSED', label: 'Dismissed', empty: 'No dismissed work orders.' },
 ];
 
+/** One card per asset and status: keep the most recently drafted (highest WO number on a tie). */
+function dedupe(rows: WorkOrder[]): WorkOrder[] {
+  const byKey = new Map<string, WorkOrder>();
+  rows.forEach((wo) => {
+    const key = `${wo.status}|${wo.asset_id || wo.title}`;
+    const current = byKey.get(key);
+    if (!current || wo.drafted_on > current.drafted_on || (wo.drafted_on === current.drafted_on && wo.wo_id > current.wo_id)) {
+      byKey.set(key, wo);
+    }
+  });
+  return Array.from(byKey.values()).sort((a, b) => b.drafted_on.localeCompare(a.drafted_on) || b.wo_id.localeCompare(a.wo_id));
+}
+
 export default function WorkOrders() {
-  const { asOf } = useAsOf();
+  const { snapshot } = useAsOf();
   const { reportError } = useErrorReporter();
-  const [workOrders, setWorkOrders] = useState<WorkOrder[] | null>(null);
+  const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
-  const reload = useCallback(() => setRefreshKey((key) => key + 1), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -51,7 +63,7 @@ export default function WorkOrders() {
     setError(null);
     fetchWorkOrders()
       .then((rows) => {
-        if (!cancelled) setWorkOrders(rows);
+        if (!cancelled) setWorkOrders(dedupe(rows));
       })
       .catch((err: unknown) => {
         if (cancelled) return;
@@ -66,82 +78,80 @@ export default function WorkOrders() {
     };
   }, [refreshKey, reportError]);
 
-  const byStatus = useMemo(() => {
-    const groups = new Map<WorkOrderStatus, WorkOrder[]>(TABS.map((tab) => [tab.value, []]));
-    (workOrders ?? []).forEach((workOrder) => groups.get(workOrder.status)?.push(workOrder));
-    return groups;
-  }, [workOrders]);
+  const assetName = useMemo(() => new Map((snapshot?.queue ?? []).map((q) => [q.asset_id, q.name] as const)), [snapshot]);
 
-  const total = workOrders?.length ?? 0;
-  const pending = byStatus.get('PENDING_APPROVAL')?.length ?? 0;
+  if (loading) {
+    return (
+      <div className="p-6">
+        <PanelState state="loading" lines={6} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <PanelState
+          state="error"
+          title="Couldn’t load work orders"
+          message={error}
+          onRetry={() => setRefreshKey((k) => k + 1)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-full flex-col gap-4 p-6">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Work orders</h1>
-          <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
-            {workOrders
-              ? `${total} agent-drafted · ${pending} awaiting approval`
-              : 'Agent-drafted work orders across the campus'}
-          </p>
-        </div>
+      <header>
+        <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Work orders</h1>
+        <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
+          Drafted by the agent. Nothing is scheduled until you approve it.
+        </p>
       </header>
 
-      {loading && !workOrders ? (
-        <PanelState state="loading" lines={6} />
-      ) : !workOrders ? (
-        <PanelState state="error" title="Couldn’t load work orders" message={error ?? undefined} onRetry={reload} />
-      ) : (
-        <>
-          {error ? (
-            <PanelState state="error" title="Couldn’t refresh work orders" message={error} onRetry={reload} />
-          ) : null}
-          <Tabs defaultValue="PENDING_APPROVAL" className={cn('transition-opacity', loading ? 'opacity-70' : 'opacity-100')}>
-            <TabsList>
-              {TABS.map((tab) => (
-                <TabsTrigger key={tab.value} value={tab.value}>
-                  {tab.label} ({byStatus.get(tab.value)?.length ?? 0})
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            {TABS.map((tab) => {
-              const rows = byStatus.get(tab.value) ?? [];
-              return (
-                <TabsContent key={tab.value} value={tab.value} className="mt-4 flex flex-col gap-3">
-                  {rows.length === 0 ? (
-                    <PanelState state="empty" message={tab.empty} />
-                  ) : (
-                    <>
-                      {rows.slice(0, MAX_PER_TAB).map((workOrder) => (
-                        <WorkOrderCard
-                          key={workOrder.wo_id}
-                          workOrder={workOrder}
-                          onApprove={async () => {
-                            await approveWorkOrder(workOrder.wo_id, APPROVER);
-                            reload();
-                          }}
-                          onDismiss={async (reason) => {
-                            await dismissWorkOrder(workOrder.wo_id, reason);
-                            reload();
-                          }}
-                        />
-                      ))}
-                      {rows.length > MAX_PER_TAB ? (
-                        <p className="text-[13px] text-[var(--bib-ink-muted)]">
-                          Showing the first {MAX_PER_TAB} of {rows.length}.
-                        </p>
-                      ) : null}
-                    </>
-                  )}
-                </TabsContent>
-              );
-            })}
-          </Tabs>
-        </>
-      )}
-
-      <AgentDrawer asOf={asOf} />
+      <Tabs defaultValue="PENDING_APPROVAL">
+        <TabsList aria-label="Work order status">
+          {TABS.map((tab) => (
+            <TabsTrigger key={tab.value} value={tab.value}>
+              {tab.label} ({workOrders.filter((wo) => wo.status === tab.value).length})
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {TABS.map((tab) => {
+          const rows = workOrders.filter((wo) => wo.status === tab.value).slice(0, 100);
+          return (
+            <TabsContent key={tab.value} value={tab.value} className="mt-4">
+              {rows.length === 0 ? (
+                <PanelState state="empty" message={tab.empty} />
+              ) : (
+                <Reorderable
+                  storageKey={`workorders.${tab.value}`}
+                  className="grid gap-4 xl:grid-cols-2"
+                  items={rows.map((wo) => ({
+                    id: wo.wo_id,
+                    node: (
+                      <WorkOrderCard
+                        workOrder={wo}
+                        context={assetName.get(wo.asset_id) ?? wo.asset_id}
+                        className="h-full"
+                        onApprove={async () => {
+                          await approveWorkOrder(wo.wo_id, 'Facilities manager');
+                          setRefreshKey((k) => k + 1);
+                        }}
+                        onDismiss={async (reason) => {
+                          await dismissWorkOrder(wo.wo_id, reason);
+                          setRefreshKey((k) => k + 1);
+                        }}
+                      />
+                    ),
+                  }))}
+                />
+              )}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
     </div>
   );
 }

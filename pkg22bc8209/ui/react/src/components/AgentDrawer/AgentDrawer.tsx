@@ -9,7 +9,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { SidePanel } from '@/components/ui/side-panel';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -27,6 +27,7 @@ const SUGGESTED_PROMPTS = [
 ];
 
 const MAX_TURNS = 10;
+
 const APPROVER = 'Facilities manager';
 
 interface Turn {
@@ -43,16 +44,21 @@ function entityHref(entity: AskEntity): string | null {
   return null;
 }
 
+export interface AgentDrawerProps {
+  asOf: string;
+  /** Controlled by the shell: the TopNav "Ask the agent" button is the only trigger. */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
 /**
- * "Ask the agent" (FRONTEND §5.8). Self-contained: owns its own floating trigger +
- * open state so it can be dropped onto any page without a shell change. The TopNav's
- * "✦ Ask the agent" button (Arnav's) presses the floating trigger below — keep that
- * button's `fixed` class and label stable, App.tsx's bridge looks them up.
+ * "Ask the agent" (FRONTEND §5.8): a right-hand slide-over with suggested prompts, the
+ * agent's answers, entity chips that navigate, and any proposed work orders (always
+ * PENDING_APPROVAL). Rendered once by App.tsx and opened from the TopNav button.
  * Escape closes the drawer; entity chips and asset links close it as they navigate.
  */
-export default function AgentDrawer({ asOf }: { asOf: string }) {
+export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerProps) {
   const { reportError } = useErrorReporter();
-  const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState('');
   const [turns, setTurns] = useState<Turn[]>([]);
   const [loading, setLoading] = useState(false);
@@ -61,11 +67,13 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
   useEffect(() => {
     if (!open) return undefined;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') onOpenChange(false);
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [open]);
+  }, [open, onOpenChange]);
+
+  const close = () => onOpenChange(false);
 
   const ask = async (q: string) => {
     const trimmed = q.trim();
@@ -88,20 +96,14 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
       setQuestion('');
     } catch (err) {
       reportError(err);
-      setError('Agent unavailable — the ranked queue is still current.');
+      setError('Agent unavailable. The ranked queue is still current.');
     } finally {
       setLoading(false);
     }
   };
 
-  const close = () => setOpen(false);
-
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="fixed right-6 bottom-6 z-40 shadow-md" leadingIcon={<Sparkles />}>
-        Ask the agent
-      </Button>
-
       {open ? (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/30" onClick={close}>
           <div className="h-full w-[420px] max-w-full" onClick={(e) => e.stopPropagation()}>
@@ -123,9 +125,9 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     placeholder="Ask a question…"
-                    aria-label="Question for the agent"
                     rows={2}
                     className="w-full"
+                    aria-label="Question for the agent"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
@@ -177,7 +179,6 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
                           workOrder={action.work_order}
                           onApprove={() => approveWorkOrder(action.work_order.wo_id, APPROVER)}
                           onDismiss={(reason) => dismissWorkOrder(action.work_order.wo_id, reason)}
-                          onNavigate={close}
                         />
                       ))}
                     </div>

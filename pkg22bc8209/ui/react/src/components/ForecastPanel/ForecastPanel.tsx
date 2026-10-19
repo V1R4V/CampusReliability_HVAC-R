@@ -123,7 +123,7 @@ export default function ForecastPanel({ assetId, asOf }: ForecastPanelProps) {
     <Card variant="outlined">
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle>Failure probability — four methods</CardTitle>
+          <CardTitle>Chance of failure</CardTitle>
           <ProvenanceChip kind="SYNTHETIC" />
         </div>
       </CardHeader>
@@ -136,7 +136,7 @@ export default function ForecastPanel({ assetId, asOf }: ForecastPanelProps) {
           <div className="text-sm text-[#DC2626]">{error ?? 'No forecast available for this asset.'}</div>
         ) : data.methods.length === 0 ? (
           <div className="text-sm text-[#6B7280]">
-            No forecast exists for this date — run <code>RiskModel.forecast_all()</code> after scoring.
+            No forecast exists for this date.
           </div>
         ) : (
           <>

@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
 import KpiTile from '@/components/KpiTile/KpiTile';
 import { Panel, PanelState } from '@/components/Panel/Panel';
-import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
+import Reorderable from '@/components/Reorderable/Reorderable';
 import SystemIcon from '@/components/SystemIcon/SystemIcon';
 import { useAsOf } from '@/contexts/AsOfProvider';
 import {
@@ -53,7 +53,7 @@ function FailuresTable({ failures, asOf }: { failures: BacktestFailure[]; asOf: 
           <TableHead>Asset</TableHead>
           <TableHead>System</TableHead>
           <TableHead>Failed on</TableHead>
-          <TableHead>First “inspection due”</TableHead>
+          <TableHead>First inspection due</TableHead>
           <TableHead className="text-right">Lead days</TableHead>
           <TableHead className="text-right">Energy over normal at flag</TableHead>
         </TableRow>
@@ -90,35 +90,6 @@ function FailuresTable({ failures, asOf }: { failures: BacktestFailure[]; asOf: 
         })}
       </TableBody>
     </Table>
-  );
-}
-
-function ProvenancePanel() {
-  return (
-    <Panel title="What is real and what is synthetic" subtitle="Say it before the judges ask">
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-2">
-          <ProvenanceChip kind="REAL" className="self-start" />
-          <ul className="list-disc space-y-1 pl-5 text-[15px] leading-6 text-[var(--bib-ink)]">
-            <li>Daily weather — NOAA GHCN-Daily, Madison Dane County Regional Airport</li>
-            <li>Buildings and plants — UW–Madison campus, public records</li>
-            <li>Outage costs and closures — Cap Times, WPR, UW News (June–October 2026)</li>
-            <li>Work-order format and asset categories — FP&amp;M Physical Plant operations report</li>
-          </ul>
-        </div>
-        <div className="flex flex-col gap-2">
-          <ProvenanceChip kind="SYNTHETIC" className="self-start" />
-          <ul className="list-disc space-y-1 pl-5 text-[15px] leading-6 text-[var(--bib-ink)]">
-            <li>Sensor readings — UW does not publish them</li>
-            <li>Chilled-water loop layout and which buildings each loop serves</li>
-            <li>The five planted failures and four decoys, including the June 17 reenactment</li>
-          </ul>
-        </div>
-      </div>
-      <p className="mt-4 text-[16px] leading-6 text-[var(--bib-ink)]">
-        The failures were planted; this proves the pipeline, not that the real break was predictable.
-      </p>
-    </Panel>
   );
 }
 
@@ -185,10 +156,10 @@ export default function Backtest() {
   return (
     <div className="flex min-h-full flex-col gap-4 p-6">
       <header>
-        <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Backtest — how we know</h1>
+        <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Backtest</h1>
         <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
-          Five planted failures and four decoys replayed through the same pipeline. Move the threshold: more warning
-          costs more false alarms.
+          Five planted failures and four decoys, replayed through the same pipeline. Move the threshold to trade
+          warning time against false alarms.
         </p>
       </header>
 
@@ -239,38 +210,41 @@ export default function Backtest() {
             value={stats?.min ?? '—'}
             unit="days"
             sub="Shortest lead time across the planted failures"
-            chip="SYNTHETIC"
             loading={firstLoad}
           />
           <KpiTile
             label="Mean warning"
             value={stats && stats.mean != null ? stats.mean.toFixed(1) : '—'}
             unit="days"
-            sub="Average days from first ‘inspection due’ to failure"
-            chip="SYNTHETIC"
+            sub="Average days from first inspection due to failure"
             loading={firstLoad}
           />
           <KpiTile
             label="False-alarm days"
             value={stats?.falseAlarms ?? '—'}
             sub={result ? `${result.healthy_assets} assets never flagged` : undefined}
-            chip="SYNTHETIC"
             loading={firstLoad}
           />
           <KpiTile
             label="Missed failures"
             value={stats?.missed ?? '—'}
             sub={result ? `of ${result.failures.length} planted` : undefined}
-            chip="SYNTHETIC"
             loading={firstLoad}
           />
         </div>
 
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <Reorderable
+          storageKey="backtest"
+          className="grid gap-4 xl:grid-cols-12"
+          items={[
+            {
+              id: 'curves',
+              className: 'xl:col-span-7',
+              node: (
           <Panel
             title="Risk in the 21 days before each failure"
-            subtitle="All failures aligned on their failure day; the red line is the current threshold"
-            chip="SYNTHETIC"
+            subtitle="All failures aligned on their failure day. The red line is the current threshold."
+            className="h-full"
           >
             {result ? (
               <AlignedCurvesChart curves={result.aligned_curves} threshold={threshold} />
@@ -278,8 +252,13 @@ export default function Backtest() {
               <PanelState state="loading" lines={6} />
             )}
           </Panel>
-
-          <Panel title="Decoys ignored" subtitle="What a plain threshold alarm would have flagged" chip="SYNTHETIC">
+              ),
+            },
+            {
+              id: 'decoys',
+              className: 'xl:col-span-5',
+              node: (
+          <Panel title="Decoys ignored" subtitle="What a plain threshold alarm would have flagged" className="h-full">
             {!result ? (
               <PanelState state="loading" lines={4} />
             ) : result.decoys.length === 0 ? (
@@ -304,7 +283,7 @@ export default function Backtest() {
                           <span className="text-[13px] font-normal text-[var(--bib-ink-muted)]">{decoy.event_id}</span>
                         </div>
                         <div className="text-[14px] leading-5 text-[var(--bib-ink-muted)]">
-                          {decoy.ignored ? 'Ignored — ' : 'Flagged — '}
+                          {decoy.ignored ? 'Ignored: ' : 'Flagged: '}
                           {decoy.reason}
                         </div>
                       </div>
@@ -314,15 +293,24 @@ export default function Backtest() {
               </ul>
             )}
           </Panel>
-        </div>
-
-        {result ? <SweepCharts sweep={result.sweep} threshold={threshold} /> : null}
-
-        <Panel title="Planted failures" subtitle={`At threshold ${formatThreshold(threshold)}`} chip="SYNTHETIC">
+              ),
+            },
+            {
+              id: 'sweep',
+              className: 'xl:col-span-12',
+              node: result ? <SweepCharts sweep={result.sweep} threshold={threshold} /> : <Panel><PanelState state="loading" lines={4} /></Panel>,
+            },
+            {
+              id: 'failures',
+              className: 'xl:col-span-12',
+              node: (
+        <Panel title="Planted failures" subtitle={`At threshold ${formatThreshold(threshold)}`}>
           {result ? <FailuresTable failures={result.failures} asOf={asOf} /> : <PanelState state="loading" lines={5} />}
         </Panel>
-
-        <ProvenancePanel />
+              ),
+            },
+          ]}
+        />
       </div>
     </div>
   );

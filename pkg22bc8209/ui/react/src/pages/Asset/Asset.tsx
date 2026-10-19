@@ -15,7 +15,8 @@
  * scrubbing the as-of cursor only re-renders the chart; the briefing (which also drafts
  * the work order server-side) is fetched per date, debounced so Play / dragging never
  * fires a compute per tick. Built from the shared components (StatusPill, SystemIcon,
- * CriticalityBadge, Panel, ProvenanceChip, RiskChart, SignalBars, WorkOrderCard).
+ * CriticalityBadge, Panel, RiskChart, SignalBars, WorkOrderCard) plus Vibhrav's ForecastPanel.
+ * The agent drawer is global (App owns it, the TopNav button is the only trigger).
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -26,7 +27,6 @@ import { Line, LineChart, ReferenceArea, ResponsiveContainer } from 'recharts';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
-import AgentDrawer from '@/components/AgentDrawer/AgentDrawer';
 // Vibhrav's forecast panel (RiskForecast.compare, ML.md §8) — embedded here by owner request.
 import ForecastPanel from '@/components/ForecastPanel/ForecastPanel';
 import { Panel, PanelState } from '@/components/Panel/Panel';
@@ -37,6 +37,7 @@ import CriticalityBadge from '@/components/StatusPill/CriticalityBadge';
 import StatusPill from '@/components/StatusPill/StatusPill';
 import SystemIcon, { systemLabel } from '@/components/SystemIcon/SystemIcon';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
+// Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
 import { useAsOf } from '@/contexts/AsOfProvider';
 import { errorMessage, formatDate, formatRisk, formatThreshold } from '@/shared/api';
 import { approveWorkOrder, dismissWorkOrder, fetchAssetHistory, fetchBriefing } from '@/shared/api/anuva';
@@ -293,7 +294,7 @@ export default function Asset() {
           ) : briefingError && !briefing ? (
             <PanelState
               state="error"
-              title="Agent briefing unavailable — the ranked queue is still current"
+              title="Agent briefing unavailable. The ranked queue is still current."
               message={briefingError}
               onRetry={reloadBriefing}
             />
@@ -364,8 +365,6 @@ export default function Asset() {
           </ul>
         )}
       </Panel>
-
-      <AgentDrawer asOf={asOf} />
     </div>
   );
 }
