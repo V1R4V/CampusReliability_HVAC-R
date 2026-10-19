@@ -7,7 +7,7 @@
  * This material may be covered by one or more patents or pending patent applications.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { SidePanel } from '@/components/ui/side-panel';
@@ -16,6 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
 import { askAgent, approveWorkOrder, dismissWorkOrder } from '@/shared/api/anuva';
+import { formatDate } from '@/shared/api';
 import type { AskEntity, AskProposedAction } from '@/Interfaces';
 import WorkOrderCard from '../WorkOrderCard/WorkOrderCard';
 
@@ -26,6 +27,7 @@ const SUGGESTED_PROMPTS = [
 ];
 
 const MAX_TURNS = 10;
+const APPROVER = 'Facilities manager';
 
 interface Turn {
   question: string;
@@ -42,11 +44,11 @@ function entityHref(entity: AskEntity): string | null {
 }
 
 /**
- * "Ask the agent" (FRONTEND §5.8). Self-contained: owns its own floating
- * trigger + open state so it can be dropped onto any of Anuva's pages
- * without a shell change. TEMPORARY placement — once Arnav's TopNav ships
- * its own "✦ Ask the agent" button, wire that button's `onClick` to open
- * this drawer instead and drop the floating trigger below.
+ * "Ask the agent" (FRONTEND §5.8). Self-contained: owns its own floating trigger +
+ * open state so it can be dropped onto any page without a shell change. The TopNav's
+ * "✦ Ask the agent" button (Arnav's) presses the floating trigger below — keep that
+ * button's `fixed` class and label stable, App.tsx's bridge looks them up.
+ * Escape closes the drawer; entity chips and asset links close it as they navigate.
  */
 export default function AgentDrawer({ asOf }: { asOf: string }) {
   const { reportError } = useErrorReporter();
@@ -55,6 +57,15 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open]);
 
   const ask = async (q: string) => {
     const trimmed = q.trim();
@@ -83,24 +94,22 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
     }
   };
 
+  const close = () => setOpen(false);
+
   return (
     <>
-      <Button
-        onClick={() => setOpen(true)}
-        className="fixed right-6 bottom-6 z-40 shadow-md"
-        leadingIcon={<Sparkles />}
-      >
+      <Button onClick={() => setOpen(true)} className="fixed right-6 bottom-6 z-40 shadow-md" leadingIcon={<Sparkles />}>
         Ask the agent
       </Button>
 
       {open ? (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/20" onClick={() => setOpen(false)}>
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/30" onClick={close}>
           <div className="h-full w-[420px] max-w-full" onClick={(e) => e.stopPropagation()}>
             <SidePanel
               behavior="overlay"
               title="Ask the agent"
-              subtitle={`As of ${asOf}`}
-              onClose={() => setOpen(false)}
+              subtitle={`As of ${formatDate(asOf)}`}
+              onClose={close}
               className="w-[420px]"
               footer={
                 <form
@@ -114,6 +123,7 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     placeholder="Ask a question…"
+                    aria-label="Question for the agent"
                     rows={2}
                     className="w-full"
                     onKeyDown={(e) => {
@@ -138,17 +148,17 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
                   ))}
                 </div>
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4" aria-live="polite">
                   {turns.map((turn, i) => (
-                    <div key={`${turn.question}-${i}`} className="flex flex-col gap-2">
-                      <div className="text-sm font-medium text-[#111827]">{turn.question}</div>
-                      <div className="text-sm text-[#111827]">{turn.answer}</div>
+                    <div key={`${turn.question}-${i}`} className="bib-rise flex flex-col gap-2">
+                      <div className="text-[14px] font-semibold leading-5 text-[var(--bib-ink)]">{turn.question}</div>
+                      <div className="text-[15px] leading-6 text-[var(--bib-ink)]">{turn.answer}</div>
                       {turn.entities.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {turn.entities.map((entity) => {
                             const href = entityHref(entity);
                             return href ? (
-                              <Link key={`${entity.kind}-${entity.id}`} to={href} onClick={() => setOpen(false)}>
+                              <Link key={`${entity.kind}-${entity.id}`} to={href} onClick={close}>
                                 <Badge variant="soft" appearance="accent" size="sm">
                                   {entity.label}
                                 </Badge>
@@ -165,20 +175,25 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
                         <WorkOrderCard
                           key={action.work_order.wo_id}
                           workOrder={action.work_order}
-                          onApprove={() => approveWorkOrder(action.work_order.wo_id, 'Facilities manager')}
+                          onApprove={() => approveWorkOrder(action.work_order.wo_id, APPROVER)}
                           onDismiss={(reason) => dismissWorkOrder(action.work_order.wo_id, reason)}
+                          onNavigate={close}
                         />
                       ))}
                     </div>
                   ))}
                   {loading ? (
-                    <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-                      <Loader2 className="size-4 animate-spin" /> Thinking…
+                    <div className="flex items-center gap-2 text-[14px] text-[var(--bib-ink-muted)]">
+                      <Loader2 className="size-4 animate-spin" aria-hidden /> Thinking…
                     </div>
                   ) : null}
-                  {error ? <div className="text-sm font-medium text-[#DC2626]">{error}</div> : null}
+                  {error ? (
+                    <div role="alert" className="text-[14px] font-medium text-[var(--bib-status-due)]">
+                      {error}
+                    </div>
+                  ) : null}
                   {turns.length === 0 && !loading ? (
-                    <div className="text-sm text-[#6B7280]">
+                    <div className="text-[14px] leading-5 text-[var(--bib-ink-muted)]">
                       Ask about what to inspect, energy waste, or a what-if scenario.
                     </div>
                   ) : null}

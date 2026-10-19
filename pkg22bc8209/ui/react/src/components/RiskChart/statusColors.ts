@@ -7,64 +7,37 @@
  * This material may be covered by one or more patents or pending patent applications.
  */
 
-import type { CSSProperties } from 'react';
-import type { AssetStatus, ProvenanceKind, WorkOrderStatus } from '@/Interfaces';
+import type { AssetStatus, WorkOrderStatus } from '@/Interfaces';
 
 /**
- * TEMPORARY design tokens — docs/FRONTEND.md §2.
+ * Colour tokens for Anuva's SVG-heavy components (RiskChart, Sparkline, SignalBars).
  *
- * Arnav owns the real design tokens, `StatusPill` and `ProvenanceChip`. Until
- * those land, every Anuva-owned component (RiskChart, Sparkline, SignalBars,
- * WorkOrderCard, the Asset/Building/WorkOrders pages, AgentDrawer) reads the
- * hex values straight from here instead of inventing its own. When his tokens
- * ship, swap the imports below for his components in one pass — do not fork
- * this file or duplicate the hex values elsewhere.
+ * Every value is a CSS `var()` reference to Arnav's `--bib-*` tokens
+ * (styles/before-it-breaks.css), so charts follow light / night mode automatically —
+ * Recharts passes these straight through to SVG `stroke`/`fill`, which accept `var()`.
+ * Never put raw hex here; add a token to the stylesheet instead (FRONTEND §2: colour
+ * means status and nothing else).
  */
 export const STATUS_COLOR: Record<AssetStatus, string> = {
-  HEALTHY: '#2E7D32',
-  WATCH: '#F59E0B',
-  INSPECTION_DUE: '#DC2626',
-  FAILED: '#111827',
+  HEALTHY: 'var(--bib-status-healthy)',
+  WATCH: 'var(--bib-status-watch)',
+  INSPECTION_DUE: 'var(--bib-status-due)',
+  FAILED: 'var(--bib-status-failed)',
 };
 
-export const STATUS_LABEL: Record<AssetStatus, string> = {
-  HEALTHY: 'Healthy',
-  WATCH: 'Watch',
-  INSPECTION_DUE: 'Inspection due',
-  FAILED: 'Failed',
-};
-
+/** Work orders: outline = pending approval, solid = approved (FRONTEND §2). */
 export const WORK_ORDER_COLOR: Record<WorkOrderStatus, string> = {
-  PENDING_APPROVAL: '#2563EB',
-  APPROVED: '#2563EB',
-  DISMISSED: '#6B7280',
+  PENDING_APPROVAL: 'var(--bib-wo)',
+  APPROVED: 'var(--bib-wo)',
+  DISMISSED: 'var(--bib-ink-muted)',
 };
 
-export const WORK_ORDER_LABEL: Record<WorkOrderStatus, string> = {
-  PENDING_APPROVAL: 'Pending approval',
-  APPROVED: 'Approved',
-  DISMISSED: 'Dismissed',
-};
-
-export const PROVENANCE_LABEL: Record<ProvenanceKind, string> = {
-  REAL: 'REAL',
-  SYNTHETIC: 'SYNTHETIC',
-  ESTIMATE: 'ESTIMATE',
-};
-
-export const INK = '#111827';
-export const INK_MUTED = '#6B7280';
-export const SURFACE = '#FFFFFF';
-export const CANVAS = '#F7F7F5';
-export const BORDER = '#E5E7EB';
-
-/**
- * Small status tag — stand-in for Arnav's `StatusPill`. Renders the enum in
- * words (per FRONTEND §2: "Status pill text is the enum in words"), colored
- * by status, optionally filled (solid) vs outlined.
- */
-export function statusTagStyle(color: string, solid: boolean): CSSProperties {
-  return solid
-    ? { backgroundColor: color, color: '#FFFFFF', borderColor: color }
-    : { backgroundColor: 'transparent', color, borderColor: color };
-}
+export const INK = 'var(--bib-ink)';
+export const INK_MUTED = 'var(--bib-ink-muted)';
+export const SURFACE = 'var(--bib-surface)';
+export const CANVAS = 'var(--bib-canvas)';
+export const BORDER = 'var(--bib-border)';
+export const GRID = 'var(--bib-grid)';
+export const AXIS = 'var(--bib-axis)';
+/** Single-hue magnitude marks (contribution bars, sensor bands) — identity-neutral. */
+export const SERIES_1 = 'var(--bib-series-1)';

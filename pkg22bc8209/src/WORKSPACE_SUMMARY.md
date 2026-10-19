@@ -151,10 +151,17 @@ All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint +
 ## Anuva (Building dashboard, Asset detail, Work Orders, Agent drawer)
 
 - **Shared components** (`ui/react/src/components/`): `RiskChart` (threshold line, shaded
-  INSPECTION_DUE spans, ✕ failure markers + decoy annotations, as-of cursor, greyed future),
-  `Sparkline`, `SignalBars` (contrib bars + z-sign arrow), `WorkOrderCard` (Approve/Edit/Dismiss,
-  optimistic status flip, dismiss-reason modal), `AgentDrawer` (self-contained floating trigger +
-  side panel, calls `FacilitiesAgent.ask`, renders entity chips + proposed work orders).
+  INSPECTION_DUE spans, ✕ failure markers + decoy annotations, as-of cursor, greyed future; the
+  risk line is ink — a single series needs no hue), `Sparkline` (ink, status-due once over the
+  threshold), `SignalBars` (single-hue contribution bars + direction arrow + raw z-score),
+  `WorkOrderCard` (Approve/Edit/Dismiss, optimistic status flip, dismiss-reason modal, asset link,
+  `onNavigate` for drawers), `WorkOrderCard/WorkOrderStatusTag` (outline pending · solid approved ·
+  muted dismissed — complements `StatusPill`, which is asset-status only), `AgentDrawer`
+  (self-contained floating trigger + side panel, `FacilitiesAgent.ask`, entity chips + proposed
+  work orders; Escape closes, links close as they navigate). **No hex anywhere**:
+  `RiskChart/statusColors.ts` exports `var(--bib-…)` strings that Recharts passes straight to
+  SVG, so every chart follows night mode. `RiskChart/Tags.tsx` (StatusTag/ProvenanceTag stand-ins)
+  is deleted — use Arnav's `StatusPill` / `ProvenanceChip`.
 - **Pages**: `pages/Asset/Asset.tsx` (`/asset/:assetId`), `pages/Building/Building.tsx`
   (`/building/:buildingId`), `pages/WorkOrders/WorkOrders.tsx` (`/workorders`, tabs by status).
   All fetch live via `shared/api/anuva.ts` (no mock data); loading/empty/error states on every panel;
@@ -173,10 +180,24 @@ All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint +
   (Approve/Dismiss → refetch); "If cooling fails" `KpiTile` ($/day, priority rank, chillers for the
   peak load, ESTIMATE chip) + `Button asChild` → `/planb/:segment`. Scrubbing the date keeps the
   previous dashboard dimmed while the new one loads, with an inline error + Retry if it fails.
-- **Tokens**: pages use the `--bib-*` CSS vars. `components/RiskChart/statusColors.ts` + `Tags.tsx`
-  still hold the FRONTEND §2 hex values (identical to the tokens) for the SVG-heavy
-  `RiskChart`/`Sparkline`/`SignalBars` and the Asset page. Follow-up: switch those strokes to
-  `var(--bib-…)` like Arnav's charts and replace `Tags.tsx` with `StatusPill`/`ProvenanceChip`.
+- **Asset detail (FRONTEND §5.4)** — on `Panel`/`PanelState`, `StatusPill`, `SystemIcon`,
+  `CriticalityBadge` (buildings served as link cards), tokens throughout. The risk history is
+  fetched once per asset (date-independent) so scrubbing only re-renders the chart; the briefing
+  — which also drafts the work order server-side — is fetched per date, **debounced 400 ms** so
+  Play / dragging never fires `Briefing.generate` per tick. Small multiples show only readings
+  known as of the cursor (same honesty rule as the greyed future) with the SYNTHETIC chip.
+- **Work Orders (FRONTEND §5.6)** — `PanelState` loading/empty/error + Retry, counts in the tab
+  labels and header, list stays on screen (dimmed) while a refresh is in flight, 100 cards per tab.
+- **Night mode (Vibhrav's ask, 2026-10-19)** — `components/ThemeToggle/ThemeToggle.tsx` (new,
+  Anuva): a Sun/Moon `Switch` that flips the design system's `dark` class on `<html>` and persists
+  `ui-theme`; ignores the OS preference so the app stays light unless the presenter opts in
+  (FRONTEND §2, projector-first). **Cross-boundary, flagged:** mounted in Arnav's
+  `components/TopNav/TopNav.tsx` (one import + `<ThemeToggle />` in `actions`), and a `.dark {…}`
+  block of `--bib-*` values appended to Arnav's `styles/before-it-breaks.css` — selected per token
+  for a `#1f2937` surface (status hues lifted one step, failed = light ink, dark-grey surfaces);
+  the series set `#2a78d6 #e2602d #1baf7a #bd8100 #db6693` passes every dataviz-validator check on
+  that surface (lightness band, chroma, CVD ΔE 9.0, contrast). Arnav: the SideNav header comment
+  ("light theme only, toggle gone") is now stale; the template `hooks/useTheme.ts` is unused.
 - **Verified:** `npm run build` (lint + tsc + vite) green. `runJsCode`:
   `BuildingDashboard.compute('van_vleck_hall','2026-06-09')` → cooling INSPECTION_DUE 3.21 via
   S3-PIPE (7-pt sparkline), heating/air HEALTHY (empty sparklines), 21-day energy series
@@ -184,7 +205,12 @@ All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint +
   $3,704/day; `AssetHistory.get`, `Briefing.generate`, `WorkOrder.fetch` (id/asset.id →
   wo_id/asset_id remap) and `FacilitiesAgent.ask` return the contract shapes. Playwright renders the
   routes and error states, but that session has no Okta/Genesis cookie so its own API calls 302 — an
-  environment limitation, not an app bug; no `c3auth` cookie bootstrap (forbidden).
+  environment limitation, not an app bug; no `c3auth` cookie bootstrap (forbidden). **Night mode**:
+  flipping the switch in Playwright sets `html.dark`; `--bib-surface` → `#1f2937`, `--bib-ink` →
+  `#f3f4f6`, `--bib-status-due` → `#f26b6b`, `--bib-series-4` → `#bd8100`; shell, nav, provenance
+  legend and the error/Retry alert render on the dark surface with no console errors from our code
+  (the only non-auth console entry is the template's pre-existing `forwardRef` warning from
+  `AskAgentButton` → Radix `PopoverTrigger`).
 - **Noted for Vibhrav:** `Briefing.generate` drafts a new PENDING_APPROVAL `WorkOrder` on *every*
   call — the Asset page calls it on every mount/asOf change, so repeated visits/demo runs will draft
   duplicate work orders for the same asset. Worth a dedup check (e.g. skip drafting if a pending WO

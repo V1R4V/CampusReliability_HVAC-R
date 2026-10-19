@@ -7,29 +7,37 @@
  * This material may be covered by one or more patents or pending patent applications.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Check, Pencil, X as XIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalTitle } from '@/components/ui/modal';
 import { Textarea } from '@/components/ui/textarea';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
+import { Skeleton } from '@/components/Panel/Panel';
+import { formatDate } from '@/shared/api';
 import type { WorkOrder, WorkOrderStatus } from '@/Interfaces';
-import { WorkOrderStatusTag } from '../RiskChart/Tags';
+import { WorkOrderStatusTag } from './WorkOrderStatusTag';
 
 export interface WorkOrderCardProps {
   workOrder: WorkOrder | null | undefined;
   onApprove: () => Promise<void>;
   onDismiss: (reason: string) => Promise<void>;
   loading?: boolean;
+  /** Called when the user follows the asset link (e.g. so a drawer can close itself). */
+  onNavigate?: () => void;
 }
+
+const APPROVED_BANNER_MS = 4000;
 
 /**
  * A single work order with Approve / Edit / Dismiss actions (FRONTEND §5.4, §6).
  * Approve gives instant feedback (pill flips solid + a success banner);
- * Dismiss requires a reason; Edit is a P2 no-op placeholder.
+ * Dismiss requires a reason; Edit is a P2 no-op placeholder. Tokens throughout,
+ * so it follows light / night mode.
  */
-export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading = false }: WorkOrderCardProps) {
+export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading = false, onNavigate }: WorkOrderCardProps) {
   const { reportError } = useErrorReporter();
   const [status, setStatus] = useState<WorkOrderStatus | null>(workOrder?.status ?? null);
   const [busy, setBusy] = useState<'approve' | 'dismiss' | null>(null);
@@ -38,16 +46,25 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
   const [editOpen, setEditOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [actionError, setActionError] = useState<string | null>(null);
+  const bannerTimer = useRef<number | null>(null);
 
   // Keep local (optimistic) status in sync when a fresh work order object arrives.
   useEffect(() => {
     setStatus(workOrder?.status ?? null);
   }, [workOrder?.wo_id, workOrder?.status]);
 
+  // Never let the banner timer fire into an unmounted card.
+  useEffect(
+    () => () => {
+      if (bannerTimer.current !== null) window.clearTimeout(bannerTimer.current);
+    },
+    [],
+  );
+
   if (loading) {
     return (
       <Card variant="outlined" size="md">
-        <div className="h-20 animate-pulse rounded bg-[#F7F7F5]" />
+        <Skeleton className="h-20 w-full" />
       </Card>
     );
   }
@@ -55,7 +72,7 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
   if (!workOrder) {
     return (
       <Card variant="outlined" size="md">
-        <CardContent className="text-sm text-[#6B7280]">No work order drafted.</CardContent>
+        <CardContent className="text-[15px] text-[var(--bib-ink-muted)]">No work order drafted.</CardContent>
       </Card>
     );
   }
@@ -67,7 +84,8 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
       await onApprove();
       setStatus('APPROVED');
       setJustApproved(true);
-      window.setTimeout(() => setJustApproved(false), 4000);
+      if (bannerTimer.current !== null) window.clearTimeout(bannerTimer.current);
+      bannerTimer.current = window.setTimeout(() => setJustApproved(false), APPROVED_BANNER_MS);
     } catch (err) {
       reportError(err);
       setActionError('Could not approve this work order. Try again.');
@@ -97,35 +115,60 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
   const pending = effectiveStatus === 'PENDING_APPROVAL';
 
   return (
-    <Card variant="outlined" size="md">
+    <Card variant="outlined" size="md" data-wo-status={effectiveStatus}>
       <CardHeader>
         <CardTitle>{workOrder.title}</CardTitle>
-        <CardDescription>
-          {workOrder.wo_id} · Priority {workOrder.priority} · {workOrder.crew} · est. {workOrder.est_hours}h
+        <CardDescription className="flex flex-wrap items-center gap-x-1.5 text-[13px] leading-4">
+          {workOrder.asset_id ? (
+            <>
+              <Link
+                to={`/asset/${workOrder.asset_id}`}
+                onClick={onNavigate}
+                className="font-medium text-[var(--bib-ink)] underline-offset-2 hover:underline"
+              >
+                {workOrder.asset_id}
+              </Link>
+              <span aria-hidden>·</span>
+            </>
+          ) : null}
+          <span>{workOrder.wo_id}</span>
+          <span aria-hidden>·</span>
+          <span>Priority {workOrder.priority}</span>
+          <span aria-hidden>·</span>
+          <span>{workOrder.crew}</span>
+          <span aria-hidden>·</span>
+          <span>est. {workOrder.est_hours} h</span>
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
-        <div>{workOrder.description}</div>
+        <p className="text-[15px] leading-5 text-[var(--bib-ink)]">{workOrder.description}</p>
         <div className="flex flex-wrap items-center gap-2">
           <WorkOrderStatusTag status={effectiveStatus} size="sm" />
-          <span className="text-xs text-[#6B7280]">
-            Drafted by {workOrder.drafted_by} on {workOrder.drafted_on}
+          <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+            Drafted by {workOrder.drafted_by} on {formatDate(workOrder.drafted_on)}
           </span>
         </div>
         {effectiveStatus === 'APPROVED' && workOrder.approved_by ? (
-          <div className="text-xs text-[#6B7280]">
-            Approved by {workOrder.approved_by} on {workOrder.approved_on}
+          <div className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+            Approved by {workOrder.approved_by} on {formatDate(workOrder.approved_on)}
           </div>
         ) : null}
         {effectiveStatus === 'DISMISSED' && workOrder.dismiss_reason ? (
-          <div className="text-xs text-[#6B7280]">Dismissed: {workOrder.dismiss_reason}</div>
+          <div className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">Dismissed: {workOrder.dismiss_reason}</div>
         ) : null}
         {justApproved ? (
-          <div className="rounded px-2 py-1 text-xs font-medium" style={{ backgroundColor: '#2E7D3214', color: '#2E7D32' }}>
+          <div
+            role="status"
+            className="bib-rise rounded-[6px] bg-[var(--bib-status-healthy-soft)] px-2.5 py-1.5 text-[13px] font-medium leading-4 text-[var(--bib-status-healthy)]"
+          >
             Work order approved
           </div>
         ) : null}
-        {actionError ? <div className="text-xs font-medium text-[#DC2626]">{actionError}</div> : null}
+        {actionError ? (
+          <div role="alert" className="text-[13px] font-medium leading-4 text-[var(--bib-status-due)]">
+            {actionError}
+          </div>
+        ) : null}
       </CardContent>
       {pending ? (
         <CardFooter>
@@ -153,7 +196,10 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, loading
             <ModalTitle>Dismiss work order</ModalTitle>
           </ModalHeader>
           <ModalBody>
-            <label htmlFor={`dismiss-reason-${workOrder.wo_id}`} className="mb-1 block text-xs font-medium text-[#111827]">
+            <label
+              htmlFor={`dismiss-reason-${workOrder.wo_id}`}
+              className="mb-1 block text-[13px] font-medium leading-4 text-[var(--bib-ink)]"
+            >
               Reason (required)
             </label>
             <Textarea
