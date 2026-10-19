@@ -64,11 +64,10 @@ drives every page); Anuva's temporary `StatusTag`/`ProvenanceTag` replaced by Ar
 
 **UI cleanup pass (owner's call, 2026-10-19 evening):** provenance chips/legend/panel removed (said in the pitch instead); one agent button (TopNav opens a controlled `AgentDrawer`); scrubber 'Real break' as a flag above its tick; `Plan B` renamed **Outage plan**; em dashes removed from UI copy; `WorkOrderCard` redesigned and duplicates collapsed (`Briefing.generate` now reuses any draft for the asset on that day); Predictions decluttered (one number per asset, methods behind a switch); Buildings gets a **Map** view (`components/CampusMap`, react-leaflet on OSM tiles, real lat/lon via `shared/api/geo.ts`, status-coloured dots); `components/Reorderable` lets cards on Buildings, Outage plan, Work orders, Predictions and Backtest be dragged into a remembered order.
 
-**Open items:** `Briefing.generate` drafts a duplicate PENDING_APPROVAL WorkOrder on every call (see
-Anuva's note) — add a dedup check. Devansh's generator replaces the interim seed by overwriting the same
-file names / ids. `RiskChart`/`Sparkline`/`WorkOrderCard` still read hex from `RiskChart/statusColors.ts`
-(same values as the `--bib-*` tokens; cosmetic to unify). `AgentDrawer` could accept `open`/`onOpenChange`
-so the TopNav button stops reaching it through the DOM.
+**Open items:** Devansh's generator replaces the interim seed by overwriting the same file names / ids
+(rerun `score_all` → `forecast_all` after). `RiskChart`/`Sparkline` still read hex from
+`RiskChart/statusColors.ts` (same values as the `--bib-*` tokens; cosmetic). The map view needs the
+browser to reach `tile.openstreetmap.org`; dots and tooltips still render without tiles.
 
 **Key decisions:** one package; contract snake_case kept; API methods return `json` (keeps the `type`
 key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precomputed; merge-not-rebase.
