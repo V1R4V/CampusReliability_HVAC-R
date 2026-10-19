@@ -45,9 +45,20 @@ energy" on every chiller until the baseline stopped extrapolating without degree
 $66,672/day (matches fixture); BuildingDashboard van_vleck_hall plan_b = rank 6 / 1 chiller / $3,704;
 WorkOrder approve/dismiss persist and reload.
 
+**Forecast UI (wired, `npm run build` green):** `shared/api/forecast.ts` (`fetchRiskForecast`,
+`fetchRiskForecastCampus`); `components/ForecastPanel/` — `ForecastPanel` (Asset page: consensus headline,
+one row per method with 7/14/30-day bars, days-to-failure, trailing-30-day history chart, honesty labels),
+`ForecastBadge` (Building page system cards: consensus P14 + a dot per method + agreement), shared
+`useRiskForecast` hook/colours; `pages/Predictions/` at `/predictions` (+ nav item): per-system headline
+cards (most-likely-to-fail asset per cooling / heating / air) and the full ranked table filterable by system.
+Interfaces in `Interfaces.tsx` (`RiskForecastCompare`, `RiskForecastCampus`, …). Cross-boundary edits flagged
+in-file: `App.tsx` route, `navigation.ts` item, `<ForecastPanel>` in `pages/Asset`, `<ForecastBadge>` in
+`pages/Building`. Runtime check: UI fires `POST /api/8/RiskForecast/campus|compare`; the same calls replayed via
+`runJsCode` return 20 assets / 4 methods / 31-day history (Playwright itself has no auth cookie — known limit).
+
 **Open items:** `Briefing.generate` drafts a duplicate PENDING_APPROVAL WorkOrder on every call (see
-Anuva's note) — add a dedup check. UI for `RiskForecast.compare` / `campus` not wired yet (Anuva / Arnav).
-Devansh's generator replaces the interim seed by overwriting the same file names / ids.
+Anuva's note) — add a dedup check. Devansh's generator replaces the interim seed by overwriting the same
+file names / ids. Arnav's global as-of scrubber should replace the per-page `?asOf=` once it ships.
 
 **Key decisions:** one package; contract snake_case kept; API methods return `json` (keeps the `type`
 key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precomputed; merge-not-rebase.
