@@ -75,8 +75,10 @@ def _next_wo_id():
 
 
 def _draft_work_order(asset, q, served, as_of, priority, description):
+    # Reuse the asset's live work order (pending or already approved) so repeat visits and demo
+    # reruns never pile up duplicates; only a dismissed one lets the agent draft again.
     existing = _fetch("WorkOrder", "this, asset.id",
-                      "asset.id == '" + asset.id + "' && status == 'PENDING_APPROVAL'")
+                      "asset.id == '" + asset.id + "' && status != 'DISMISSED'")
     if existing:
         return existing[0]
     wo = c3.WorkOrder.make({

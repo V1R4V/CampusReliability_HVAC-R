@@ -378,3 +378,143 @@ export interface RiskForecastCampus {
   as_of: string;
   assets: ForecastCampusAsset[];
 }
+
+// ---------------------------------------------------------------------------
+// Shell, Overview, Plan B, Backtest (docs/CONTRACT.md §4 / §5.2)
+// ---------------------------------------------------------------------------
+
+export type Criticality = 'patient_care' | 'research_lab' | 'instruction' | 'office';
+
+/** `FailureEvent.fetch`, remapped to the contract's flat event shape — scrubber markers. */
+export type FailureEventRow = AssetEvent;
+
+/** Real NOAA weather for one day — `WeatherDay` row. */
+export interface WeatherDay {
+  tmax_f: number | null;
+  tmin_f: number | null;
+  tavg_f: number | null;
+  label: string | null;
+  source: string | null;
+}
+
+export interface CampusKpis {
+  inspection_due: number;
+  inspection_due_delta: number;
+  watch: number;
+  failed: number;
+  energy_waste_usd_per_day: number;
+  assets_over_5pct_energy: number;
+  cooling_exposure_usd_per_day: number;
+}
+
+export interface CampusBuilding {
+  building_id: string;
+  name: string;
+  segment_id: string;
+  criticality: Criticality | string;
+  worst_status: AssetStatus;
+}
+
+export interface CampusSegment {
+  segment_id: string;
+  plant_id: string;
+  name: string;
+  worst_status: AssetStatus;
+}
+
+export interface CampusPlant {
+  plant_id: string;
+  name: string;
+}
+
+/** `CampusSnapshot.compute(as_of)` — Overview and the shell. */
+export interface CampusSnapshot {
+  as_of: string;
+  weather: WeatherDay;
+  kpis: CampusKpis;
+  queue: BuildingDashboardAsset[];
+  buildings: CampusBuilding[];
+  segments: CampusSegment[];
+  plants: CampusPlant[];
+  morning_brief: string;
+}
+
+export interface PlanBBuilding {
+  order: number;
+  building_id: string;
+  name: string;
+  criticality: Criticality | string;
+  peak_load_tons: number;
+  chillers_needed: number;
+  cost_per_day_usd: number;
+  staged: boolean;
+}
+
+export interface OutageReference {
+  label: string;
+  total_usd: number;
+  rental_usd: number;
+  deterioration_usd: number;
+  repair_usd: number;
+  chillers: number;
+  usd_per_day: number;
+  buildings_closed: number;
+  buildings_partial: number;
+  start_date: string;
+  reopen_date: string;
+  source: string;
+}
+
+/** `PlanB.simulate(segment_id, temp_f, priority_only)`. */
+export interface PlanBResult {
+  segment_id: string;
+  plant_id: string | null;
+  temp_f: number;
+  priority_only: boolean;
+  load_factor: number;
+  buildings: PlanBBuilding[];
+  totals: { buildings: number; chillers: number; cost_per_day_usd: number; cost_per_week_usd: number };
+  reference: OutageReference;
+}
+
+export interface BacktestFailure {
+  event_id: string;
+  asset_id: string;
+  system: SystemType | null;
+  failure_date: string;
+  first_due_date: string | null;
+  lead_days: number | null;
+  energy_over_expected_pct_at_flag: number | null;
+}
+
+export interface BacktestDecoy {
+  event_id: string;
+  label: string;
+  ignored: boolean;
+  reason: string;
+}
+
+export interface BacktestSweepRow {
+  threshold: number;
+  mean_lead_days: number | null;
+  min_lead_days: number | null;
+  false_alarm_days: number;
+  missed: number;
+}
+
+export interface BacktestCurve {
+  event_id: string;
+  asset_id: string;
+  points: { days_before: number; risk: number }[];
+}
+
+/** `Backtest.run(threshold)`. */
+export interface BacktestResult {
+  threshold: number;
+  failures: BacktestFailure[];
+  false_alarm_days: number;
+  healthy_assets: number;
+  decoys: BacktestDecoy[];
+  sweep: BacktestSweepRow[];
+  aligned_curves: BacktestCurve[];
+}

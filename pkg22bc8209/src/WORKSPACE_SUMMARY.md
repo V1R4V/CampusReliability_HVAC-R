@@ -56,8 +56,18 @@ in-file: `App.tsx` route, `navigation.ts` item, `<ForecastPanel>` in `pages/Asse
 `pages/Building`. Runtime check: UI fires `POST /api/8/RiskForecast/campus|compare`; the same calls replayed via
 `runJsCode` return 20 assets / 4 methods / 31-day history (Playwright itself has no auth cookie — known limit).
 
-**Open items:** `Briefing.generate` drafts a duplicate PENDING_APPROVAL WorkOrder on every call (see
-Anuva's note) — add a dedup check. Devansh's generator replaces the interim seed by overwriting the same
+**End-to-end shell (branch `vibhrav/scratchpad`, `npm run build` green):** global `contexts/AsOfProvider`
+(one `?asOf=` for every page; re-added after side-nav navigation) + `components/AsOfScrubber` under the
+top bar (Jan 1 → Aug 31 slider, ◀ ▶, play, failure/real-break markers that jump 8 days early, real
+NOAA high via `WeatherDay.fetch`); `pages/Overview` at `/` (KPIs, `components/Schematic` network,
+"Inspect next" queue with consensus P(fail 14 d), morning brief, agent drawer); `pages/PlanB` at
+`/planb/:segmentId` (animated loop failure, priority staging, real-outage tile); `pages/Backtest` at
+`/backtest` (threshold slider, failures, decoys, aligned curves, sweep). Data access in
+`shared/api/shell.ts`; `components/KpiTile`. These are Arnav's paths — built here so the demo runs
+end to end; fold into his shell work rather than duplicating.
+
+**Open items:** `Briefing.generate` now reuses any non-dismissed WorkOrder for the asset (pending or
+approved), so repeat visits and demo reruns no longer draft duplicates. Devansh's generator replaces the interim seed by overwriting the same
 file names / ids. Arnav's global as-of scrubber should replace the per-page `?asOf=` once it ships.
 
 **Key decisions:** one package; contract snake_case kept; API methods return `json` (keeps the `type`

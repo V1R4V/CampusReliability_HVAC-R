@@ -7,7 +7,7 @@
  * This material may be covered by one or more patents or pending patent applications.
  */
 
-import { ClipboardList, House, TrendingUp } from 'lucide-react';
+import { ClipboardList, FlaskConical, House, ShieldAlert, TrendingUp } from 'lucide-react';
 
 import { NavigationItem } from '@/types/navigation';
 
@@ -24,8 +24,16 @@ export const navigationConfig: NavigationItem[] = [
     path: '/',
     icon: House,
     iconActive: House,
-    label: 'Dashboard',
-    tooltip: 'Dashboard Overview',
+    label: 'Campus health',
+    tooltip: 'What needs attention today',
+  },
+  {
+    id: 'planb',
+    path: '/planb',
+    icon: ShieldAlert,
+    iconActive: ShieldAlert,
+    label: 'Plan B',
+    tooltip: 'Simulate a cooling loop failure',
   },
   // Anuva's top-level page (CONTRACT §5.4 — nav lives in Arnav's navigation.ts; added
   // directly since no shell PR has landed yet. Building/Asset are detail pages, not navs.
@@ -45,6 +53,14 @@ export const navigationConfig: NavigationItem[] = [
     iconActive: TrendingUp,
     label: 'Predictions',
     tooltip: 'Failure probabilities by method',
+  },
+  {
+    id: 'backtest',
+    path: '/backtest',
+    icon: FlaskConical,
+    iconActive: FlaskConical,
+    label: 'Backtest',
+    tooltip: 'How early each failure was flagged',
   },
 
   /*

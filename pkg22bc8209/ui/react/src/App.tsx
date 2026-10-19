@@ -9,10 +9,14 @@
 
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Dashboard from './pages/Dashboard/Dashboard';
 import SideNav from './components/SideNav/SideNav';
 import TopNav from './components/TopNav/TopNav';
 import ErrorReporterProvider from './components/ErrorBoundary/ErrorBoundary';
+import AsOfScrubber from './components/AsOfScrubber/AsOfScrubber';
+import { AsOfProvider } from './contexts/AsOfProvider';
+import Overview from './pages/Overview/Overview';
+import PlanB from './pages/PlanB/PlanB';
+import Backtest from './pages/Backtest/Backtest';
 // Anuva's pages (Building dashboard, Asset detail, Work Orders) — CONTRACT §5.4 has these
 // routes/App.tsx under Arnav's shell ownership; added here directly since no separate shell
 // PR has landed yet. Fold into his routing pass when the shell/scrubber ships; do not duplicate.
@@ -35,15 +39,20 @@ import Predictions from './pages/Predictions/Predictions';
 export default function App() {
   return (
     <ErrorReporterProvider>
+      <AsOfProvider>
       <div className="h-screen flex flex-col max-w-full overflow-hidden">
-        <TopNav title="Application Name" />
+        <TopNav title="Before It Breaks" />
+        <AsOfScrubber />
         <div className="flex flex-1 min-h-0">
           <SideNav />
           <div className="flex-1 flex flex-col min-w-0">
             <main className="flex-1 overflow-auto bg-[var(--c3-style-basic-bg-page)]">
               <Routes>
                 {/* Add page routes here */}
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/" element={<Overview />} />
+                <Route path="/planb" element={<PlanB />} />
+                <Route path="/planb/:segmentId" element={<PlanB />} />
+                <Route path="/backtest" element={<Backtest />} />
                 <Route path="/building/:buildingId" element={<Building />} />
                 <Route path="/asset/:assetId" element={<Asset />} />
                 <Route path="/workorders" element={<WorkOrders />} />
@@ -67,6 +76,7 @@ export default function App() {
           </div>
         </div>
       </div>
+      </AsOfProvider>
     </ErrorReporterProvider>
   );
 }
