@@ -215,8 +215,18 @@ All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint +
   plus `styles/theme-dark.css` giving the `--bib-*` tokens their dark values — the C3 `.dark` block in
   `tokens.css` already covers `--c3-style-*`, and charts re-theme for free because `chartTheme.ts` passes
   `var(--bib-*)` straight to Recharts. Status meanings are unchanged; FAILED inverts near-black to
-  near-white, and `--bib-wo` (fill, carries white text) splits from `--bib-accent` (ink, must stay
-  readable on dark).
+  near-white.
+- **Dark `--bib-wo` contrast fix (follow-up):** `--bib-wo` carries two roles that pull apart on a dark
+  surface — a *fill* under white text (solid approved `WorkOrderPill`) and *ink* on the surface (outline
+  pending pill text/border, SideNav count badge, `WorkOrderCard` edge). White text needs L ≤ 0.183, ink on
+  `#16191f` needs L ≥ 0.218, so **no single value satisfies both**; the earlier mid-dark `#2f6fe0` (chosen
+  on the assumption that only the fill role mattered) left the outline pill and the badge at **3.75:1**.
+  Resolved by role rather than compromise: the token goes light (`#6aa8f7`, 7.17:1 wherever it is drawn as
+  ink) and the one white-text fill is flipped to canvas ink in `theme-dark.css`
+  (`.dark .bg-[var(--bib-wo)].text-white`, 7.82:1) — matched on both classes so bare `--bib-wo` fills that
+  carry no text are untouched. `--bib-accent` now follows `--bib-wo` exactly as it does in `:root`, so there
+  is one accent rather than two. Light mode unchanged (`#2563eb`, white at 5.17:1). CSS only, no component
+  edits; the override is unlayered so it beats Tailwind's `.text-white` in `@layer utilities`.
 - **Cross-boundary edit (flagged, not silent):** the toggle needs three one-line additions in Arnav's
   shell — `TopNav.tsx` (import + `<ThemeToggle />` in `actions`), `App.tsx` (import the stylesheet) and
   `main.tsx` (re-apply the stored theme before first paint, so a dark reload doesn't flash white).
