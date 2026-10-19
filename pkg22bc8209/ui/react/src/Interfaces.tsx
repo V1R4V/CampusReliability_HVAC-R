@@ -178,6 +178,19 @@ export interface WorkOrder {
   dismiss_reason: string | null;
 }
 
+/**
+ * What a facilities manager may change on a pending work order (member `WorkOrder.edit`).
+ * Every key is optional; an omitted or `null` key leaves that field unchanged.
+ */
+export interface WorkOrderEditFields {
+  title?: string | null;
+  description?: string | null;
+  /** 1 high … 3 low. */
+  priority?: number | null;
+  crew?: string | null;
+  est_hours?: number | null;
+}
+
 /** `Briefing.generate(assetId, asOf)` — the agent-authored panel on the asset detail page. */
 export interface Briefing {
   asset_id: string;

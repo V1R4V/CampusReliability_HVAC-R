@@ -17,7 +17,7 @@ import { SidePanel } from '@/components/ui/side-panel';
 import { Textarea } from '@/components/ui/textarea';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
 import { formatDate } from '@/shared/api';
-import { approveWorkOrder, askAgent, dismissWorkOrder } from '@/shared/api/anuva';
+import { approveWorkOrder, askAgent, dismissWorkOrder, editWorkOrder } from '@/shared/api/anuva';
 import type { AskEntity, AskProposedAction } from '@/Interfaces';
 import WorkOrderCard from '../WorkOrderCard/WorkOrderCard';
 
@@ -28,6 +28,9 @@ const SUGGESTED_PROMPTS = [
 ];
 
 const MAX_TURNS = 10;
+const APPROVER = 'Facilities manager';
+/** What Tab cycles through inside the drawer (focus never leaves it while open). */
+const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 interface Turn {
   question: string;
@@ -62,19 +65,64 @@ function AgentAvatar() {
  * "Ask the agent" (FRONTEND §5.8): a right-hand slide-over with suggested prompts, the
  * agent's answers, entity chips that navigate, and any proposed work orders (always
  * PENDING_APPROVAL). Rendered once by App.tsx and opened from the TopNav button.
+ *
+ * Accessibility: a modal dialog. Focus moves to the question box when it opens, Tab cycles
+ * inside the drawer, Escape (or the backdrop, or the close button) closes it, and focus
+ * returns to whatever opened it. Answers arrive in a polite live region; errors are alerts.
  */
 export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerProps) {
   const { reportError } = useErrorReporter();
-  const setOpen = onOpenChange;
   const [question, setQuestion] = useState('');
   const [turns, setTurns] = useState<Turn[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  // Read through a ref so the focus effect below never re-runs just because the parent re-rendered.
+  const onOpenChangeRef = useRef(onOpenChange);
+  onOpenChangeRef.current = onOpenChange;
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'end' });
   }, [turns.length, loading]);
+
+  // Focus management: into the drawer on open, trapped while open, back to the opener on close.
+  useEffect(() => {
+    if (!open) return undefined;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const panel = panelRef.current;
+    const questionBox = panel?.querySelector<HTMLElement>('textarea');
+    (questionBox ?? panel)?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onOpenChangeRef.current(false);
+        return;
+      }
+      if (event.key !== 'Tab' || !panel) return;
+      const focusable = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      const inside = active instanceof Node && panel.contains(active);
+      if (event.shiftKey && (active === first || !inside)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !inside)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      opener?.focus();
+    };
+  }, [open]);
+
+  const setOpen = (next: boolean) => onOpenChange(next);
 
   const ask = async (q: string) => {
     const trimmed = q.trim();
@@ -106,8 +154,21 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-[rgb(17_24_39_/_0.35)] backdrop-blur-[2px]" onClick={() => setOpen(false)}>
-      <div className="h-full w-[460px] max-w-full bib-rise" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex justify-end bg-[rgb(17_24_39_/_0.35)] backdrop-blur-[2px]"
+      // Only a click on the backdrop itself closes; clicks inside the dialog bubble up with a different target.
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setOpen(false);
+      }}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Ask the agent"
+        tabIndex={-1}
+        className="h-full w-[460px] max-w-full bib-rise outline-none"
+      >
         <SidePanel
           behavior="overlay"
           title="Ask the agent"
@@ -128,7 +189,7 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                 placeholder="Ask about what to inspect, energy waste, or a what-if…"
                 rows={2}
                 className="w-full text-[15px]"
-                aria-label="Your question"
+                aria-label="Your question for the agent"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -136,7 +197,7 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                   }
                 }}
               />
-              <Button type="submit" size="lg" loading={loading} disabled={!question.trim()} leadingIcon={<SendHorizonal />} aria-label="Ask">
+              <Button type="submit" size="lg" loading={loading} disabled={!question.trim()} leadingIcon={<SendHorizonal />}>
                 Ask
               </Button>
             </form>
@@ -159,14 +220,17 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                     </div>
                   </div>
                 </div>
-                <div className="bib-eyebrow">Suggested questions</div>
-                <ul className="flex flex-col gap-2">
+                <div className="bib-eyebrow" id="bib-agent-prompts">
+                  Suggested questions
+                </div>
+                <ul className="flex flex-col gap-2" aria-labelledby="bib-agent-prompts">
                   {SUGGESTED_PROMPTS.map((prompt) => (
                     <li key={prompt}>
                       <button
                         type="button"
                         onClick={() => ask(prompt)}
-                        className="bib-card bib-card-interactive flex w-full items-center justify-between gap-3 px-3.5 py-3 text-left text-[15px] leading-5 text-[var(--bib-ink)] outline-none focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]"
+                        disabled={loading}
+                        className="bib-card bib-card-interactive flex w-full items-center justify-between gap-3 px-3.5 py-3 text-left text-[15px] leading-5 text-[var(--bib-ink)] outline-none focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)] disabled:opacity-60"
                       >
                         <span>{prompt}</span>
                         <ArrowRight className="size-4 shrink-0 text-[var(--bib-ink-muted)]" aria-hidden />
@@ -176,7 +240,7 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                 </ul>
               </div>
             ) : (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Suggested questions">
                 {SUGGESTED_PROMPTS.map((prompt) => (
                   <Button key={prompt} size="sm" variant="outline" appearance="secondary" onClick={() => ask(prompt)} disabled={loading}>
                     {prompt}
@@ -185,22 +249,31 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
               </div>
             )}
 
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5" aria-live="polite" aria-busy={loading} aria-relevant="additions text">
               {turns.map((turn, i) => (
                 <div key={`${turn.question}-${i}`} className="flex flex-col gap-3">
                   <div className="ml-10 self-end rounded-[6px] rounded-tr-[2px] bg-[var(--bib-ink)] px-3.5 py-2.5 text-[15px] leading-5 text-white shadow-[var(--bib-shadow-card)]">
+                    <span className="sr-only">You asked: </span>
                     {turn.question}
                   </div>
                   <div className="flex items-start gap-3">
                     <AgentAvatar />
                     <div className="flex min-w-0 flex-1 flex-col gap-3">
-                      <p className="text-[15px] leading-6 text-[var(--bib-ink)]">{turn.answer}</p>
+                      <p className="text-[15px] leading-6 text-[var(--bib-ink)]">
+                        <span className="sr-only">Agent: </span>
+                        {turn.answer}
+                      </p>
                       {turn.entities.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {turn.entities.map((entity) => {
                             const href = entityHref(entity);
                             return href ? (
-                              <Link key={`${entity.kind}-${entity.id}`} to={href} onClick={() => setOpen(false)}>
+                              <Link
+                                key={`${entity.kind}-${entity.id}`}
+                                to={href}
+                                onClick={() => setOpen(false)}
+                                className="rounded-full outline-none focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]"
+                              >
                                 <Badge variant="soft" appearance="accent" size="md" trailingIcon={<ArrowRight />}>
                                   {entity.label}
                                 </Badge>
@@ -217,8 +290,9 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                         <WorkOrderCard
                           key={action.work_order.wo_id}
                           workOrder={action.work_order}
-                          onApprove={() => approveWorkOrder(action.work_order.wo_id, 'Facilities manager')}
+                          onApprove={() => approveWorkOrder(action.work_order.wo_id, APPROVER)}
                           onDismiss={(reason) => dismissWorkOrder(action.work_order.wo_id, reason)}
+                          onEdit={(fields) => editWorkOrder(action.work_order.wo_id, fields)}
                         />
                       ))}
                     </div>
@@ -226,7 +300,7 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                 </div>
               ))}
               {loading ? (
-                <div className="flex items-center gap-3 text-[14px] text-[var(--bib-ink-muted)]" aria-live="polite">
+                <div className="flex items-center gap-3 text-[14px] text-[var(--bib-ink-muted)]">
                   <AgentAvatar />
                   <span className="inline-flex items-center gap-1" aria-hidden>
                     <span className="size-1.5 animate-bounce rounded-full bg-[var(--bib-ink-muted)] [animation-delay:-0.2s]" />
@@ -236,7 +310,11 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                   Thinking…
                 </div>
               ) : null}
-              {error ? <div className="text-[14px] font-medium text-[var(--bib-status-due)]">{error}</div> : null}
+              {error ? (
+                <div role="alert" className="text-[14px] font-medium text-[var(--bib-status-due)]">
+                  {error}
+                </div>
+              ) : null}
               <div ref={endRef} />
             </div>
           </div>

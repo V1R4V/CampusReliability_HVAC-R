@@ -13,6 +13,17 @@ def _fetch(type_name, include, flt=None):
     return list(getattr(c3, type_name).fetch(spec).objs or [])
 
 
+def _asset(asset_id):
+    """The asset, or a clear error naming the bad id and the ids that do exist."""
+    a = None
+    if asset_id is not None and str(asset_id).strip():
+        a = c3.Asset.forId(str(asset_id).strip()).get("this, segment.id, building.id")
+    if a is None:
+        known = sorted(x.id for x in _fetch("Asset", "id"))
+        raise ValueError("Unknown asset_id %r. Known assets: %s." % (asset_id, ", ".join(known) if known else "none loaded"))
+    return a
+
+
 def _num(v):
     if v is None:
         return None
@@ -44,11 +55,15 @@ def _band(values):
 
 
 def get(cls, asset_id):
-    a = c3.Asset.forId(asset_id).get("this, segment.id, building.id")
+    a = _asset(asset_id)
+    asset_id = a.id
     if a.building is not None:
-        served = [c3.Building.forId(a.building.id).get("this")]
-    else:
+        b = c3.Building.forId(a.building.id).get("this")
+        served = [b] if b is not None else []
+    elif a.segment is not None:
         served = _fetch("Building", "this", "segment.id == '" + a.segment.id + "'")
+    else:
+        served = []
     served.sort(key=lambda b: (-CRITICALITY_WEIGHT.get(b.criticality, 0), -(b.peak_load_tons or 0)))
 
     readings = sorted(_fetch("SensorReading", "this", "asset.id == '" + asset_id + "'"), key=lambda r: r.date)

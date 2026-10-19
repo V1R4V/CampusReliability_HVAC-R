@@ -29,6 +29,8 @@ const jestConfig = {
   },
   testEnvironment: 'jsdom',
   moduleNameMapper: {
+    // Mirror the Vite `@/` alias (tsconfig paths) so tests import modules the way the app does.
+    '^@/(.*)$': '<rootDir>/src/$1',
     '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/tests/__mocks__/fileMocks.js',
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
   },

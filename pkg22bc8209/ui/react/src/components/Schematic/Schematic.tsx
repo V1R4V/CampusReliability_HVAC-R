@@ -27,6 +27,9 @@ import { cn } from '@/lib/utils';
 import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import { statusLabel } from '@/components/StatusPill/StatusPill';
 import { CRITICALITY_LABEL, type Criticality, type Status } from '@/shared/api';
+import { shortBuildingName } from './shortBuildingName';
+
+export { shortBuildingName };
 
 export interface SchematicPlant {
   plant_id: string;
@@ -65,7 +68,9 @@ export interface SchematicProps {
 }
 
 /* Two geometries: the campus view (compact rows) and the single-loop focus view. All
-   vertical positions are fixed pixel offsets so dots, lines and labels line up. */
+   vertical positions are fixed pixel offsets so dots, lines and labels line up. The segment
+   label column at the left of each row is narrow in the campus view (its name wraps to two
+   lines) so nine buildings on one loop still get ~36px each at 1440px wide. */
 const GEOMETRY = {
   normal: {
     row: 'h-[80px]',
@@ -76,7 +81,8 @@ const GEOMETRY = {
     labelTop: 'top-[10px]',
     labelBottom: 'top-[60px]',
     label: 'max-w-[82px] text-[13px] leading-[18px]',
-    segmentLabelWidth: 'max-w-[124px]',
+    segmentLabelWidth: 'max-w-[96px]',
+    nodes: 'left-[118px] right-6',
   },
   focus: {
     row: 'h-[112px]',
@@ -88,6 +94,7 @@ const GEOMETRY = {
     labelBottom: 'top-[84px]',
     label: 'max-w-[150px] text-[15px] leading-[22px]',
     segmentLabelWidth: 'max-w-[124px]',
+    nodes: 'left-[150px] right-7',
   },
 } as const;
 
@@ -106,15 +113,6 @@ function labelWidthClass(count: number): string {
   if (count === 3) return 'max-w-[130px]';
   if (count === 4) return 'max-w-[100px]';
   return 'max-w-[196%]';
-}
-
-/** "Chemistry Building" → "Chemistry"; long multi-word names → initials ("WIMR"). */
-export function shortBuildingName(name: string): string {
-  const trimmed = name.replace(/\s+(Hall|Building)$/i, '').trim();
-  if (trimmed.length <= 16) return trimmed;
-  const words = trimmed.split(/\s+/).filter((w) => !/^(and|of|the|for)$/i.test(w));
-  if (words.length >= 3) return words.map((w) => w.charAt(0).toUpperCase()).join('');
-  return trimmed;
 }
 
 interface BuildingNodeProps {
@@ -228,7 +226,7 @@ function SegmentRow({
       />
       <span className="absolute left-3 top-[8px] flex flex-col items-start">
         <span className="text-[15px] font-semibold leading-5 text-[var(--bib-ink)]">{segment.segment_id}</span>
-        <span className={cn('truncate text-[13px] leading-4 text-[var(--bib-ink-muted)]', geometry.segmentLabelWidth)}>
+        <span className={cn('line-clamp-2 whitespace-normal text-left text-[13px] leading-4 text-[var(--bib-ink-muted)]', geometry.segmentLabelWidth)}>
           {segment.name}
         </span>
       </span>
@@ -253,7 +251,7 @@ function SegmentRow({
         <div className={cn('absolute inset-0 z-0 rounded-md', highlighted && 'bg-[var(--bib-canvas)]')}>{lineContent}</div>
       )}
 
-      <div className="pointer-events-none absolute inset-y-0 left-[150px] right-7 z-10 flex">
+      <div className={cn('pointer-events-none absolute inset-y-0 z-10 flex', geometry.nodes)}>
         {buildings.map((building, index) => (
           <BuildingNode
             key={building.building_id}

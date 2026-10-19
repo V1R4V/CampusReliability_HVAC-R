@@ -7,6 +7,8 @@ TONS_PER_RENTAL_CHILLER = 400
 ENERGY_USD_PER_KWH = 0.10
 STATUS_RANK = {"HEALTHY": 0, "WATCH": 1, "INSPECTION_DUE": 2, "FAILED": 3}
 QUEUE_ORDER = {"INSPECTION_DUE": 0, "FAILED": 1, "WATCH": 2, "HEALTHY": 3}
+REPLAY_START = "2026-01-01"
+REPLAY_END = "2026-08-31"
 
 
 def _fetch(type_name, include, flt=None):
@@ -14,6 +16,20 @@ def _fetch(type_name, include, flt=None):
     if flt:
         spec["filter"] = flt
     return list(getattr(c3, type_name).fetch(spec).objs or [])
+
+
+def _check_as_of(as_of):
+    """ISO date inside the replay window, or a clear error naming the bad input."""
+    s = str(as_of).strip() if as_of is not None else ""
+    if len(s) > 10 and s[10] in "T ":
+        s = s[:10]
+    try:
+        iso = _dt.date.fromisoformat(s).isoformat()
+    except ValueError:
+        raise ValueError("as_of must be an ISO date YYYY-MM-DD, got %r." % (as_of,))
+    if iso < REPLAY_START or iso > REPLAY_END:
+        raise ValueError("as_of %s is outside the replay window %s..%s." % (iso, REPLAY_START, REPLAY_END))
+    return iso
 
 
 def _ref_id(ref):
@@ -57,6 +73,9 @@ def _fallback_label(rs):
 
 
 def _queue_items(as_of):
+    """Ranked queue plus the lookups the other methods need. Returns (items, assets, buildings,
+    buildings_by_segment, n_scores) — n_scores == 0 means RiskScore has no rows for `as_of`
+    (the model is mid-rerun or the date was never scored) and every asset reads HEALTHY / risk 0."""
     assets = _fetch("Asset", "this, segment.id, building.id")
     buildings = _fetch("Building", "this, segment.id")
     scores = _fetch("RiskScore", "this, asset.id", "date == '" + as_of + "'")
@@ -67,8 +86,9 @@ def _queue_items(as_of):
     for b in buildings:
         buildings_by_segment.setdefault(_ref_id(b.segment), []).append(b)
     score_by_asset = {_ref_id(s.asset): s for s in scores}
+    # One status per asset: the live order (pending/approved) wins over a dismissed one; newest among equals.
     wo_by_asset = {}
-    for w in sorted(wos, key=lambda w: w.drafted_on or ""):
+    for w in sorted(wos, key=lambda w: ((w.status or "") != "DISMISSED", w.drafted_on or "")):
         wo_by_asset[_ref_id(w.asset)] = w.status
 
     items = []
@@ -101,7 +121,7 @@ def _queue_items(as_of):
             "_expected_kwh": float(rs.expected_energy_kwh) if rs is not None and rs.expected_energy_kwh is not None else None,
         })
     items.sort(key=lambda q: (QUEUE_ORDER.get(q["status"], 9), -q["rank_score"], -q["risk"]))
-    return items, assets, buildings, buildings_by_segment
+    return items, assets, buildings, buildings_by_segment, len(scores)
 
 
 def _public(items):
@@ -109,13 +129,25 @@ def _public(items):
 
 
 def queue(cls, as_of):
-    items, _, _, _ = _queue_items(as_of)
+    as_of = _check_as_of(as_of)
+    items, _, _, _, _ = _queue_items(as_of)
     return _public(items)
 
 
+def _recompute_brief(as_of):
+    """Morning brief when RiskScore has no rows for `as_of` — honest instead of 'all healthy'."""
+    any_rows = c3.RiskScore.fetch({"include": "id", "limit": 1}).objs
+    if not any_rows:
+        return ("Risk scores are being recomputed right now; the queue and KPIs will fill in within a minute. "
+                "Weather, buildings and segments are current.")
+    return ("No risk scores for %s yet (the risk table may be mid-recompute); every asset shows as healthy "
+            "until the model finishes." % as_of)
+
+
 def compute(cls, as_of):
-    items, assets, buildings, buildings_by_segment = _queue_items(as_of)
-    yesterday_due = sum(1 for s in _fetch("RiskScore", "status", "date == '" + _shift(as_of, -1) + "'") if s.status == "INSPECTION_DUE")
+    as_of = _check_as_of(as_of)
+    items, assets, buildings, buildings_by_segment, n_scores = _queue_items(as_of)
+    yesterday_due = sum(1 for s in _fetch("RiskScore", "status", "date == '" + _shift(as_of, -1) + "'") if s.status == "INSPECTION_DUE") if as_of > REPLAY_START else 0
 
     due = [q for q in items if q["status"] == "INSPECTION_DUE"]
     watch = [q for q in items if q["status"] == "WATCH"]
@@ -169,7 +201,9 @@ def compute(cls, as_of):
     else:
         weather = {"tmax_f": None, "tmin_f": None, "tavg_f": None, "label": None, "source": None}
 
-    if due:
+    if n_scores == 0:
+        brief = _recompute_brief(as_of)
+    elif due:
         top = due[0]
         labs = sum(1 for bid in top["_served_ids"] if buildings_by_id.get(bid) is not None and buildings_by_id[bid].criticality in ("research_lab", "patient_care"))
         recent = _fetch("RiskScore", "date, status", "asset.id == '" + top["asset_id"] + "' && date <= '" + as_of + "' && date >= '" + _shift(as_of, -45) + "'")
@@ -210,4 +244,68 @@ def compute(cls, as_of):
         "segments": segments_out,
         "plants": plants_out,
         "morning_brief": brief,
+    }
+
+
+def energy_by_building(cls, as_of):
+    """Buildings ranked by energy over their own weather-expected use (additive; feeds the agent's
+    'which buildings are wasting the most energy'). A building's figure weights its own metered
+    assets by expected kWh; segment-level equipment (mains, plant chillers) is listed under
+    `shared` because its energy cannot be attributed to one building."""
+    as_of = _check_as_of(as_of)
+    items, assets, buildings, buildings_by_segment, n_scores = _queue_items(as_of)
+    by_building = {}
+    shared = []
+    for q in items:
+        pct = float(q["energy_over_expected_pct"] or 0.0)
+        exp = q["_expected_kwh"]
+        excess_kwh = exp * pct / 100.0 if exp else 0.0
+        row = {
+            "asset_id": q["asset_id"],
+            "name": q["name"],
+            "system": q["system"],
+            "energy_over_expected_pct": round(pct, 1),
+            "waste_usd_per_day": int(round(excess_kwh * ENERGY_USD_PER_KWH)) if excess_kwh > 0 else 0,
+        }
+        if q["building_id"]:
+            acc = by_building.setdefault(q["building_id"], {"expected": 0.0, "excess": 0.0, "assets": []})
+            if exp:
+                acc["expected"] += exp
+                acc["excess"] += excess_kwh
+            acc["assets"].append(row)
+        else:
+            row["segment_id"] = q["segment_id"]
+            row["buildings_served"] = q["buildings_served"]
+            shared.append(row)
+
+    ranked = []
+    unranked = []
+    for b in buildings:
+        acc = by_building.get(b.id)
+        if not acc:
+            unranked.append({"building_id": b.id, "name": b.name, "segment_id": _ref_id(b.segment)})
+            continue
+        if acc["expected"] > 0:
+            pct = acc["excess"] / acc["expected"] * 100.0
+        else:
+            pct = max(a["energy_over_expected_pct"] for a in acc["assets"])
+        acc["assets"].sort(key=lambda a: -a["energy_over_expected_pct"])
+        ranked.append({
+            "building_id": b.id,
+            "name": b.name,
+            "segment_id": _ref_id(b.segment),
+            "criticality": b.criticality,
+            "energy_over_expected_pct": round(pct, 1),
+            "waste_usd_per_day": int(round(acc["excess"] * ENERGY_USD_PER_KWH)) if acc["excess"] > 0 else 0,
+            "assets": acc["assets"],
+        })
+    ranked.sort(key=lambda r: (-r["energy_over_expected_pct"], r["name"]))
+    shared.sort(key=lambda r: -r["energy_over_expected_pct"])
+    return {
+        "as_of": as_of,
+        "usd_per_kwh": ENERGY_USD_PER_KWH,
+        "scored": n_scores > 0,
+        "buildings": ranked,
+        "shared": shared,
+        "unranked": unranked,
     }

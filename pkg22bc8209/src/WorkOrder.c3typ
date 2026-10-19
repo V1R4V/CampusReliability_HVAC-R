@@ -2,7 +2,8 @@
  * A work order drafted by the agent for a human facilities manager to approve. Ids use FP&M's
  * real format `WO 26-0NNNNN` (e.g. `WO 26-071213`, from the May 2021 Physical Plant Operations
  * Report). **Nothing is ever auto-executed**: every agent-drafted order is created as
- * `PENDING_APPROVAL` and only {@link #approve} / {@link #dismiss}, invoked from the UI, move it.
+ * `PENDING_APPROVAL` and only {@link #approve} / {@link #dismiss} / {@link #edit}, invoked from
+ * the UI, move or change it.
  */
 entity type WorkOrder {
   /** The asset to inspect. */
@@ -44,9 +45,13 @@ entity type WorkOrder {
   /** Required reason when dismissed; null otherwise. */
   dismiss_reason: string
 
+  /** ISO date of the last manual edit while pending; null if the draft was never edited. */
+  edited_on: string
+
   /**
    * Approve this work order: sets status `APPROVED`, {@link #approved_by} = `approver` and
    * {@link #approved_on} = today, persists the change and returns the updated order.
+   * Idempotent on an already-approved order; throws on a dismissed one.
    */
   approve: member function(approver: string): WorkOrder py
 
@@ -55,4 +60,13 @@ entity type WorkOrder {
    * {@link #dismiss_reason}, persists and returns the updated order. Throws if `reason` is empty.
    */
   dismiss: member function(reason: string): WorkOrder py
+
+  /**
+   * Edit a `PENDING_APPROVAL` work order from the UI. Any argument may be null, meaning
+   * unchanged; at least one must be given. Validates title / description / crew non-empty,
+   * `priority` 1–3 and `est_hours` 1–40, sets {@link #edited_on} = today, persists and returns
+   * the updated order. Throws if the order is `APPROVED` or `DISMISSED` (those are immutable
+   * records) or if the id is unknown.
+   */
+  edit: member function(title: string, description: string, priority: int, crew: string, est_hours: int): WorkOrder py
 }

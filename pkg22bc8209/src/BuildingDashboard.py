@@ -3,6 +3,8 @@ import datetime as _dt
 STATUS_RANK = {"HEALTHY": 0, "WATCH": 1, "INSPECTION_DUE": 2, "FAILED": 3}
 SYSTEMS = ["cooling", "heating", "air"]
 PLAN_B_TEMP_F = 95
+REPLAY_START = "2026-01-01"
+REPLAY_END = "2026-08-31"
 
 
 def _fetch(type_name, include, flt=None):
@@ -10,6 +12,30 @@ def _fetch(type_name, include, flt=None):
     if flt:
         spec["filter"] = flt
     return list(getattr(c3, type_name).fetch(spec).objs or [])
+
+
+def _check_as_of(as_of):
+    """ISO date inside the replay window, or a clear error naming the bad input."""
+    s = str(as_of).strip() if as_of is not None else ""
+    if len(s) > 10 and s[10] in "T ":
+        s = s[:10]
+    try:
+        iso = _dt.date.fromisoformat(s).isoformat()
+    except ValueError:
+        raise ValueError("as_of must be an ISO date YYYY-MM-DD, got %r." % (as_of,))
+    if iso < REPLAY_START or iso > REPLAY_END:
+        raise ValueError("as_of %s is outside the replay window %s..%s." % (iso, REPLAY_START, REPLAY_END))
+    return iso
+
+
+def _building(building_id):
+    b = None
+    if building_id is not None and str(building_id).strip():
+        b = c3.Building.forId(str(building_id).strip()).get("this, segment.id")
+    if b is None:
+        known = sorted(x.id for x in _fetch("Building", "id"))
+        raise ValueError("Unknown building_id %r. Known buildings: %s." % (building_id, ", ".join(known) if known else "none loaded"))
+    return b
 
 
 def _shift(as_of, days):
@@ -32,12 +58,17 @@ def _wo_json(w):
         "approved_by": w.approved_by,
         "approved_on": w.approved_on,
         "dismiss_reason": w.dismiss_reason,
+        "edited_on": getattr(w, "edited_on", None),
     }
 
 
 def compute(cls, building_id, as_of):
-    b = c3.Building.forId(building_id).get("this, segment.id")
-    segment = c3.LoopSegment.forId(b.segment.id).get("this, plant.id")
+    as_of = _check_as_of(as_of)
+    b = _building(building_id)
+    building_id = b.id
+    segment = c3.LoopSegment.forId(b.segment.id).get("this, plant.id") if b.segment is not None else None
+    if segment is None:
+        raise ValueError("Building %r has no loop segment assigned; cannot build its dashboard." % building_id)
     plant = c3.Plant.forId(segment.plant.id).get("this") if segment.plant is not None else None
 
     items = c3.CampusSnapshot.queue(as_of) or []
@@ -45,6 +76,7 @@ def compute(cls, building_id, as_of):
     serving_ids = [q["asset_id"] for q in serving]
 
     window_lo = _shift(as_of, -89)
+    # RiskScore may be empty while the model re-runs: everything below degrades to empty series.
     scores = [s for s in _fetch("RiskScore", "this, asset.id", "date >= '" + window_lo + "' && date <= '" + as_of + "'")
               if s.asset is not None and s.asset.id in serving_ids]
 

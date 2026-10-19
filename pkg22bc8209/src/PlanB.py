@@ -4,6 +4,8 @@ CRITICALITY_WEIGHT = {"patient_care": 4, "research_lab": 3, "instruction": 2, "o
 CHILLER_RENTAL_USD_PER_DAY = 3704  # estimate: $10M / ~30 chillers / ~90 days
 TONS_PER_RENTAL_CHILLER = 400      # assumption
 PRIORITY_CRITICALITIES = ("patient_care", "research_lab")
+DEFAULT_TEMP_F = 95.0
+TEMP_RANGE_F = (-60.0, 140.0)      # anything outside is a unit mix-up, not a Madison day
 
 REAL_OUTAGE = {
     "label": "Real June 2026 outage",
@@ -25,15 +27,49 @@ def _load_factor(temp_f):
     return max(0.3, min(1.0, (float(temp_f) - 55.0) / 40.0))
 
 
+def _temp(temp_f):
+    """Validated outdoor temperature in °F; null means the 95 °F design day."""
+    if temp_f is None:
+        return DEFAULT_TEMP_F
+    if isinstance(temp_f, bool):
+        raise ValueError("temp_f must be a number in °F, got %r." % (temp_f,))
+    try:
+        t = float(temp_f)
+    except (TypeError, ValueError):
+        raise ValueError("temp_f must be a number in °F, got %r." % (temp_f,))
+    if math.isnan(t) or math.isinf(t) or t < TEMP_RANGE_F[0] or t > TEMP_RANGE_F[1]:
+        raise ValueError("temp_f %r °F is outside the supported range %d..%d °F." % (temp_f, int(TEMP_RANGE_F[0]), int(TEMP_RANGE_F[1])))
+    return t
+
+
+def _flag(value):
+    """Booleans may arrive as strings from a query string; 'false' must not count as true."""
+    if isinstance(value, str):
+        return value.strip().lower() in ("true", "1", "yes", "y")
+    return bool(value)
+
+
+def _segment(segment_id):
+    seg = None
+    if segment_id is not None and str(segment_id).strip():
+        seg = c3.LoopSegment.forId(str(segment_id).strip()).get("this, plant.id")
+    if seg is None:
+        known = sorted(s.id for s in (c3.LoopSegment.fetch({"include": "id", "limit": -1}).objs or []))
+        raise ValueError("Unknown segment_id %r. Known segments: %s." % (segment_id, ", ".join(known) if known else "none loaded"))
+    return seg
+
+
 def simulate(cls, segment_id, temp_f, priority_only):
-    segment = c3.LoopSegment.forId(segment_id).get("this, plant.id")
+    segment = _segment(segment_id)
+    temp = _temp(temp_f)
+    priority_only = _flag(priority_only)
     buildings = list(c3.Building.fetch({
-        "filter": "segment.id == '" + segment_id + "'",
+        "filter": "segment.id == '" + segment.id + "'",
         "include": "this",
         "limit": -1,
     }).objs or [])
 
-    load_factor = _load_factor(temp_f if temp_f is not None else 95)
+    load_factor = _load_factor(temp)
     ordered = sorted(
         buildings,
         key=lambda b: (-CRITICALITY_WEIGHT.get(b.criticality, 0), -(b.peak_load_tons or 0.0)),
@@ -64,10 +100,10 @@ def simulate(cls, segment_id, temp_f, priority_only):
         })
 
     return {
-        "segment_id": segment_id,
-        "plant_id": segment.plant.id if segment and segment.plant else None,
-        "temp_f": float(temp_f) if temp_f is not None else 95.0,
-        "priority_only": bool(priority_only),
+        "segment_id": segment.id,
+        "plant_id": segment.plant.id if segment.plant is not None else None,
+        "temp_f": temp,
+        "priority_only": priority_only,
         "load_factor": round(load_factor, 3),
         "buildings": rows,
         "totals": {

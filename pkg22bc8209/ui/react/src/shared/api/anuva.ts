@@ -8,7 +8,8 @@
  */
 
 import { c3Action, c3MemberAction } from '@/c3Action';
-import type { AskResponse, AssetHistory, Briefing, BuildingDashboard, WorkOrder, WorkOrderStatus } from '@/Interfaces';
+import { errorMessage } from '@/shared/api/contract';
+import type { AskResponse, AssetHistory, Briefing, BuildingDashboard, WorkOrder, WorkOrderEditFields, WorkOrderStatus } from '@/Interfaces';
 
 /**
  * Anuva's data-access functions — Building dashboard, Asset detail, Work
@@ -88,6 +89,38 @@ export async function approveWorkOrder(woId: string, approver: string): Promise<
 /** Member `WorkOrder.dismiss(reason)`. */
 export async function dismissWorkOrder(woId: string, reason: string): Promise<void> {
   await c3MemberAction('WorkOrder', 'dismiss', { id: woId }, [reason]);
+}
+
+/** True when the server rejected the call because the action itself does not exist (yet). */
+function isUnknownActionError(err: unknown, action: string): boolean {
+  const text = errorMessage(err).toLowerCase();
+  return (
+    text.includes(action) &&
+    /unknown|not found|no such|no action|not defined|does not (exist|have)|undefined|invalid action|cannot find|not a (member|function|method)|unrecognized/.test(
+      text,
+    )
+  );
+}
+
+/**
+ * Member `WorkOrder.edit(title, description, priority, crew, est_hours)`: nulls leave a field
+ * unchanged and only `PENDING_APPROVAL` orders can be edited (the backend enforces both).
+ * Until that member is live the server rejects `edit` as an unknown action and we fall back
+ * to the built-in `WorkOrder.merge` with the same fields (no pending-only guard). To drop the
+ * fallback once `edit` has landed: delete the `catch` block below.
+ */
+export async function editWorkOrder(woId: string, fields: WorkOrderEditFields): Promise<void> {
+  const args = [fields.title ?? null, fields.description ?? null, fields.priority ?? null, fields.crew ?? null, fields.est_hours ?? null];
+  try {
+    await c3MemberAction('WorkOrder', 'edit', { id: woId }, args);
+  } catch (err) {
+    if (!isUnknownActionError(err, 'edit')) throw err;
+    const patch: Record<string, unknown> = { id: woId };
+    (Object.keys(fields) as (keyof WorkOrderEditFields)[]).forEach((key) => {
+      if (fields[key] != null) patch[key] = fields[key];
+    });
+    await c3Action('WorkOrder', 'merge', [patch]);
+  }
 }
 
 /** `FacilitiesAgent.ask(question, as_of)`. */
