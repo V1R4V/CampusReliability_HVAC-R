@@ -1,0 +1,27 @@
+# secrets
+.env
+.env.*
+*.pem
+*.key
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# node
+node_modules/
+dist/
+build/
+.next/
+
+# os / editors
+.DS_Store
+.idea/
+.vscode/
+
+# raw downloads (keep cleaned seed CSVs, not raw dumps)
+data/raw/
+*.zip

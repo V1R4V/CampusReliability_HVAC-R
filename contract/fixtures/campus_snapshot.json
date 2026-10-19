@@ -1,0 +1,53 @@
+{
+  "as_of": "2026-06-09",
+  "weather": { "tmax_f": 91, "tmin_f": 68, "tavg_f": 79.5, "label": "heat", "source": "NOAA GHCN-Daily USW00014837" },
+  "kpis": {
+    "inspection_due": 2,
+    "inspection_due_delta": 1,
+    "watch": 5,
+    "failed": 0,
+    "energy_waste_usd_per_day": 1840,
+    "assets_over_5pct_energy": 4,
+    "cooling_exposure_usd_per_day": 66672
+  },
+  "queue": [
+    {
+      "asset_id": "S3-PIPE", "name": "Chilled water main, segment S3", "system": "cooling", "type": "chw_main",
+      "segment_id": "S3", "building_id": null, "status": "INSPECTION_DUE", "risk": 3.21, "days_in_status": 1,
+      "driver": "pressure", "driver_label": "pressure ↓ 6 psi", "energy_over_expected_pct": 8.5,
+      "impact": 41.2, "rank_score": 132.3, "buildings_served": 9, "cost_per_day_usd": 66672,
+      "work_order_status": "PENDING_APPROVAL"
+    },
+    {
+      "asset_id": "WAL-CHL-2", "name": "Chiller 2, Walnut Street plant", "system": "cooling", "type": "chiller",
+      "segment_id": "S4", "building_id": null, "status": "WATCH", "risk": 2.3, "days_in_status": 3,
+      "driver": "vibration", "driver_label": "vibration ↑ 3.9 mm/s", "energy_over_expected_pct": 5.2,
+      "impact": 28.0, "rank_score": 64.4, "buildings_served": 5, "cost_per_day_usd": 37040,
+      "work_order_status": null
+    },
+    {
+      "asset_id": "VIL-AHU-1", "name": "Air handler 1, Vilas Hall", "system": "air", "type": "ahu",
+      "segment_id": "S6", "building_id": "vilas_hall", "status": "HEALTHY", "risk": 0.7, "days_in_status": 40,
+      "driver": "energy", "driver_label": "energy +1.2%", "energy_over_expected_pct": 1.2,
+      "impact": 6.4, "rank_score": 4.5, "buildings_served": 1, "cost_per_day_usd": null,
+      "work_order_status": null
+    }
+  ],
+  "buildings": [
+    { "building_id": "chemistry_building", "name": "Chemistry Building", "segment_id": "S3", "criticality": "research_lab", "worst_status": "INSPECTION_DUE" },
+    { "building_id": "van_vleck_hall", "name": "Van Vleck Hall", "segment_id": "S3", "criticality": "instruction", "worst_status": "INSPECTION_DUE" },
+    { "building_id": "bascom_hall", "name": "Bascom Hall", "segment_id": "S3", "criticality": "office", "worst_status": "INSPECTION_DUE" },
+    { "building_id": "vilas_hall", "name": "Vilas Hall", "segment_id": "S6", "criticality": "instruction", "worst_status": "HEALTHY" }
+  ],
+  "segments": [
+    { "segment_id": "S3", "plant_id": "CHARTER", "name": "Bascom Hill loop", "worst_status": "INSPECTION_DUE" },
+    { "segment_id": "S4", "plant_id": "WALNUT", "name": "West loop", "worst_status": "WATCH" },
+    { "segment_id": "S6", "plant_id": "WCCF", "name": "Southeast loop", "worst_status": "HEALTHY" }
+  ],
+  "plants": [
+    { "plant_id": "CHARTER", "name": "Charter Street Heating Plant" },
+    { "plant_id": "WALNUT", "name": "Walnut Street Heating Plant" },
+    { "plant_id": "WCCF", "name": "West Campus Cogeneration Facility" }
+  ],
+  "morning_brief": "2 assets need inspection. The S3 chilled water main has lost pressure for 4 days and serves 9 buildings, including 2 research labs."
+}

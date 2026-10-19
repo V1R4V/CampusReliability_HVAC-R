@@ -1,0 +1,587 @@
+{
+  "threshold": 3.0,
+  "failures": [
+    {
+      "event_id": "F1",
+      "asset_id": "VIL-UH-2",
+      "system": "heating",
+      "failure_date": "2026-01-28",
+      "first_due_date": "2026-01-21",
+      "lead_days": 7,
+      "energy_over_expected_pct_at_flag": 7.5
+    },
+    {
+      "event_id": "F2",
+      "asset_id": "STE-HX-1",
+      "system": "heating",
+      "failure_date": "2026-02-16",
+      "first_due_date": "2026-02-09",
+      "lead_days": 7,
+      "energy_over_expected_pct_at_flag": 6.8
+    },
+    {
+      "event_id": "F3",
+      "asset_id": "WIMR-AHU-3",
+      "system": "air",
+      "failure_date": "2026-04-14",
+      "first_due_date": "2026-04-09",
+      "lead_days": 5,
+      "energy_over_expected_pct_at_flag": 9.8
+    },
+    {
+      "event_id": "F4",
+      "asset_id": "S3-PIPE",
+      "system": "cooling",
+      "failure_date": "2026-06-17",
+      "first_due_date": "2026-06-09",
+      "lead_days": 8,
+      "energy_over_expected_pct_at_flag": 8.5
+    },
+    {
+      "event_id": "F5",
+      "asset_id": "WAL-CHL-2",
+      "system": "cooling",
+      "failure_date": "2026-07-22",
+      "first_due_date": "2026-07-14",
+      "lead_days": 8,
+      "energy_over_expected_pct_at_flag": 8.5
+    }
+  ],
+  "false_alarm_days": 0,
+  "healthy_assets": 55,
+  "decoys": [
+    {
+      "event_id": "D1",
+      "label": "One-day vibration spike",
+      "ignored": true,
+      "reason": "Persistence rule: needs 2 days over threshold"
+    },
+    {
+      "event_id": "D2",
+      "label": "5-day sensor dropout",
+      "ignored": true,
+      "reason": "Missing data never raises risk"
+    },
+    {
+      "event_id": "D3",
+      "label": "June heat wave",
+      "ignored": true,
+      "reason": "Energy is compared with the weather-expected baseline"
+    },
+    {
+      "event_id": "D4",
+      "label": "Slow normal aging",
+      "ignored": true,
+      "reason": "Compared with its own 30-day normal"
+    }
+  ],
+  "sweep": [
+    {
+      "threshold": 2.0,
+      "mean_lead_days": 11.2,
+      "min_lead_days": 9,
+      "false_alarm_days": 14,
+      "missed": 0
+    },
+    {
+      "threshold": 2.5,
+      "mean_lead_days": 9.0,
+      "min_lead_days": 7,
+      "false_alarm_days": 4,
+      "missed": 0
+    },
+    {
+      "threshold": 3.0,
+      "mean_lead_days": 7.0,
+      "min_lead_days": 5,
+      "false_alarm_days": 0,
+      "missed": 0
+    },
+    {
+      "threshold": 3.5,
+      "mean_lead_days": 5.2,
+      "min_lead_days": 3,
+      "false_alarm_days": 0,
+      "missed": 0
+    },
+    {
+      "threshold": 4.0,
+      "mean_lead_days": 3.0,
+      "min_lead_days": 1,
+      "false_alarm_days": 0,
+      "missed": 1
+    }
+  ],
+  "aligned_curves": [
+    {
+      "event_id": "F1",
+      "asset_id": "VIL-UH-2",
+      "points": [
+        {
+          "days_before": -21,
+          "risk": 0.6
+        },
+        {
+          "days_before": -20,
+          "risk": 0.6
+        },
+        {
+          "days_before": -19,
+          "risk": 0.6
+        },
+        {
+          "days_before": -18,
+          "risk": 0.6
+        },
+        {
+          "days_before": -17,
+          "risk": 1.33
+        },
+        {
+          "days_before": -16,
+          "risk": 1.68
+        },
+        {
+          "days_before": -15,
+          "risk": 1.94
+        },
+        {
+          "days_before": -14,
+          "risk": 2.17
+        },
+        {
+          "days_before": -13,
+          "risk": 2.38
+        },
+        {
+          "days_before": -12,
+          "risk": 2.57
+        },
+        {
+          "days_before": -11,
+          "risk": 2.74
+        },
+        {
+          "days_before": -10,
+          "risk": 2.9
+        },
+        {
+          "days_before": -9,
+          "risk": 3.06
+        },
+        {
+          "days_before": -8,
+          "risk": 3.21
+        },
+        {
+          "days_before": -7,
+          "risk": 3.35
+        },
+        {
+          "days_before": -6,
+          "risk": 3.48
+        },
+        {
+          "days_before": -5,
+          "risk": 3.61
+        },
+        {
+          "days_before": -4,
+          "risk": 3.74
+        },
+        {
+          "days_before": -3,
+          "risk": 3.86
+        },
+        {
+          "days_before": -2,
+          "risk": 3.97
+        },
+        {
+          "days_before": -1,
+          "risk": 4.09
+        },
+        {
+          "days_before": 0,
+          "risk": 4.2
+        }
+      ]
+    },
+    {
+      "event_id": "F2",
+      "asset_id": "STE-HX-1",
+      "points": [
+        {
+          "days_before": -21,
+          "risk": 0.6
+        },
+        {
+          "days_before": -20,
+          "risk": 0.6
+        },
+        {
+          "days_before": -19,
+          "risk": 0.6
+        },
+        {
+          "days_before": -18,
+          "risk": 0.6
+        },
+        {
+          "days_before": -17,
+          "risk": 1.33
+        },
+        {
+          "days_before": -16,
+          "risk": 1.68
+        },
+        {
+          "days_before": -15,
+          "risk": 1.94
+        },
+        {
+          "days_before": -14,
+          "risk": 2.17
+        },
+        {
+          "days_before": -13,
+          "risk": 2.38
+        },
+        {
+          "days_before": -12,
+          "risk": 2.57
+        },
+        {
+          "days_before": -11,
+          "risk": 2.74
+        },
+        {
+          "days_before": -10,
+          "risk": 2.9
+        },
+        {
+          "days_before": -9,
+          "risk": 3.06
+        },
+        {
+          "days_before": -8,
+          "risk": 3.21
+        },
+        {
+          "days_before": -7,
+          "risk": 3.35
+        },
+        {
+          "days_before": -6,
+          "risk": 3.48
+        },
+        {
+          "days_before": -5,
+          "risk": 3.61
+        },
+        {
+          "days_before": -4,
+          "risk": 3.74
+        },
+        {
+          "days_before": -3,
+          "risk": 3.86
+        },
+        {
+          "days_before": -2,
+          "risk": 3.97
+        },
+        {
+          "days_before": -1,
+          "risk": 4.09
+        },
+        {
+          "days_before": 0,
+          "risk": 4.2
+        }
+      ]
+    },
+    {
+      "event_id": "F3",
+      "asset_id": "WIMR-AHU-3",
+      "points": [
+        {
+          "days_before": -21,
+          "risk": 0.6
+        },
+        {
+          "days_before": -20,
+          "risk": 0.6
+        },
+        {
+          "days_before": -19,
+          "risk": 0.6
+        },
+        {
+          "days_before": -18,
+          "risk": 0.6
+        },
+        {
+          "days_before": -17,
+          "risk": 1.33
+        },
+        {
+          "days_before": -16,
+          "risk": 1.68
+        },
+        {
+          "days_before": -15,
+          "risk": 1.94
+        },
+        {
+          "days_before": -14,
+          "risk": 2.17
+        },
+        {
+          "days_before": -13,
+          "risk": 2.38
+        },
+        {
+          "days_before": -12,
+          "risk": 2.57
+        },
+        {
+          "days_before": -11,
+          "risk": 2.74
+        },
+        {
+          "days_before": -10,
+          "risk": 2.9
+        },
+        {
+          "days_before": -9,
+          "risk": 3.06
+        },
+        {
+          "days_before": -8,
+          "risk": 3.21
+        },
+        {
+          "days_before": -7,
+          "risk": 3.35
+        },
+        {
+          "days_before": -6,
+          "risk": 3.48
+        },
+        {
+          "days_before": -5,
+          "risk": 3.61
+        },
+        {
+          "days_before": -4,
+          "risk": 3.74
+        },
+        {
+          "days_before": -3,
+          "risk": 3.86
+        },
+        {
+          "days_before": -2,
+          "risk": 3.97
+        },
+        {
+          "days_before": -1,
+          "risk": 4.09
+        },
+        {
+          "days_before": 0,
+          "risk": 4.2
+        }
+      ]
+    },
+    {
+      "event_id": "F4",
+      "asset_id": "S3-PIPE",
+      "points": [
+        {
+          "days_before": -21,
+          "risk": 0.6
+        },
+        {
+          "days_before": -20,
+          "risk": 0.6
+        },
+        {
+          "days_before": -19,
+          "risk": 0.6
+        },
+        {
+          "days_before": -18,
+          "risk": 0.6
+        },
+        {
+          "days_before": -17,
+          "risk": 1.33
+        },
+        {
+          "days_before": -16,
+          "risk": 1.68
+        },
+        {
+          "days_before": -15,
+          "risk": 1.94
+        },
+        {
+          "days_before": -14,
+          "risk": 2.17
+        },
+        {
+          "days_before": -13,
+          "risk": 2.38
+        },
+        {
+          "days_before": -12,
+          "risk": 2.57
+        },
+        {
+          "days_before": -11,
+          "risk": 2.74
+        },
+        {
+          "days_before": -10,
+          "risk": 2.9
+        },
+        {
+          "days_before": -9,
+          "risk": 3.06
+        },
+        {
+          "days_before": -8,
+          "risk": 3.21
+        },
+        {
+          "days_before": -7,
+          "risk": 3.35
+        },
+        {
+          "days_before": -6,
+          "risk": 3.48
+        },
+        {
+          "days_before": -5,
+          "risk": 3.61
+        },
+        {
+          "days_before": -4,
+          "risk": 3.74
+        },
+        {
+          "days_before": -3,
+          "risk": 3.86
+        },
+        {
+          "days_before": -2,
+          "risk": 3.97
+        },
+        {
+          "days_before": -1,
+          "risk": 4.09
+        },
+        {
+          "days_before": 0,
+          "risk": 4.2
+        }
+      ]
+    },
+    {
+      "event_id": "F5",
+      "asset_id": "WAL-CHL-2",
+      "points": [
+        {
+          "days_before": -21,
+          "risk": 0.6
+        },
+        {
+          "days_before": -20,
+          "risk": 0.6
+        },
+        {
+          "days_before": -19,
+          "risk": 0.6
+        },
+        {
+          "days_before": -18,
+          "risk": 0.6
+        },
+        {
+          "days_before": -17,
+          "risk": 1.33
+        },
+        {
+          "days_before": -16,
+          "risk": 1.68
+        },
+        {
+          "days_before": -15,
+          "risk": 1.94
+        },
+        {
+          "days_before": -14,
+          "risk": 2.17
+        },
+        {
+          "days_before": -13,
+          "risk": 2.38
+        },
+        {
+          "days_before": -12,
+          "risk": 2.57
+        },
+        {
+          "days_before": -11,
+          "risk": 2.74
+        },
+        {
+          "days_before": -10,
+          "risk": 2.9
+        },
+        {
+          "days_before": -9,
+          "risk": 3.06
+        },
+        {
+          "days_before": -8,
+          "risk": 3.21
+        },
+        {
+          "days_before": -7,
+          "risk": 3.35
+        },
+        {
+          "days_before": -6,
+          "risk": 3.48
+        },
+        {
+          "days_before": -5,
+          "risk": 3.61
+        },
+        {
+          "days_before": -4,
+          "risk": 3.74
+        },
+        {
+          "days_before": -3,
+          "risk": 3.86
+        },
+        {
+          "days_before": -2,
+          "risk": 3.97
+        },
+        {
+          "days_before": -1,
+          "risk": 4.09
+        },
+        {
+          "days_before": 0,
+          "risk": 4.2
+        }
+      ]
+    }
+  ]
+}

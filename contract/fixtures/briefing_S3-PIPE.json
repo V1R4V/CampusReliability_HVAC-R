@@ -1,0 +1,55 @@
+{
+  "asset_id": "S3-PIPE",
+  "as_of": "2026-06-09",
+  "status": "INSPECTION_DUE",
+  "headline": "Inspection due: chilled water main, segment S3, 61 years old.",
+  "text": "Supply pressure has fallen 6 psi below its normal over 4 days while supply–return flow imbalance rose to 3.1%, a typical leak signal. It is running 8.5% over its normal energy use. It serves 9 buildings, including Chemistry, Birge and Sterling research labs. If it fails: 18 temporary chillers, about $67K a day.",
+  "bullets": [
+    "Driving signal: pressure ↓ 6 psi (41% of risk)",
+    "Flow imbalance ↑ 3.1% (30%)",
+    "Energy +8.5% over weather-expected",
+    "Serves 9 buildings · 3 research labs",
+    "Plan B if it fails: 18 chillers · ~$67K/day (estimate)"
+  ],
+  "driver": "pressure",
+  "energy_over_expected_pct": 8.5,
+  "buildings_served": [
+    "Chemistry Building",
+    "Birge Hall",
+    "Sterling Hall",
+    "Grainger Hall",
+    "Van Hise Hall",
+    "Van Vleck Hall",
+    "Science Hall",
+    "Music Hall",
+    "Bascom Hall"
+  ],
+  "cost_per_day_usd": 66672,
+  "generated_by": "template",
+  "work_order": {
+    "wo_id": "WO 26-071213",
+    "asset_id": "S3-PIPE",
+    "building_ids": [
+      "chemistry_building",
+      "birge_hall",
+      "sterling_hall",
+      "grainger_hall",
+      "van_hise_hall",
+      "van_vleck_hall",
+      "science_hall",
+      "music_hall",
+      "bascom_hall"
+    ],
+    "title": "Inspect chilled water main, segment S3",
+    "description": "Pressure falling 4 days and flow imbalance rising (leak signal). Inspect segment S3 supply line and isolation valves.",
+    "priority": 1,
+    "crew": "Utilities – Piping",
+    "est_hours": 6,
+    "status": "PENDING_APPROVAL",
+    "drafted_by": "agent",
+    "drafted_on": "2026-06-09",
+    "approved_by": null,
+    "approved_on": null,
+    "dismiss_reason": null
+  }
+}

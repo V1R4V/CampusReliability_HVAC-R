@@ -1,0 +1,1521 @@
+{
+  "asset": {
+    "asset_id": "S3-PIPE",
+    "name": "Chilled water main, segment S3",
+    "system": "cooling",
+    "type": "chw_main",
+    "segment_id": "S3",
+    "building_id": null,
+    "age_years": 61,
+    "install_year": 1965,
+    "buildings_served": [
+      {
+        "building_id": "chemistry_building",
+        "name": "Chemistry Building",
+        "criticality": "research_lab"
+      },
+      {
+        "building_id": "van_vleck_hall",
+        "name": "Van Vleck Hall",
+        "criticality": "instruction"
+      },
+      {
+        "building_id": "bascom_hall",
+        "name": "Bascom Hall",
+        "criticality": "office"
+      }
+    ]
+  },
+  "threshold": 3.0,
+  "series": [
+    {
+      "date": "2026-05-20",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-21",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-22",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-23",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-24",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-25",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-26",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-27",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-28",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-29",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-30",
+      "risk": 0.6,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.0,
+        "flow_imbalance": 0.0,
+        "delta_t": 0.0,
+        "vibration": null,
+        "energy": 0.0
+      },
+      "contrib": {
+        "pressure": 0.29,
+        "flow_imbalance": 0.29,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.24
+      },
+      "sensors": {
+        "pressure_psi": 78.0,
+        "flow_imbalance_pct": 0.5,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3100.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.0
+    },
+    {
+      "date": "2026-05-31",
+      "risk": 1.33,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.04,
+        "flow_imbalance": 0.04,
+        "delta_t": 0.01,
+        "vibration": null,
+        "energy": 0.02
+      },
+      "contrib": {
+        "pressure": 0.39,
+        "flow_imbalance": 0.39,
+        "delta_t": 0.06,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 77.9,
+        "flow_imbalance_pct": 0.53,
+        "delta_t_f": 12.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3103.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.1
+    },
+    {
+      "date": "2026-06-01",
+      "risk": 1.68,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.12,
+        "flow_imbalance": 0.11,
+        "delta_t": 0.04,
+        "vibration": null,
+        "energy": 0.06
+      },
+      "contrib": {
+        "pressure": 0.4,
+        "flow_imbalance": 0.36,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 77.8,
+        "flow_imbalance_pct": 0.59,
+        "delta_t_f": 12.3,
+        "vibration_mm_s": null,
+        "energy_kwh": 3108.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.3
+    },
+    {
+      "date": "2026-06-02",
+      "risk": 1.94,
+      "status": "HEALTHY",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.24,
+        "flow_imbalance": 0.2,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.12
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.34,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 77.6,
+        "flow_imbalance_pct": 0.67,
+        "delta_t_f": 12.3,
+        "vibration_mm_s": null,
+        "energy_kwh": 3115.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.5
+    },
+    {
+      "date": "2026-06-03",
+      "risk": 2.17,
+      "status": "WATCH",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.38,
+        "flow_imbalance": 0.32,
+        "delta_t": 0.13,
+        "vibration": null,
+        "energy": 0.19
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.34,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 77.4,
+        "flow_imbalance_pct": 0.77,
+        "delta_t_f": 12.2,
+        "vibration_mm_s": null,
+        "energy_kwh": 3124.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 0.8
+    },
+    {
+      "date": "2026-06-04",
+      "risk": 2.38,
+      "status": "WATCH",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.54,
+        "flow_imbalance": 0.46,
+        "delta_t": 0.18,
+        "vibration": null,
+        "energy": 0.27
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 77.2,
+        "flow_imbalance_pct": 0.89,
+        "delta_t_f": 12.1,
+        "vibration_mm_s": null,
+        "energy_kwh": 3134.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 1.1
+    },
+    {
+      "date": "2026-06-05",
+      "risk": 2.57,
+      "status": "WATCH",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.72,
+        "flow_imbalance": 0.62,
+        "delta_t": 0.24,
+        "vibration": null,
+        "energy": 0.36
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 76.9,
+        "flow_imbalance_pct": 1.02,
+        "delta_t_f": 12.1,
+        "vibration_mm_s": null,
+        "energy_kwh": 3145.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 1.5
+    },
+    {
+      "date": "2026-06-06",
+      "risk": 2.74,
+      "status": "WATCH",
+      "driver": "pressure",
+      "z": {
+        "pressure": 0.93,
+        "flow_imbalance": 0.79,
+        "delta_t": 0.31,
+        "vibration": null,
+        "energy": 0.46
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 76.6,
+        "flow_imbalance_pct": 1.16,
+        "delta_t_f": 12.0,
+        "vibration_mm_s": null,
+        "energy_kwh": 3158.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 1.9
+    },
+    {
+      "date": "2026-06-07",
+      "risk": 2.9,
+      "status": "WATCH",
+      "driver": "pressure",
+      "z": {
+        "pressure": 1.15,
+        "flow_imbalance": 0.98,
+        "delta_t": 0.38,
+        "vibration": null,
+        "energy": 0.57
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 76.2,
+        "flow_imbalance_pct": 1.32,
+        "delta_t_f": 11.9,
+        "vibration_mm_s": null,
+        "energy_kwh": 3172.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 2.3
+    },
+    {
+      "date": "2026-06-08",
+      "risk": 3.06,
+      "status": "WATCH",
+      "driver": "pressure",
+      "z": {
+        "pressure": 1.39,
+        "flow_imbalance": 1.19,
+        "delta_t": 0.46,
+        "vibration": null,
+        "energy": 0.69
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 75.9,
+        "flow_imbalance_pct": 1.49,
+        "delta_t_f": 11.7,
+        "vibration_mm_s": null,
+        "energy_kwh": 3187.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 2.8
+    },
+    {
+      "date": "2026-06-09",
+      "risk": 3.21,
+      "status": "INSPECTION_DUE",
+      "driver": "pressure",
+      "z": {
+        "pressure": 1.64,
+        "flow_imbalance": 1.41,
+        "delta_t": 0.55,
+        "vibration": null,
+        "energy": 0.82
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 75.5,
+        "flow_imbalance_pct": 1.67,
+        "delta_t_f": 11.6,
+        "vibration_mm_s": null,
+        "energy_kwh": 3203.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 3.3
+    },
+    {
+      "date": "2026-06-10",
+      "risk": 3.35,
+      "status": "INSPECTION_DUE",
+      "driver": "pressure",
+      "z": {
+        "pressure": 1.91,
+        "flow_imbalance": 1.64,
+        "delta_t": 0.64,
+        "vibration": null,
+        "energy": 0.96
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 75.0,
+        "flow_imbalance_pct": 1.86,
+        "delta_t_f": 11.5,
+        "vibration_mm_s": null,
+        "energy_kwh": 3220.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 3.9
+    },
+    {
+      "date": "2026-06-11",
+      "risk": 3.48,
+      "status": "INSPECTION_DUE",
+      "driver": "pressure",
+      "z": {
+        "pressure": 2.2,
+        "flow_imbalance": 1.88,
+        "delta_t": 0.73,
+        "vibration": null,
+        "energy": 1.1
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 74.6,
+        "flow_imbalance_pct": 2.07,
+        "delta_t_f": 11.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3238.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 4.4
+    },
+    {
+      "date": "2026-06-12",
+      "risk": 3.61,
+      "status": "INSPECTION_DUE",
+      "driver": "pressure",
+      "z": {
+        "pressure": 2.5,
+        "flow_imbalance": 2.14,
+        "delta_t": 0.83,
+        "vibration": null,
+        "energy": 1.25
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 74.1,
+        "flow_imbalance_pct": 2.28,
+        "delta_t_f": 11.2,
+        "vibration_mm_s": null,
+        "energy_kwh": 3257.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 5.1
+    },
+    {
+      "date": "2026-06-13",
+      "risk": 3.74,
+      "status": "INSPECTION_DUE",
+      "driver": "pressure",
+      "z": {
+        "pressure": 2.81,
+        "flow_imbalance": 2.41,
+        "delta_t": 0.94,
+        "vibration": null,
+        "energy": 1.4
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 73.7,
+        "flow_imbalance_pct": 2.51,
+        "delta_t_f": 11.1,
+        "vibration_mm_s": null,
+        "energy_kwh": 3276.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 5.7
+    },
+    {
+      "date": "2026-06-14",
+      "risk": 3.86,
+      "status": "INSPECTION_DUE",
+      "driver": "pressure",
+      "z": {
+        "pressure": 3.14,
+        "flow_imbalance": 2.69,
+        "delta_t": 1.05,
+        "vibration": null,
+        "energy": 1.57
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 73.1,
+        "flow_imbalance_pct": 2.74,
+        "delta_t_f": 10.9,
+        "vibration_mm_s": null,
+        "energy_kwh": 3297.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 6.3
+    },
+    {
+      "date": "2026-06-15",
+      "risk": 3.97,
+      "status": "INSPECTION_DUE",
+      "driver": "pressure",
+      "z": {
+        "pressure": 3.48,
+        "flow_imbalance": 2.98,
+        "delta_t": 1.16,
+        "vibration": null,
+        "energy": 1.74
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 72.6,
+        "flow_imbalance_pct": 2.98,
+        "delta_t_f": 10.7,
+        "vibration_mm_s": null,
+        "energy_kwh": 3318.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 7.0
+    },
+    {
+      "date": "2026-06-16",
+      "risk": 4.09,
+      "status": "INSPECTION_DUE",
+      "driver": "pressure",
+      "z": {
+        "pressure": 3.83,
+        "flow_imbalance": 3.29,
+        "delta_t": 1.28,
+        "vibration": null,
+        "energy": 1.92
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 72.1,
+        "flow_imbalance_pct": 3.24,
+        "delta_t_f": 10.6,
+        "vibration_mm_s": null,
+        "energy_kwh": 3340.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 7.8
+    },
+    {
+      "date": "2026-06-17",
+      "risk": 4.6,
+      "status": "FAILED",
+      "driver": "pressure",
+      "z": {
+        "pressure": 4.2,
+        "flow_imbalance": 3.6,
+        "delta_t": 1.4,
+        "vibration": null,
+        "energy": 2.1
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 71.5,
+        "flow_imbalance_pct": 3.5,
+        "delta_t_f": 10.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3364.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 8.5
+    },
+    {
+      "date": "2026-06-18",
+      "risk": 4.6,
+      "status": "FAILED",
+      "driver": "pressure",
+      "z": {
+        "pressure": 4.2,
+        "flow_imbalance": 3.6,
+        "delta_t": 1.4,
+        "vibration": null,
+        "energy": 2.1
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 71.5,
+        "flow_imbalance_pct": 3.5,
+        "delta_t_f": 10.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3364.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 8.5
+    },
+    {
+      "date": "2026-06-19",
+      "risk": 4.6,
+      "status": "FAILED",
+      "driver": "pressure",
+      "z": {
+        "pressure": 4.2,
+        "flow_imbalance": 3.6,
+        "delta_t": 1.4,
+        "vibration": null,
+        "energy": 2.1
+      },
+      "contrib": {
+        "pressure": 0.41,
+        "flow_imbalance": 0.35,
+        "delta_t": 0.08,
+        "vibration": null,
+        "energy": 0.16
+      },
+      "sensors": {
+        "pressure_psi": 71.5,
+        "flow_imbalance_pct": 3.5,
+        "delta_t_f": 10.4,
+        "vibration_mm_s": null,
+        "energy_kwh": 3364.0
+      },
+      "band": {
+        "pressure_psi": [
+          76.4,
+          79.6
+        ],
+        "flow_imbalance_pct": [
+          0.0,
+          1.1
+        ],
+        "delta_t_f": [
+          11.2,
+          13.6
+        ],
+        "vibration_mm_s": null,
+        "energy_kwh": [
+          2900,
+          3300
+        ]
+      },
+      "energy_over_expected_pct": 8.5
+    }
+  ],
+  "events": [
+    {
+      "event_id": "F4",
+      "kind": "failure",
+      "asset_id": "S3-PIPE",
+      "onset_date": "2026-05-30",
+      "date": "2026-06-17",
+      "end_date": "2026-08-10",
+      "label": "Reenactment of the real June 17 event",
+      "synthetic": true
+    },
+    {
+      "event_id": "R1",
+      "kind": "real_reference",
+      "asset_id": "S3-PIPE",
+      "onset_date": null,
+      "date": "2026-06-17",
+      "end_date": "2026-08-10",
+      "label": "Real break: chilled water main near Charter St",
+      "synthetic": false
+    },
+    {
+      "event_id": "D3",
+      "kind": "decoy",
+      "asset_id": null,
+      "onset_date": "2026-06-10",
+      "date": "2026-06-14",
+      "end_date": "2026-06-16",
+      "label": "Heat wave: weather-adjusted, ignored",
+      "synthetic": false
+    }
+  ]
+}
