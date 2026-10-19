@@ -8,7 +8,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Flame, Snowflake, Wind } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,25 +16,16 @@ import { Spinner } from '@/components/ui/spinner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
-import { ProvenanceTag, StatusTag } from '@/components/RiskChart/Tags';
+import StatusPill from '@/components/StatusPill/StatusPill';
+import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import { fetchRiskForecastCampus } from '@/shared/api/forecast';
 import type { ForecastCampusAsset, RiskForecastCampus, SystemType } from '@/Interfaces';
 import { METHOD_COLOR, METHOD_SHORT, agreementLabel, formatProbability, probabilityColor } from '@/components/ForecastPanel/useRiskForecast';
+// Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
+import { useAsOf } from '@/contexts/AsOfProvider';
+import { formatDate } from '@/shared/api';
 
-// TEMPORARY until Arnav's global asOf scrubber (contexts/AsOfProvider) lands — same pattern as pages/Asset.
-const DEFAULT_AS_OF = '2026-06-09';
 const MAX_ROWS = 100;
-
-function useAsOf(): [string, (next: string) => void] {
-  const [params, setParams] = useSearchParams();
-  const asOf = params.get('asOf') ?? DEFAULT_AS_OF;
-  const setAsOf = (next: string) => {
-    const nextParams = new URLSearchParams(params);
-    nextParams.set('asOf', next);
-    setParams(nextParams, { replace: true });
-  };
-  return [asOf, setAsOf];
-}
 
 type SystemFilter = 'all' | SystemType;
 const SYSTEMS: SystemType[] = ['cooling', 'heating', 'air'];
@@ -88,7 +79,7 @@ function SystemSummary({ system, assets, asOf }: { system: SystemType; assets: F
               ))}
               {top.days_to_failure_p50 != null ? <span>· ~{Math.round(top.days_to_failure_p50)} d to failure</span> : null}
             </div>
-            {top.status ? <StatusTag status={top.status} size="sm" /> : null}
+            {top.status ? <StatusPill status={top.status} size="sm" /> : null}
           </>
         )}
       </CardContent>
@@ -98,7 +89,7 @@ function SystemSummary({ system, assets, asOf }: { system: SystemType; assets: F
 
 /** Predictions — every asset's failure probability by method, ranked by consensus (ML.md §8). */
 export default function Predictions() {
-  const [asOf, setAsOf] = useAsOf();
+  const { asOf } = useAsOf();
   const { reportError } = useErrorReporter();
   const [data, setData] = useState<RiskForecastCampus | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -148,22 +139,14 @@ export default function Predictions() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-semibold text-[#111827]">Predictions</h1>
-            <ProvenanceTag kind="SYNTHETIC" />
+            <ProvenanceChip kind="SYNTHETIC" />
           </div>
           <div className="text-sm text-[#6B7280]">
             Probability each asset fails within 14 days — four independent methods, ranked by their consensus.
             {data ? ` ${elevated} of ${data.assets.length} assets above 20%.` : ''}
           </div>
         </div>
-        <label className="flex items-center gap-2 text-sm text-[#6B7280]">
-          As of
-          <input
-            type="date"
-            value={asOf}
-            onChange={(e) => e.target.value && setAsOf(e.target.value)}
-            className="rounded border border-[#E5E7EB] px-2 py-1 text-sm"
-          />
-        </label>
+        <div className="text-sm text-[#6B7280]">As of {formatDate(asOf)}</div>
       </div>
 
       {loading ? (
@@ -235,7 +218,7 @@ export default function Predictions() {
                           <div className="text-xs text-[#6B7280]">{a.asset_id}</div>
                         </TableCell>
                         <TableCell>{SYSTEM_LABEL[a.system] ?? a.system}</TableCell>
-                        <TableCell>{a.status ? <StatusTag status={a.status} size="sm" /> : '—'}</TableCell>
+                        <TableCell>{a.status ? <StatusPill status={a.status} size="sm" /> : '—'}</TableCell>
                         <TableCell className="text-right tabular-nums">{a.risk == null ? '—' : a.risk.toFixed(2)}</TableCell>
                         <TableCell className="text-right">
                           <Pct value={a.consensus_14d} bold />

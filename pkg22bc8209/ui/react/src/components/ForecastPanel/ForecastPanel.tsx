@@ -12,7 +12,7 @@ import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContai
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
-import { ProvenanceTag } from '@/components/RiskChart/Tags';
+import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import type { ForecastMethodRow } from '@/Interfaces';
 import {
   METHOD_COLOR,
@@ -124,7 +124,7 @@ export default function ForecastPanel({ assetId, asOf }: ForecastPanelProps) {
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <CardTitle>Failure probability — four methods</CardTitle>
-          <ProvenanceTag kind="SYNTHETIC" />
+          <ProvenanceChip kind="SYNTHETIC" />
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">

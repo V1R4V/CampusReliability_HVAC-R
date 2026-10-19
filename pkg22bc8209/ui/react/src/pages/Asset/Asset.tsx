@@ -8,7 +8,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Flame, Snowflake, Wind } from 'lucide-react';
 import { Line, LineChart, ReferenceArea, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,27 +18,15 @@ import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
 import { approveWorkOrder, dismissWorkOrder, fetchAssetHistory, fetchBriefing } from '@/shared/api/anuva';
 import type { AssetHistory, Briefing, RiskSeriesPoint, SensorMap, SystemType } from '@/Interfaces';
 import RiskChart from '@/components/RiskChart/RiskChart';
-import { ProvenanceTag, StatusTag } from '@/components/RiskChart/Tags';
+import StatusPill from '@/components/StatusPill/StatusPill';
+import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import SignalBars from '@/components/SignalBars/SignalBars';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
 import AgentDrawer from '@/components/AgentDrawer/AgentDrawer';
 // Vibhrav's forecast panel (RiskForecast.compare, ML.md §8) — embedded here by owner request.
 import ForecastPanel from '@/components/ForecastPanel/ForecastPanel';
-
-// TEMPORARY: Arnav owns the global `asOf` scrubber (contexts/AsOfProvider).
-// Until that lands, this page keeps its own asOf in the URL so it's still
-// shareable/demoable standalone. Swap for his context in one line later.
-const DEFAULT_AS_OF = '2026-06-09';
-function useAsOf(): [string, (next: string) => void] {
-  const [params, setParams] = useSearchParams();
-  const asOf = params.get('asOf') ?? DEFAULT_AS_OF;
-  const setAsOf = (next: string) => {
-    const nextParams = new URLSearchParams(params);
-    nextParams.set('asOf', next);
-    setParams(nextParams, { replace: true });
-  };
-  return [asOf, setAsOf];
-}
+// Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
+import { useAsOf } from '@/contexts/AsOfProvider';
 
 const SYSTEM_ICON: Record<SystemType, React.ComponentType<{ className?: string }>> = {
   cooling: Snowflake,
@@ -89,7 +77,7 @@ function formatDate(iso: string): string {
 /** Asset detail — the heart of the demo (FRONTEND §5.4). */
 export default function Asset() {
   const { assetId } = useParams<{ assetId: string }>();
-  const [asOf, setAsOf] = useAsOf();
+  const { asOf } = useAsOf();
   const { reportError } = useErrorReporter();
 
   const [history, setHistory] = useState<AssetHistory | null>(null);
@@ -167,29 +155,21 @@ export default function Asset() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-semibold text-[#111827]">{history.asset.name}</h1>
-              {pointAtAsOf ? <StatusTag status={pointAtAsOf.status} /> : null}
+              {pointAtAsOf ? <StatusPill status={pointAtAsOf.status} /> : null}
             </div>
             <div className="text-sm text-[#6B7280]">
               {history.asset.asset_id} · {history.asset.age_years} yrs · Segment {history.asset.segment_id}
             </div>
           </div>
         </div>
-        <label className="flex items-center gap-2 text-sm text-[#6B7280]">
-          As of
-          <input
-            type="date"
-            value={asOf}
-            onChange={(e) => e.target.value && setAsOf(e.target.value)}
-            className="rounded border border-[#E5E7EB] px-2 py-1 text-sm"
-          />
-        </label>
+        <div className="text-sm text-[#6B7280]">As of {formatDate(asOf)}</div>
       </div>
 
       <Card variant="outlined">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Risk over time</CardTitle>
-            <ProvenanceTag kind="SYNTHETIC" />
+            <ProvenanceChip kind="SYNTHETIC" />
           </div>
         </CardHeader>
         <CardContent>
@@ -283,8 +263,6 @@ export default function Asset() {
           )}
         </CardContent>
       </Card>
-
-      <div className="text-xs text-[#6B7280]">As of {formatDate(asOf)}</div>
 
       <AgentDrawer asOf={asOf} />
     </div>

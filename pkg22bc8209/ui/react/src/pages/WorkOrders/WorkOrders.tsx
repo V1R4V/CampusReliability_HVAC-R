@@ -15,8 +15,7 @@ import { approveWorkOrder, dismissWorkOrder, fetchWorkOrders } from '@/shared/ap
 import type { WorkOrder, WorkOrderStatus } from '@/Interfaces';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
 import AgentDrawer from '@/components/AgentDrawer/AgentDrawer';
-
-const DEFAULT_AS_OF = '2026-06-09';
+import { useAsOf } from '@/contexts/AsOfProvider';
 
 const TABS: { value: WorkOrderStatus; label: string; empty: string }[] = [
   { value: 'PENDING_APPROVAL', label: 'Pending approval', empty: 'No work orders pending.' },
@@ -26,6 +25,7 @@ const TABS: { value: WorkOrderStatus; label: string; empty: string }[] = [
 
 /** Work Orders (FRONTEND §5.6). */
 export default function WorkOrders() {
+  const { asOf } = useAsOf();
   const { reportError } = useErrorReporter();
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,7 +105,7 @@ export default function WorkOrders() {
         })}
       </Tabs>
 
-      <AgentDrawer asOf={DEFAULT_AS_OF} />
+      <AgentDrawer asOf={asOf} />
     </div>
   );
 }

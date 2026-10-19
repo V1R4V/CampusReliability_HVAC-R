@@ -8,7 +8,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Flame, Snowflake, Wind } from 'lucide-react';
 import { Line, LineChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,27 +19,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
 import { approveWorkOrder, dismissWorkOrder, fetchBuildingDashboard } from '@/shared/api/anuva';
 import type { BuildingDashboard, SystemCard as SystemCardData, SystemType } from '@/Interfaces';
-import { ProvenanceTag, StatusTag } from '@/components/RiskChart/Tags';
+import StatusPill from '@/components/StatusPill/StatusPill';
+import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import Sparkline from '@/components/Sparkline/Sparkline';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
 import AgentDrawer from '@/components/AgentDrawer/AgentDrawer';
 // Vibhrav's per-system failure probability (RiskForecast.compare, ML.md §8) — embedded by owner request.
 import ForecastBadge from '@/components/ForecastPanel/ForecastBadge';
+// Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
+import { useAsOf } from '@/contexts/AsOfProvider';
+import { formatDate } from '@/shared/api';
 
-// TEMPORARY until Arnav's global asOf scrubber (contexts/AsOfProvider) lands — see pages/Asset/Asset.tsx.
-const DEFAULT_AS_OF = '2026-06-09';
 const DEFAULT_THRESHOLD = 3.0;
-
-function useAsOf(): [string, (next: string) => void] {
-  const [params, setParams] = useSearchParams();
-  const asOf = params.get('asOf') ?? DEFAULT_AS_OF;
-  const setAsOf = (next: string) => {
-    const nextParams = new URLSearchParams(params);
-    nextParams.set('asOf', next);
-    setParams(nextParams, { replace: true });
-  };
-  return [asOf, setAsOf];
-}
 
 const SYSTEM_LABEL: Record<SystemType, string> = {
   cooling: 'Cooling',
@@ -68,7 +59,7 @@ function SystemPanel({ system, card, asOf }: { system: SystemType; card: SystemC
         ) : (
           <>
             <div className="flex items-center justify-between">
-              <StatusTag status={card.status} size="sm" />
+              <StatusPill status={card.status} size="sm" />
               <Link to={`/asset/${card.via_asset_id}`} className="text-xs text-[#2563EB] hover:underline">
                 risk {card.risk.toFixed(1)}
               </Link>
@@ -89,7 +80,7 @@ function SystemPanel({ system, card, asOf }: { system: SystemType; card: SystemC
 /** Building dashboard (FRONTEND §5.3). */
 export default function Building() {
   const { buildingId } = useParams<{ buildingId: string }>();
-  const [asOf, setAsOf] = useAsOf();
+  const { asOf } = useAsOf();
   const { reportError } = useErrorReporter();
 
   const [dashboard, setDashboard] = useState<BuildingDashboard | null>(null);
@@ -152,22 +143,14 @@ export default function Building() {
             <Badge variant="outline" appearance="secondary" size="sm">
               {building.criticality}
             </Badge>
-            <ProvenanceTag kind="REAL" />
+            <ProvenanceChip kind="REAL" />
           </div>
           <div className="text-sm text-[#6B7280]">
             Built {building.year_built} · {building.gsf.toLocaleString()} GSF · Served by {served_by.plant_name} →
             Segment {served_by.segment_id}
           </div>
         </div>
-        <label className="flex items-center gap-2 text-sm text-[#6B7280]">
-          As of
-          <input
-            type="date"
-            value={asOf}
-            onChange={(e) => e.target.value && setAsOf(e.target.value)}
-            className="rounded border border-[#E5E7EB] px-2 py-1 text-sm"
-          />
-        </label>
+        <div className="text-sm text-[#6B7280]">As of {formatDate(asOf)}</div>
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row">
@@ -180,7 +163,7 @@ export default function Building() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Energy: actual vs. weather-expected</CardTitle>
-            <ProvenanceTag kind="SYNTHETIC" />
+            <ProvenanceChip kind="SYNTHETIC" />
           </div>
         </CardHeader>
         <CardContent>
@@ -243,7 +226,7 @@ export default function Building() {
                       </TableCell>
                       <TableCell>{a.type}</TableCell>
                       <TableCell>
-                        <StatusTag status={a.status} size="sm" />
+                        <StatusPill status={a.status} size="sm" />
                       </TableCell>
                       <TableCell>{a.driver_label}</TableCell>
                     </TableRow>

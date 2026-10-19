@@ -56,9 +56,17 @@ in-file: `App.tsx` route, `navigation.ts` item, `<ForecastPanel>` in `pages/Asse
 `pages/Building`. Runtime check: UI fires `POST /api/8/RiskForecast/campus|compare`; the same calls replayed via
 `runJsCode` return 20 assets / 4 methods / 31-day history (Playwright itself has no auth cookie — known limit).
 
+**Integration pass (Vibhrav, after Arnav's shell landed):** Asset, Building, WorkOrders and Predictions pages
+now read the one global date via `useAsOf()` (per-page `?asOf=` date pickers removed — the TopNav scrubber
+drives every page); Anuva's temporary `StatusTag`/`ProvenanceTag` replaced by Arnav's `StatusPill` /
+`ProvenanceChip` on those pages and the ForecastPanel; unused template files (`pages/Dashboard`,
+`contexts/AppStateProvider`, `contexts/ReportStateProvider`) removed. `npm run build` green.
+
 **Open items:** `Briefing.generate` drafts a duplicate PENDING_APPROVAL WorkOrder on every call (see
 Anuva's note) — add a dedup check. Devansh's generator replaces the interim seed by overwriting the same
-file names / ids. Arnav's global as-of scrubber should replace the per-page `?asOf=` once it ships.
+file names / ids. `RiskChart`/`Sparkline`/`WorkOrderCard` still read hex from `RiskChart/statusColors.ts`
+(same values as the `--bib-*` tokens; cosmetic to unify). `AgentDrawer` could accept `open`/`onOpenChange`
+so the TopNav button stops reaching it through the DOM.
 
 **Key decisions:** one package; contract snake_case kept; API methods return `json` (keeps the `type`
 key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precomputed; merge-not-rebase.
@@ -73,8 +81,72 @@ key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precompute
 
 ## Arnav (shell, Overview, Plan B, Backtest, Buildings)
 
-- UI: blank template shell (`App.tsx`, `config/navigation.ts`, `components/{SideNav,TopNav}`); no app
-  routes yet. Backend calls per `docs/CONTRACT.md` §5.2.
+All under `ui/react/src/`. `VITE_C3_PKG=pkg22bc8209 npm run build` green (lint + tsc + vite).
+
+- **Data layer `shared/api/index.ts`** — the only place my pages touch the backend (CONTRACT §5.2,
+  positional arrays): `campusSnapshot(asOf)` → `CampusSnapshot.compute`, `simulatePlanB(seg, tempF,
+  priorityOnly)` → `PlanB.simulate`, `backtest(threshold)` → `Backtest.run`, `events()` →
+  `FailureEvent.fetch({include:'this, asset.id', limit:-1}).objs` remapped (`id`→`event_id`,
+  `asset.id`→`asset_id`, missing `onset_date`/`end_date` → null). Exports the contract TS types
+  (`QueueItem`, `CampusSnapshot`, `PlanBResult`, `BacktestResult`, `FailureEvent`, enums), constants
+  (`REPLAY_START/END`, `DEFAULT_AS_OF` = 2026-06-09, `DEFAULT_THRESHOLD`, `CHILLER_RENTAL_USD_PER_DAY`…),
+  label maps (`STATUS_LABEL`, `CRITICALITY_LABEL`, `SYSTEM_LABEL`, `WO_STATUS_LABEL`), formatters
+  (`formatUsd` `$67K/day`·`$15.8M`, `formatPct`, `formatRisk`, `formatDate` `Jun 9, 2026`,
+  `formatThreshold`, `formatCompact`), UTC date helpers (`dayIndexOf`, `isoFromDayIndex`, `addDays`,
+  `clampDate`, `MONTH_TICKS`), `withAsOf(path, asOf)` (appends `?asOf=` for pages that still read it),
+  `errorMessage(err)`. `VITE_USE_FIXTURES=true` reads `contract/fixtures/*.json` instead (default off;
+  `DATA_SOURCE` is shown in the side-nav footer when on). Deleted the template `shared/api.ts`
+  (`fetchUsers`, unused) because a file named `api.ts` shadows the `shared/api/` directory for
+  `@/shared/api` imports. Anuva's `anuva.ts` and Vibhrav's `forecast.ts` sit beside it untouched.
+- **Global state `contexts/AsOfProvider.tsx`** — `useAsOf()` → `{ asOf, setAsOf, stepDay, jumpToEvent
+  (event.date − 8 days), playing, togglePlay (1 day / 300 ms), threshold, setThreshold, systemFilter,
+  setSystemFilter, events, snapshot, snapshotLoading, snapshotError, refreshSnapshot, buildingsById,
+  segmentsById, plantsById, pendingWorkOrders }`. One debounced `campusSnapshot(asOf)` per date shared
+  by the shell, Overview and Buildings; stale responses dropped; previous snapshot kept while loading;
+  `asOf` persisted in sessionStorage. **Anuva / Vibhrav:** replace the per-page `?asOf=` hook with
+  `const { asOf } = useAsOf()` — until then my links carry `?asOf=` via `withAsOf`.
+- **Tokens `styles/before-it-breaks.css`** (imported by `App.tsx`): `--bib-status-{healthy,watch,due,
+  failed,offline}` (+ `-soft` tints), `--bib-wo`, `--bib-ink/-muted`, `--bib-surface/canvas/border`,
+  `--bib-series-1..5` (validated categorical palette for charts), type scale. Any element with
+  `data-status="HEALTHY|WATCH|INSPECTION_DUE|FAILED|OFFLINE"` resolves `--bib-status-color` /
+  `--bib-status-soft` for itself and descendants (`bg-[var(--bib-status-color)]`). Also `.bib-pill`,
+  `.bib-range` (slider skin), `.bib-pulse`, `.bib-rise`, `.bib-skeleton` (all reduced-motion aware).
+- **Shared components** (import `@/components/<Name>/<Name>`): `StatusPill` (`status`, `size`
+  sm|md|lg; words Healthy/Watch/Inspection due/Failed; unknown → Offline; also exports `statusLabel`,
+  `normalizeStatus`), `StatusPill/CriticalityBadge` (icon per use, grey), `SystemIcon` (`system`,
+  `size`, `withLabel`; Snowflake/Flame/Wind + electrical/plumbing fallbacks; exports `systemLabel`),
+  `ProvenanceChip` (`kind` REAL|SYNTHETIC|ESTIMATE, `size`, `title`), `KpiTile` (`label`, `value` ≥40px,
+  `unit`, `sub`, `delta {value, vsLabel, upIsBad}`, `chip`, `loading`, `error`), `Schematic`
+  (`plants`, `segments`, `buildings`, `highlightSegment`, `focusSegment`, `darkened[]`, `onBuildingClick`,
+  `onSegmentClick`, `showLegend`; HTML/CSS, data-driven, tooltips, pulse on due dots), `Panel/Panel`
+  (`Panel` card frame with title/subtitle/chip/actions; `PanelState` loading|empty|error + Retry;
+  `Skeleton`), `Panel/SnapshotBanner` (stale-snapshot error banner).
+- **Shell:** `App.tsx` — `AsOfProvider` → `TopNav` + `SideNav` + `<Routes>`: `/`→`/overview`,
+  `/overview`, `/buildings`, `/planb/:segment?`, `/backtest` (mine); `/building/:buildingId`,
+  `/asset/:assetId`, `/workorders` (Anuva), `/predictions` (Vibhrav); `*` not-found. Mounts Anuva's
+  `<AgentDrawer asOf>` on every page that doesn't render its own; the TopNav "✦ Ask the agent" button
+  presses that drawer's floating trigger (fallback popover if none) — **Anuva:** expose `open`/
+  `onOpenChange` on `AgentDrawer` and we swap the DOM lookup for state. Forces light theme.
+  `config/navigation.ts`: Overview, Buildings, Plan B, Work orders (badge = pending approvals),
+  Predictions, Backtest. `components/TopNav/`: `DateScrubber` (Jan–Aug slider, ◀ ▶, Play, month ticks,
+  failure markers red / "Real break" black → click lands 8 days earlier), `WeatherChip` (real tmax +
+  label + REAL), `AskAgentButton`. `components/SideNav/SideNav.tsx`: SideNavPanelV2, 16px labels, no
+  theme toggle, provenance legend footer.
+- **Pages:** `pages/Overview/` (`Overview`, `MorningBrief`, `KpiRow`, `RankedQueue` with system Tabs,
+  `RiskBar` 0–5 with threshold tick) — on Jun 9 S3-PIPE ranks #1 and S3 + its 9 buildings are red;
+  `pages/PlanB/` (`PlanB`: segment chips, temp slider defaulting to today's real high + 95°F preset,
+  priority-only Switch, "Simulate failure" reveal 250 ms/building syncing schematic dots, table rows
+  and running totals; `OutageComparison`: scenario ESTIMATE vs real $15.8M / ~30 chillers / ~$111K/day
+  (ESTIMATE) / 23 + 11 closures with cost breakdown; `LoadShedTable`); `pages/Backtest/` (`Backtest`:
+  threshold slider 2.0–4.0 → global threshold + `backtest()`, KPIs from `sweep`, decoys ignored,
+  failures table, provenance panel; `AlignedCurvesChart` Recharts 5 series + threshold line;
+  `SweepCharts` lead days + false alarms, one axis each); `pages/Buildings/` (cards, worst-first,
+  search; year/GSF rendered only if the payload ever carries them — not in the contract today).
+- **Verified:** build green; `runJsCode` replays of all four calls return contract shapes on live
+  seed (Jun 9: S3-PIPE risk 4.7 INSPECTION_DUE #1, 9 S3 buildings INSPECTION_DUE; PlanB S3 95°F
+  priority-only 8 chillers / $29,632; Backtest 3.0: F4 lead 9 d, 14 false-alarm days).
+- **Open for others:** `campusSnapshot.buildings[]` could additively carry `year_built`, `gsf`,
+  `source` (Vibhrav) — the Buildings cards already render them when present.
 
 ## Anuva (Building dashboard, Asset detail, Work Orders, Agent drawer)
 
