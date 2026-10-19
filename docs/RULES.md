@@ -20,7 +20,7 @@ anyone else's work. If a rule is in the way, ask Vibhrav — don't route around 
 
 | Owner   | Folders |
 |---------|---------|
-| Vibhrav | `model/`, `agent/`, `contract/`, `docs/`, root config (`README.md`, `AGENTS.md`, `.gitignore`, package manifests, C3 package config) |
+| Vibhrav | `model/`, `agent/`, `contract/`, `docs/`, root config (`START_HERE.md`, `AGENTS.md`, `.gitignore`, package manifests, C3 package config) |
 | Devansh | `data/`, `network/` |
 | Arnav   | `ui/shell/`, `ui/shared/api/` (Anuva may add her own calls), `ui/pages/overview/`, `ui/pages/planb/`, `ui/pages/backtest/`, `ui/pages/buildings/`, shared: tokens, StatusPill, SystemIcon, KpiTile, Schematic |
 | Anuva   | `ui/pages/building/`, `ui/pages/asset/`, `ui/pages/workorders/`, `ui/agent-drawer/`, shared: RiskChart, Sparkline, SignalBars, WorkOrderCard |

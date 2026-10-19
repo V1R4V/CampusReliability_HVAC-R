@@ -30,7 +30,7 @@ different teammate. Breaking someone else's work costs the whole team. Follow th
 | Arnav   | `ui/shell/`, `ui/shared/api/` (Anuva may add her own call functions), `ui/shared/` (tokens, StatusPill, SystemIcon, KpiTile, Schematic, ProvenanceChip), `ui/pages/overview/`, `ui/pages/planb/`, `ui/pages/backtest/`, `ui/pages/buildings/` |
 | Anuva   | `ui/shared/` (RiskChart, Sparkline, SignalBars, WorkOrderCard), `ui/pages/building/`, `ui/pages/asset/`, `ui/pages/workorders/`, `ui/agent-drawer/` |
 
-`ui/shared/` is split by component (see `ui/README.md`). Touch only your own components.
+`ui/shared/` is split by component (see `ui/ui.md`). Touch only your own components.
 
 ## The contract is law
 - Names, fields, units, and enums come from `docs/CONTRACT.md`. Do not rename, add, or drop fields.
@@ -43,6 +43,7 @@ different teammate. Breaking someone else's work costs the whole team. Follow th
 - Reformat, re-indent, or "clean up" files you did not need to change.
 - Delete or move files you did not create.
 - Commit secrets/API keys, `.env` files, `node_modules`, virtualenvs, or raw downloads > 5 MB.
+- Create files named `README.md` (C3 upload rejects them). Name docs after their folder, e.g. `ui/ui.md`.
 - Add a new dependency without telling your human (it touches shared config).
 - Invent real-world facts. Anything not from a cited source is labeled synthetic or estimate.
 
