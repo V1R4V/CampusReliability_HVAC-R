@@ -11,7 +11,7 @@
  * fails to load or render fails on its own route with a Retry — never a blank app.
  */
 
-import React, { Suspense, lazy, useEffect } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import ErrorReporterProvider from './components/ErrorBoundary/ErrorBoundary';
@@ -73,39 +73,17 @@ const WorkOrders = lazyWithReload('WorkOrders', () => import('./pages/WorkOrders
 const Predictions = lazyWithReload('Predictions', () => import('./pages/Predictions/Predictions'));
 const AgentDrawer = lazyWithReload('AgentDrawer', () => import('./components/AgentDrawer/AgentDrawer'));
 
-/** Pages that already mount their own <AgentDrawer> (Anuva's) — don't double it there. */
-const ROUTES_WITH_OWN_DRAWER = [/^\/building\//, /^\/asset\//, /^\/workorders/];
-
-/**
- * Anuva's AgentDrawer (floating "✦ Ask the agent" trigger + side panel) on every page
- * that doesn't already render it, fed the global as-of date.
- */
-function GlobalAgentDrawer() {
+/** The one agent drawer, on every page, opened only from the TopNav button. */
+function GlobalAgentDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const { asOf } = useAsOf();
-  const { pathname } = useLocation();
-  if (ROUTES_WITH_OWN_DRAWER.some((pattern) => pattern.test(pathname))) return null;
+  if (!open) return null;
   return (
     <RouteErrorBoundary name="The agent drawer">
       <Suspense fallback={null}>
-        <AgentDrawer asOf={asOf} />
+        <AgentDrawer asOf={asOf} open={open} onOpenChange={onOpenChange} />
       </Suspense>
     </RouteErrorBoundary>
   );
-}
-
-/**
- * Interim bridge: AgentDrawer owns its open state and exposes no `open` prop yet, so the
- * top-bar button presses the drawer's own floating trigger. Returns false when no
- * trigger is mounted, and the button falls back to its explanatory popover.
- * Replace with shared open state once AgentDrawer accepts `open` / `onOpenChange`.
- */
-function openAgentDrawer(): boolean {
-  const trigger = Array.from(document.querySelectorAll<HTMLButtonElement>('button')).find(
-    (button) => button.classList.contains('fixed') && button.textContent?.trim() === 'Ask the agent',
-  );
-  if (!trigger) return false;
-  trigger.click();
-  return true;
 }
 
 function PageLoading() {
@@ -159,11 +137,18 @@ export default function App() {
     document.documentElement.classList.remove('dark');
   }, []);
 
+  const [agentOpen, setAgentOpen] = useState(false);
+
   return (
     <ErrorReporterProvider>
       <AsOfProvider>
         <div className="flex h-screen max-w-full flex-col overflow-hidden">
-          <TopNav onAskAgent={openAgentDrawer} />
+          <TopNav
+            onAskAgent={() => {
+              setAgentOpen(true);
+              return true;
+            }}
+          />
           <div className="flex min-h-0 flex-1">
             <SideNav />
             <div className="flex min-w-0 flex-1 flex-col">
@@ -172,7 +157,7 @@ export default function App() {
               </main>
             </div>
           </div>
-          <GlobalAgentDrawer />
+          <GlobalAgentDrawer open={agentOpen} onOpenChange={setAgentOpen} />
         </div>
       </AsOfProvider>
     </ErrorReporterProvider>

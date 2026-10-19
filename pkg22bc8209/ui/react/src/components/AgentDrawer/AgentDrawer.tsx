@@ -9,7 +9,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { SidePanel } from '@/components/ui/side-panel';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -41,16 +41,21 @@ function entityHref(entity: AskEntity): string | null {
   return null;
 }
 
+export interface AgentDrawerProps {
+  asOf: string;
+  /** Controlled by the shell: the TopNav "Ask the agent" button is the only trigger. */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
 /**
- * "Ask the agent" (FRONTEND §5.8). Self-contained: owns its own floating
- * trigger + open state so it can be dropped onto any of Anuva's pages
- * without a shell change. TEMPORARY placement — once Arnav's TopNav ships
- * its own "✦ Ask the agent" button, wire that button's `onClick` to open
- * this drawer instead and drop the floating trigger below.
+ * "Ask the agent" (FRONTEND §5.8): a right-hand slide-over with suggested prompts, the
+ * agent's answers, entity chips that navigate, and any proposed work orders (always
+ * PENDING_APPROVAL). Rendered once by App.tsx and opened from the TopNav button.
  */
-export default function AgentDrawer({ asOf }: { asOf: string }) {
+export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerProps) {
   const { reportError } = useErrorReporter();
-  const [open, setOpen] = useState(false);
+  const setOpen = onOpenChange;
   const [question, setQuestion] = useState('');
   const [turns, setTurns] = useState<Turn[]>([]);
   const [loading, setLoading] = useState(false);
@@ -77,7 +82,7 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
       setQuestion('');
     } catch (err) {
       reportError(err);
-      setError('Agent unavailable — the ranked queue is still current.');
+      setError('Agent unavailable. The ranked queue is still current.');
     } finally {
       setLoading(false);
     }
@@ -85,14 +90,6 @@ export default function AgentDrawer({ asOf }: { asOf: string }) {
 
   return (
     <>
-      <Button
-        onClick={() => setOpen(true)}
-        className="fixed right-6 bottom-6 z-40 shadow-md"
-        leadingIcon={<Sparkles />}
-      >
-        Ask the agent
-      </Button>
-
       {open ? (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/20" onClick={() => setOpen(false)}>
           <div className="h-full w-[420px] max-w-full" onClick={(e) => e.stopPropagation()}>

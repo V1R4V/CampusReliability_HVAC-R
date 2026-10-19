@@ -23,7 +23,6 @@ import StatusPill from '@/components/StatusPill/StatusPill';
 import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import Sparkline from '@/components/Sparkline/Sparkline';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
-import AgentDrawer from '@/components/AgentDrawer/AgentDrawer';
 // Vibhrav's per-system failure probability (RiskForecast.compare, ML.md §8) — embedded by owner request.
 import ForecastBadge from '@/components/ForecastPanel/ForecastBadge';
 // Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
@@ -284,8 +283,6 @@ export default function Building() {
           )}
         </CardContent>
       </Card>
-
-      <AgentDrawer asOf={asOf} />
     </div>
   );
 }

@@ -56,7 +56,7 @@ export default function AskAgentButton({ onOpen }: AskAgentButtonProps) {
           <div>
             <div className="text-[16px] font-semibold leading-6 text-[var(--bib-ink)]">Agent drawer unavailable here</div>
             <p className="mt-1 text-[14px] leading-5 text-[var(--bib-ink-muted)]">
-              The agent drawer did not open on this page. The ranked queue on the Overview is current — it is what the
+              The agent drawer did not open on this page. The ranked queue on the Overview is current; it is what the
               agent reasons over.
             </p>
           </div>

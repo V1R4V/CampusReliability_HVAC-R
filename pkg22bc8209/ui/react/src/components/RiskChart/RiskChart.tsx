@@ -197,7 +197,7 @@ export default function RiskChart({ series, threshold, events, asOf, height = 28
             x={e.date}
             y={riskByDate.get(e.date) ?? 0}
             r={4}
-            shape={(p: { cx?: number; cy?: number }) => <DecoyMark cx={p.cx} cy={p.cy} label={`${e.label} — ignored`} />}
+            shape={(p: { cx?: number; cy?: number }) => <DecoyMark cx={p.cx} cy={p.cy} label={`${e.label}: ignored`} />}
           />
         ))}
 

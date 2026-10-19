@@ -38,7 +38,7 @@ export default function ForecastBadge({ assetId, asOf }: ForecastBadgeProps) {
           to={`/asset/${assetId}?asOf=${asOf}`}
           className="text-base font-semibold tabular-nums hover:underline"
           style={{ color: probabilityColor(p14) }}
-          title="Consensus of the condition-based methods — open the asset for the full breakdown"
+          title="Consensus of the condition-based methods. Open the asset for the full breakdown."
         >
           {formatProbability(p14)}
         </Link>

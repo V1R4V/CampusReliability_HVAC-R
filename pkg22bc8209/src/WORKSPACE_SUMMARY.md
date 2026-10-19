@@ -62,6 +62,8 @@ drives every page); Anuva's temporary `StatusTag`/`ProvenanceTag` replaced by Ar
 `ProvenanceChip` on those pages and the ForecastPanel; unused template files (`pages/Dashboard`,
 `contexts/AppStateProvider`, `contexts/ReportStateProvider`) removed. `npm run build` green.
 
+**UI cleanup pass (owner's call, 2026-10-19 evening):** provenance chips/legend/panel removed (said in the pitch instead); one agent button (TopNav opens a controlled `AgentDrawer`); scrubber 'Real break' as a flag above its tick; `Plan B` renamed **Outage plan**; em dashes removed from UI copy; `WorkOrderCard` redesigned and duplicates collapsed (`Briefing.generate` now reuses any draft for the asset on that day); Predictions decluttered (one number per asset, methods behind a switch); Buildings gets a **Map** view (`components/CampusMap`, react-leaflet on OSM tiles, real lat/lon via `shared/api/geo.ts`, status-coloured dots); `components/Reorderable` lets cards on Buildings, Outage plan, Work orders, Predictions and Backtest be dragged into a remembered order.
+
 **Open items:** `Briefing.generate` drafts a duplicate PENDING_APPROVAL WorkOrder on every call (see
 Anuva's note) — add a dedup check. Devansh's generator replaces the interim seed by overwriting the same
 file names / ids. `RiskChart`/`Sparkline`/`WorkOrderCard` still read hex from `RiskChart/statusColors.ts`

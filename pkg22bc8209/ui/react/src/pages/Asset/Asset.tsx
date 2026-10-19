@@ -22,7 +22,6 @@ import StatusPill from '@/components/StatusPill/StatusPill';
 import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
 import SignalBars from '@/components/SignalBars/SignalBars';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
-import AgentDrawer from '@/components/AgentDrawer/AgentDrawer';
 // Vibhrav's forecast panel (RiskForecast.compare, ML.md §8) — embedded here by owner request.
 import ForecastPanel from '@/components/ForecastPanel/ForecastPanel';
 // Global as-of date from the TopNav scrubber (FRONTEND §3) — no per-page date control.
@@ -105,7 +104,7 @@ export default function Asset() {
       fetchBriefing(assetId, asOf).catch((err) => {
         if (!cancelled) {
           reportError(err);
-          setBriefingError('Agent briefing unavailable — the ranked queue is still current.');
+          setBriefingError('Agent briefing unavailable. The ranked queue is still current.');
         }
         return null;
       }),
@@ -263,8 +262,6 @@ export default function Asset() {
           )}
         </CardContent>
       </Card>
-
-      <AgentDrawer asOf={asOf} />
     </div>
   );
 }

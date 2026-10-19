@@ -75,9 +75,12 @@ def _next_wo_id():
 
 
 def _draft_work_order(asset, q, served, as_of, priority, description):
+    # One open draft per asset: reuse a pending one, or whatever was drafted for this asset on
+    # this as-of date (so re-opening the page after an approval does not draft a duplicate).
     existing = _fetch("WorkOrder", "this, asset.id",
-                      "asset.id == '" + asset.id + "' && status == 'PENDING_APPROVAL'")
+                      "asset.id == '" + asset.id + "' && (status == 'PENDING_APPROVAL' || drafted_on == '" + as_of + "')")
     if existing:
+        existing.sort(key=lambda w: (w.status != "PENDING_APPROVAL", w.id))
         return existing[0]
     wo = c3.WorkOrder.make({
         "id": _next_wo_id(),

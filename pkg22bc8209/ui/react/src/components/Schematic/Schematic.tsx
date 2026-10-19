@@ -154,7 +154,7 @@ function BuildingNode({ building, geometry, labelOnTop, labelWidth, dark, onClic
             <button
               type="button"
               onClick={() => onClick(building.building_id)}
-              aria-label={`${building.name} — ${statusText}. Open building dashboard`}
+              aria-label={`${building.name}, ${statusText}. Open building dashboard`}
               className={cn(
                 hitClasses,
                 'hover:bg-[var(--c3-style-basic-bg-hover)] focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]',
@@ -237,7 +237,7 @@ function SegmentRow({
         <button
           type="button"
           onClick={() => onSegmentClick(segment.segment_id)}
-          aria-label={`${segment.segment_id} · ${segment.name} — ${statusLabel(segment.worst_status)}. Open Plan B for this loop`}
+          aria-label={`${segment.segment_id} · ${segment.name}, ${statusLabel(segment.worst_status)}. Open the outage plan for this loop`}
           className={cn(
             'absolute inset-0 z-0 rounded-md text-left outline-none hover:bg-[var(--c3-style-basic-bg-hover)] focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]',
             highlighted && 'bg-[var(--bib-canvas)]',
