@@ -3,8 +3,14 @@
  *
  * `backtest(threshold)` replays five planted failures and four decoys through the same
  * pipeline the Overview uses. The slider (2.0–4.0, step 0.25) sets the global threshold
- * and re-queries; headline numbers come from the `sweep` row for that threshold.
- * The provenance panel says plainly what is real and what is synthetic.
+ * and re-queries; it stays pinned to the top while the page scrolls so the demo's
+ * "move the slider for 10 seconds" works from anywhere on the page.
+ *
+ * Top to bottom: the June 17 reenactment's lead time beside the real bill (hero), the
+ * headline numbers from `sweep`, alerts vs. actual failures on the Jan–Aug calendar, the
+ * warning / false-alarm trade with one-notch comparisons, the decoys the pipeline ignored,
+ * the sweep charts, the aligned risk curves, the failures table, and a plain statement of
+ * what is real and what is synthetic.
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -33,8 +39,12 @@ import {
   type BacktestFailure,
   type BacktestResult,
 } from '@/shared/api';
+import AlertTimeline from './AlertTimeline';
 import AlignedCurvesChart from './AlignedCurvesChart';
+import EarlyWarningHero from './EarlyWarningHero';
 import SweepCharts from './SweepCharts';
+import TradeoffCard from './TradeoffCard';
+import { REAL_OUTAGE } from './realOutage';
 
 const THRESHOLD_MIN = 2;
 const THRESHOLD_MAX = 4;
@@ -123,7 +133,7 @@ function ProvenancePanel() {
 }
 
 export default function Backtest() {
-  const { asOf, threshold, setThreshold } = useAsOf();
+  const { asOf, threshold, setThreshold, events } = useAsOf();
   const { reportError } = useErrorReporter();
 
   // The slider updates `pending` instantly; the global threshold (and the query) follow after a pause.
@@ -180,6 +190,20 @@ export default function Backtest() {
     };
   }, [result, threshold]);
 
+  // The real reference event (R1) names the asset the reenactment is planted on; fall back
+  // to the failure dated on the real break if the events call has not landed.
+  const realBreak = useMemo(() => events.find((e) => e.kind === 'real_reference') ?? null, [events]);
+  const reenactment = useMemo<BacktestFailure | null>(() => {
+    if (!result) return null;
+    const byAsset = realBreak?.asset_id ? result.failures.find((f) => f.asset_id === realBreak.asset_id) : undefined;
+    return byAsset ?? result.failures.find((f) => f.failure_date === REAL_OUTAGE.start_date) ?? null;
+  }, [result, realBreak]);
+  const reenactmentEvent = useMemo(
+    () => (reenactment ? events.find((e) => e.event_id === reenactment.event_id) ?? null : null),
+    [events, reenactment],
+  );
+  const highlightAssetId = reenactment?.asset_id ?? realBreak?.asset_id ?? null;
+
   const firstLoad = loading && !result;
 
   return (
@@ -192,47 +216,65 @@ export default function Backtest() {
         </p>
       </header>
 
-      <Card variant="outlined" size="md" className="gap-3">
-        <div className="flex flex-wrap items-center gap-4">
-          <label
-            htmlFor="bib-threshold"
-            className="text-[13px] font-semibold uppercase leading-4 tracking-[0.06em] text-[var(--bib-ink-muted)]"
-          >
-            Inspection threshold
-          </label>
-          <input
-            id="bib-threshold"
-            type="range"
-            min={THRESHOLD_MIN}
-            max={THRESHOLD_MAX}
-            step={THRESHOLD_STEP}
-            value={pending}
-            onChange={(event) => setPending(Number(event.target.value))}
-            aria-valuetext={formatThreshold(pending)}
-            className="bib-range min-w-[240px] flex-1"
-          />
-          <span className="w-[72px] text-[28px] font-semibold leading-8 tabular-nums text-[var(--bib-ink)]">
-            {formatThreshold(pending)}
-          </span>
-          <Button
-            variant="ghost"
-            appearance="secondary"
-            size="sm"
-            leadingIcon={<RotateCcw />}
-            onClick={() => setPending(DEFAULT_THRESHOLD)}
-            disabled={pending === DEFAULT_THRESHOLD}
-          >
-            Reset to {formatThreshold(DEFAULT_THRESHOLD)}
-          </Button>
-          <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
-            Inspection due = risk ≥ threshold on 2 consecutive days · watch from {formatThreshold(WATCH_THRESHOLD)}
-          </span>
-        </div>
-      </Card>
+      {/* Pinned while the page scrolls so the slider is always within reach. */}
+      <div className="sticky top-0 z-10 -mx-6 bg-[var(--c3-style-basic-bg-page)] px-6 pb-3 pt-1">
+        <Card variant="outlined" size="md" className="gap-3">
+          <div className="flex flex-wrap items-center gap-4">
+            <label
+              htmlFor="bib-threshold"
+              className="text-[13px] font-semibold uppercase leading-4 tracking-[0.06em] text-[var(--bib-ink-muted)]"
+            >
+              Inspection threshold
+            </label>
+            <input
+              id="bib-threshold"
+              type="range"
+              min={THRESHOLD_MIN}
+              max={THRESHOLD_MAX}
+              step={THRESHOLD_STEP}
+              value={pending}
+              onChange={(event) => setPending(Number(event.target.value))}
+              aria-valuetext={formatThreshold(pending)}
+              className="bib-range min-w-[240px] flex-1"
+            />
+            <span className="w-[72px] text-[28px] font-semibold leading-8 tabular-nums text-[var(--bib-ink)]">
+              {formatThreshold(pending)}
+            </span>
+            <Button
+              variant="ghost"
+              appearance="secondary"
+              size="sm"
+              leadingIcon={<RotateCcw />}
+              onClick={() => setPending(DEFAULT_THRESHOLD)}
+              disabled={pending === DEFAULT_THRESHOLD}
+            >
+              Reset to {formatThreshold(DEFAULT_THRESHOLD)}
+            </Button>
+            <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+              Inspection due = risk ≥ threshold on 2 consecutive days · watch from {formatThreshold(WATCH_THRESHOLD)}
+              {loading && result ? ' · recomputing…' : ''}
+            </span>
+          </div>
+        </Card>
+      </div>
 
-      {error && !result ? <PanelState state="error" message={error} onRetry={() => load(threshold)} /> : null}
+      {error && !result ? (
+        <PanelState state="error" title="Couldn’t run the backtest" message={error} onRetry={() => load(threshold)} />
+      ) : null}
 
-      <div className={cn('flex flex-col gap-4 transition-opacity', loading && result ? 'opacity-70' : 'opacity-100')}>
+      {/* Hidden (not unmounted) while the only state is an error, so the Retry above is the one message. */}
+      <div
+        className={cn('flex flex-col gap-4 transition-opacity', loading && result ? 'opacity-70' : 'opacity-100')}
+        hidden={Boolean(error) && !result}
+      >
+        <EarlyWarningHero
+          reenactment={reenactment}
+          reenactmentEvent={reenactmentEvent}
+          threshold={threshold}
+          asOf={asOf}
+          loading={firstLoad}
+        />
+
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <KpiTile
             label="Minimum warning"
@@ -266,18 +308,34 @@ export default function Backtest() {
           />
         </div>
 
+        <Panel
+          title="Alerts vs. actual failures, January–August 2026"
+          subtitle="When each failure was first flagged “inspection due”, when it actually failed, and what the pipeline chose to ignore"
+          chip="SYNTHETIC"
+          chipTitle="Planted failures and decoys on synthetic sensor data. The real break row is the reported June 17 outage."
+        >
+          {result ? (
+            <AlertTimeline
+              failures={result.failures}
+              decoys={result.decoys}
+              events={events}
+              threshold={threshold}
+              asOf={asOf}
+              highlightAssetId={highlightAssetId}
+            />
+          ) : (
+            <PanelState state="loading" lines={7} />
+          )}
+        </Panel>
+
         <div className="grid gap-4 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
-          <Panel
-            title="Risk in the 21 days before each failure"
-            subtitle="All failures aligned on their failure day; the red line is the current threshold"
-            chip="SYNTHETIC"
-          >
-            {result ? (
-              <AlignedCurvesChart curves={result.aligned_curves} threshold={threshold} />
-            ) : (
-              <PanelState state="loading" lines={6} />
-            )}
-          </Panel>
+          {result ? (
+            <TradeoffCard result={result} threshold={threshold} onPick={setPending} />
+          ) : (
+            <Panel title="Warning vs false alarms" chip="SYNTHETIC">
+              <PanelState state="loading" lines={5} />
+            </Panel>
+          )}
 
           <Panel title="Decoys ignored" subtitle="What a plain threshold alarm would have flagged" chip="SYNTHETIC">
             {!result ? (
@@ -317,6 +375,18 @@ export default function Backtest() {
         </div>
 
         {result ? <SweepCharts sweep={result.sweep} threshold={threshold} /> : null}
+
+        <Panel
+          title="Risk in the 21 days before each failure"
+          subtitle="All failures aligned on their failure day; the red line is the current threshold"
+          chip="SYNTHETIC"
+        >
+          {result ? (
+            <AlignedCurvesChart curves={result.aligned_curves} threshold={threshold} height={280} />
+          ) : (
+            <PanelState state="loading" lines={6} />
+          )}
+        </Panel>
 
         <Panel title="Planted failures" subtitle={`At threshold ${formatThreshold(threshold)}`} chip="SYNTHETIC">
           {result ? <FailuresTable failures={result.failures} asOf={asOf} /> : <PanelState state="loading" lines={5} />}

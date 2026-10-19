@@ -1,149 +1,136 @@
 /*
- * Buildings index (FRONTEND §5.2) — every campus building as a card: name, use
- * (criticality), loop + plant, worst system status. Worst-first, searchable; click →
- * the building dashboard. Facts like year built / GSF render only if the snapshot
- * ever carries them (not in the contract today) — never invented.
+ * Buildings index (FRONTEND §5.2) — every campus building from `campusSnapshot(asOf)`
+ * (shared through AsOfProvider, so the scrubber drives it): name, what it is for, loop and
+ * plant, cooling / heating / air status, peak asset risk and the worst status. Worst first.
+ * Filter by equipment system or status tier, search, switch between cards and a table;
+ * every card and row opens the building dashboard. Year built / GSF render only if the
+ * snapshot ever carries them — the contract does not today, and nothing here is invented.
  */
 
-import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Card } from '@/components/ui/card';
-import { InputSearch } from '@/components/ui/input-search';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { PanelState } from '@/components/Panel/Panel';
 import SnapshotBanner from '@/components/Panel/SnapshotBanner';
-import ProvenanceChip from '@/components/ProvenanceChip/ProvenanceChip';
-import CriticalityBadge from '@/components/StatusPill/CriticalityBadge';
-import StatusPill from '@/components/StatusPill/StatusPill';
 import { useAsOf } from '@/contexts/AsOfProvider';
+import { STATUS_LABEL, formatDate, type Status } from '@/shared/api';
+import BuildingCard from './BuildingCard';
+import BuildingFilters from './BuildingFilters';
+import BuildingsTable from './BuildingsTable';
 import {
-  CRITICALITY_WEIGHT,
-  STATUS_LABEL,
-  STATUS_RANK,
-  formatCompact,
-  formatDate,
-  withAsOf,
-  type SnapshotBuilding,
-  type Status,
-} from '@/shared/api';
+  STATUS_ORDER,
+  buildRows,
+  compareRows,
+  countByStatus,
+  displayStatus,
+  matchesQuery,
+  type SystemFilterValue,
+  type ViewMode,
+} from './buildingRows';
 
-const STATUS_ORDER: Status[] = ['FAILED', 'INSPECTION_DUE', 'WATCH', 'HEALTHY'];
+const VIEW_STORAGE_KEY = 'bib.buildings.view';
 
-function BuildingCard({
-  building,
-  segmentName,
-  plantName,
-  asOf,
-}: {
-  building: SnapshotBuilding;
-  segmentName: string | null;
-  plantName: string | null;
-  asOf: string;
-}) {
-  const hasFacts = building.year_built != null || building.gsf != null;
-  return (
-    <Link
-      to={withAsOf(`/building/${building.building_id}`, asOf)}
-      className="group block h-full rounded-[var(--c3-style-border-radius-6)] outline-none focus-visible:shadow-[0_0_0_2px_var(--c3-style-shadow-ring-accent)]"
-    >
-      <Card
-        data-status={building.worst_status}
-        variant="outlined"
-        size="md"
-        className="h-full gap-3 transition-colors group-hover:border-[var(--bib-ink-muted)]"
-      >
-        <div className="flex items-start justify-between gap-3">
-          <h2 className="text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{building.name}</h2>
-          <StatusPill status={building.worst_status} size="sm" />
-        </div>
-        <div className="flex flex-wrap items-center gap-2 text-[14px] leading-5 text-[var(--bib-ink-muted)]">
-          <CriticalityBadge criticality={building.criticality} />
-          <span>
-            {building.segment_id}
-            {segmentName ? ` · ${segmentName}` : ''}
-          </span>
-          {plantName ? <span>· {plantName}</span> : null}
-        </div>
-        {hasFacts ? (
-          <div className="flex flex-wrap items-center gap-2 text-[14px] leading-5 text-[var(--bib-ink)]">
-            {building.year_built != null ? <span>Built {building.year_built}</span> : null}
-            {building.gsf != null ? <span>· {formatCompact(building.gsf)} GSF</span> : null}
-            <ProvenanceChip kind="REAL" size="sm" title={building.source} />
-          </div>
-        ) : null}
-        <span className="mt-auto inline-flex items-center gap-1 text-[14px] font-medium leading-5 text-[var(--bib-ink-muted)] group-hover:text-[var(--bib-ink)]">
-          Open dashboard <ArrowRight className="size-4" aria-hidden />
-        </span>
-      </Card>
-    </Link>
-  );
+function readStoredView(): ViewMode {
+  try {
+    const stored = window.sessionStorage.getItem(VIEW_STORAGE_KEY);
+    if (stored === 'cards' || stored === 'table') return stored;
+  } catch {
+    // sessionStorage can be unavailable (private mode, blocked storage) — fall back to cards.
+  }
+  return 'cards';
 }
 
 export default function Buildings() {
-  const { asOf, snapshot, snapshotLoading, snapshotError, refreshSnapshot, segmentsById, plantsById } = useAsOf();
+  const { asOf, threshold, snapshot, snapshotLoading, snapshotError, refreshSnapshot, segmentsById, plantsById } = useAsOf();
+
   const [query, setQuery] = useState('');
+  const [system, setSystem] = useState<SystemFilterValue>('all');
+  const [statuses, setStatuses] = useState<ReadonlySet<Status>>(() => new Set<Status>());
+  const [view, setView] = useState<ViewMode>(readStoredView);
 
-  const buildings = useMemo(() => snapshot?.buildings ?? [], [snapshot]);
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(VIEW_STORAGE_KEY, view);
+    } catch {
+      // Not worth surfacing — the view still works for this session.
+    }
+  }, [view]);
 
-  const sorted = useMemo(
-    () =>
-      [...buildings].sort(
-        (a, b) =>
-          STATUS_RANK[a.worst_status] - STATUS_RANK[b.worst_status] ||
-          (CRITICALITY_WEIGHT[b.criticality] ?? 0) - (CRITICALITY_WEIGHT[a.criticality] ?? 0) ||
-          a.name.localeCompare(b.name),
-      ),
-    [buildings],
+  const toggleStatus = useCallback((status: Status) => {
+    setStatuses((prev) => {
+      const next = new Set(prev);
+      if (next.has(status)) next.delete(status);
+      else next.add(status);
+      return next;
+    });
+  }, []);
+
+  const clearFilters = useCallback(() => {
+    setQuery('');
+    setSystem('all');
+    setStatuses(new Set<Status>());
+  }, []);
+
+  const rows = useMemo(
+    () => (snapshot ? buildRows(snapshot, segmentsById, plantsById) : []),
+    [snapshot, segmentsById, plantsById],
   );
+
+  // System filter first: it decides which status each building is judged by, so the
+  // status chips count against it.
+  const bySystem = useMemo(
+    () => (system === 'all' ? rows : rows.filter((row) => row.systems[system] != null)),
+    [rows, system],
+  );
+  const counts = useMemo(() => countByStatus(bySystem, system), [bySystem, system]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    if (!needle) return sorted;
-    return sorted.filter((b) => {
-      const segment = segmentsById.get(b.segment_id);
-      return (
-        b.name.toLowerCase().includes(needle) ||
-        b.building_id.includes(needle) ||
-        b.segment_id.toLowerCase().includes(needle) ||
-        (segment?.name.toLowerCase().includes(needle) ?? false)
-      );
-    });
-  }, [sorted, query, segmentsById]);
+    return bySystem
+      .filter((row) => {
+        const status = displayStatus(row, system);
+        if (statuses.size > 0 && (status == null || !statuses.has(status))) return false;
+        return needle ? matchesQuery(row, needle) : true;
+      })
+      .sort(compareRows(system));
+  }, [bySystem, system, statuses, query]);
 
   const summary = useMemo(
     () =>
-      STATUS_ORDER.map((status) => ({ status, count: buildings.filter((b) => b.worst_status === status).length }))
+      STATUS_ORDER.map((status) => ({ status, count: rows.filter((row) => row.building.worst_status === status).length }))
         .filter((entry) => entry.count > 0)
         .map((entry) => `${entry.count} ${STATUS_LABEL[entry.status].toLowerCase()}`)
         .join(' · '),
-    [buildings],
+    [rows],
   );
 
+  const filtersActive = query.trim() !== '' || system !== 'all' || statuses.size > 0;
   const firstLoad = snapshotLoading && !snapshot;
 
   return (
     <div className="flex min-h-full flex-col gap-4 p-6">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Buildings</h1>
-          <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
-            {snapshot ? `${buildings.length} buildings` : 'Campus buildings'} as of{' '}
-            <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>
-            {summary ? ` · ${summary}` : ''}
-          </p>
-        </div>
-        <div className="w-full max-w-[360px]">
-          <InputSearch
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onClear={() => setQuery('')}
-            placeholder="Search buildings or loops"
-            aria-label="Search buildings"
-          />
-        </div>
+      <header>
+        <h1 className="text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">Buildings</h1>
+        <p className="text-[15px] leading-5 text-[var(--bib-ink-muted)]">
+          {snapshot ? `${rows.length} buildings` : 'Campus buildings'} as of{' '}
+          <span className="font-semibold text-[var(--bib-ink)]">{formatDate(asOf)}</span>
+          {summary ? ` · ${summary}` : ''}
+          {snapshot && filtersActive ? ` · showing ${filtered.length}` : ''}
+        </p>
       </header>
+
+      <BuildingFilters
+        query={query}
+        onQueryChange={setQuery}
+        system={system}
+        onSystemChange={setSystem}
+        statuses={statuses}
+        onToggleStatus={toggleStatus}
+        counts={counts}
+        view={view}
+        onViewChange={setView}
+      />
 
       <SnapshotBanner />
 
@@ -152,32 +139,36 @@ export default function Buildings() {
       ) : !snapshot ? (
         <PanelState state="error" message={snapshotError ?? undefined} onRetry={refreshSnapshot} />
       ) : filtered.length === 0 ? (
-        <PanelState
-          state="empty"
-          message={query ? `No buildings match “${query}”.` : `No buildings in the snapshot for ${formatDate(asOf)}.`}
-        />
+        <div className="flex flex-col items-start gap-3">
+          <PanelState
+            state="empty"
+            className="w-full"
+            message={
+              filtersActive
+                ? `No buildings match these filters as of ${formatDate(asOf)}.`
+                : `No buildings in the snapshot for ${formatDate(asOf)}.`
+            }
+          />
+          {filtersActive ? (
+            <Button variant="outline" appearance="secondary" size="sm" onClick={clearFilters}>
+              Clear filters
+            </Button>
+          ) : null}
+        </div>
       ) : (
-        <ul
-          className={cn(
-            'grid gap-4 transition-opacity sm:grid-cols-2 xl:grid-cols-3',
-            snapshotLoading ? 'opacity-70' : 'opacity-100',
+        <div className={cn('transition-opacity', snapshotLoading ? 'opacity-70' : 'opacity-100')}>
+          {view === 'table' ? (
+            <BuildingsTable rows={filtered} system={system} threshold={threshold} asOf={asOf} />
+          ) : (
+            <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {filtered.map((row) => (
+                <li key={row.building.building_id} className="min-w-0">
+                  <BuildingCard row={row} system={system} threshold={threshold} asOf={asOf} />
+                </li>
+              ))}
+            </ul>
           )}
-        >
-          {filtered.map((building) => {
-            const segment = segmentsById.get(building.segment_id) ?? null;
-            const plant = segment ? plantsById.get(segment.plant_id) ?? null : null;
-            return (
-              <li key={building.building_id} className="min-w-0">
-                <BuildingCard
-                  building={building}
-                  segmentName={segment?.name ?? null}
-                  plantName={plant?.name ?? null}
-                  asOf={asOf}
-                />
-              </li>
-            );
-          })}
-        </ul>
+        </div>
       )}
     </div>
   );
