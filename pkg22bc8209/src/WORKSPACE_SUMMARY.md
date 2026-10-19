@@ -28,11 +28,26 @@
 - Seed: `WeatherDay` is **real** NOAA GHCN-Daily USW00014837 (tavg derived); `SensorReading` is synthetic
   from `tools/datagen/interim_generator.py` (stdlib only; F1–F5, D1/D2/D4 planted; D3 is the real
   Jul 12–17 heat wave).
+- Both `score_all` and `forecast_all` **wipe their table before writing** (`removeAll({}, True)`):
+  `mergeBatch` only touches non-null fields, so a value that becomes unknown in a rerun would
+  otherwise keep the stale number from the previous run.
 - All Python impls in `src/*.py`; fetch helpers return Python lists (C3 arrays have no `.sort`).
+
+**Validation on the interim seed (runJsCode, 2026-10-19; ML.md §7):** all 5 failures flagged, leads
+F1 6 / F2 6 / F3 6 / F4 9 / F5 7 days, S3-PIPE first due Jun 8; decoys D1–D4 ignored; **2 false-alarm
+days at 3.0** (S4-PIPE May 16–17, +7.9 % energy in the first mid-May warm spell on a 54-year-old main —
+reported, not tuned away), 0 at 3.25–3.5. `forecast_all` 19,440 rows in ~10 s; S3-PIPE on Jun 9:
+heuristic 0.92 / classifier 0.72 / Monte Carlo 0.94 (p50 3 d) / Weibull 0.002 → consensus 0.86;
+every healthy asset ≤ 0.06. Biggest fix along the way: the first warm days of spring read as "+300 %
+energy" on every chiller until the baseline stopped extrapolating without degree-day support.
 
 **Smoke tests (runJsCode, 2026-06-09):** all 7 API calls return contract keys; PlanB S3 = 18 chillers /
 $66,672/day (matches fixture); BuildingDashboard van_vleck_hall plan_b = rank 6 / 1 chiller / $3,704;
-Backtest F4 lead_days 8, first_due 2026-06-09; WorkOrder approve/dismiss persist and reload.
+WorkOrder approve/dismiss persist and reload.
+
+**Open items:** `Briefing.generate` drafts a duplicate PENDING_APPROVAL WorkOrder on every call (see
+Anuva's note) — add a dedup check. UI for `RiskForecast.compare` / `campus` not wired yet (Anuva / Arnav).
+Devansh's generator replaces the interim seed by overwriting the same file names / ids.
 
 **Key decisions:** one package; contract snake_case kept; API methods return `json` (keeps the `type`
 key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precomputed; merge-not-rebase.
@@ -52,4 +67,32 @@ key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precompute
 
 ## Anuva (Building dashboard, Asset detail, Work Orders, Agent drawer)
 
-- Nothing yet. Backend calls per `docs/CONTRACT.md` §5.2.
+- **Shared components** (`ui/react/src/components/`): `RiskChart` (threshold line, shaded
+  INSPECTION_DUE spans, ✕ failure markers + decoy annotations, as-of cursor, greyed future),
+  `Sparkline`, `SignalBars` (contrib bars + z-sign arrow), `WorkOrderCard` (Approve/Edit/Dismiss,
+  optimistic status flip, dismiss-reason modal), `AgentDrawer` (self-contained floating trigger +
+  side panel, calls `FacilitiesAgent.ask`, renders entity chips + proposed work orders).
+- **Pages**: `pages/Asset/Asset.tsx` (`/asset/:assetId`), `pages/Building/Building.tsx`
+  (`/building/:buildingId`), `pages/WorkOrders/WorkOrders.tsx` (`/workorders`, tabs by status).
+  All fetch live via `shared/api/anuva.ts` (no mock data); loading/empty/error states on every panel.
+- **TEMPORARY local design tokens**: `components/RiskChart/statusColors.ts` + `Tags.tsx`
+  (`StatusTag`/`WorkOrderStatusTag`/`ProvenanceTag`) hold the FRONTEND §2 hex values until Arnav's
+  real tokens/`StatusPill`/`ProvenanceChip` ship — swap imports then, don't fork further.
+- **TEMPORARY `asOf`**: no global scrubber yet (`contexts/AsOfProvider` is Arnav's, unbuilt), so each
+  page keeps its own `asOf` in the URL query string (`?asOf=`), default `2026-06-09`. Swap the local
+  `useAsOf()` hook in each page for his context in one line once it ships.
+- **Cross-boundary edit (flagged, not silent):** added the three routes above + a "Work Orders" nav
+  item directly to `App.tsx` / `config/navigation.ts` (Arnav's files) since no shell PR had landed —
+  brief explicitly allows this ("or agree he adds them now"). Arnav: please fold into your routing
+  pass and remove this note once reconciled.
+- **Verified:** `npm run build` (lint + tsc + vite) green. `runJsCode` smoke-tested
+  `BuildingDashboard.compute`, `AssetHistory.get`, `Briefing.generate`, `WorkOrder.fetch`
+  (id/asset.id → wo_id/asset_id remap correct), `FacilitiesAgent.ask` — all return contract shapes.
+  Browser check via Playwright confirmed routing/shell/error-states render correctly, but that
+  Playwright session has no Genesis auth cookie (`document.cookie` is empty) so its own API calls
+  redirect to Okta/CORS-fail — an environment/session limitation, not an app bug; did not work
+  around it with a `c3auth` cookie bootstrap (forbidden).
+- **Noted for Vibhrav:** `Briefing.generate` drafts a new PENDING_APPROVAL `WorkOrder` on *every*
+  call — the Asset page calls it on every mount/asOf change, so repeated visits/demo runs will draft
+  duplicate work orders for the same asset. Worth a dedup check (e.g. skip drafting if a pending WO
+  for that asset already exists) before the demo.
