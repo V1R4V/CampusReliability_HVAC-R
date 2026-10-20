@@ -38,14 +38,21 @@
   --bib-status-failed-soft: #2b3038;
   --bib-status-offline-soft: #22262d;
 
-  /* Work orders / the one interactive accent. Split in dark mode because the
-     token does two jobs: --bib-wo is a *fill* that carries white text (solid
-     approved pills, primary buttons) so it has to stay mid-dark, while
-     --bib-accent is drawn as *ink* (links, the risk line, agent affordances)
-     and has to be bright enough to read on the canvas. */
-  --bib-wo: #2f6fe0;
+  /* Work orders / the one interactive accent. --bib-wo does two jobs and on a
+     dark surface they pull apart: it is a *fill* under white text (the solid
+     approved WorkOrderPill), and it is *ink* on the surface (the outline
+     pending pill's text + border, the SideNav count badge, the WorkOrderCard
+     edge). Keeping white text legible needs L ≤ 0.183; reading as ink on
+     #16191f needs L ≥ 0.218 — there is no value that does both, so an earlier
+     mid-dark #2f6fe0 here left the outline pill and the badge at 3.75:1.
+
+     Resolved by role, not by compromise: the token goes light (ink wins, 7.17:1
+     everywhere it is drawn as ink) and the one fill that carried white text is
+     flipped to canvas ink below, giving 7.82:1. --bib-accent follows --bib-wo
+     exactly as it does in :root, so there is one accent, not two. */
+  --bib-wo: #6aa8f7;
   --bib-wo-soft: #15253d;
-  --bib-accent: #6aa8f7;
+  --bib-accent: var(--bib-wo);
   --bib-accent-soft: #132236;
 
   /* Ink and surfaces, inverted. Cards sit a step above the canvas rather than
@@ -108,6 +115,18 @@
   color: var(--bib-canvas);
 }
 
+/* Same inversion, one token over: the solid approved WorkOrderPill is written
+   `bg-[var(--bib-wo)] text-white`, and --bib-wo goes light above (see the token
+   note) so that white label would sit on a light blue chip. Flip it to canvas
+   ink — 7.82:1, and the pill still reads as the filled/approved variant against
+   the outline/pending one. Matched on both classes so it only touches the
+   filled pill, never the bare --bib-wo fills that carry no text (the
+   WorkOrderCard edge, the SideNav badge's border). Light mode is untouched:
+   there --bib-wo is #2563eb and white is correct at 5.17:1. */
+.dark .bg-\[var\(--bib-wo\)\].text-white {
+  color: var(--bib-canvas);
+}
+
 /* The hero is already a dark gradient in light mode, so on a dark canvas it
    would read as a hole rather than a raised surface. Lift it a couple of steps
    and give the edge a visible highlight. Its white text stays white. */
@@ -120,7 +139,8 @@
 
 /* ─── Leaflet (Buildings → Map) ───────────────────────────────────────────── */
 
-/* The basemap is CartoDB `light_all`. Rather than swap the tile URL at runtime,
+/* The basemap is OpenStreetMap raster (CartoDB `light_all` was reverted — it now
+   watermarks "API key required"). Rather than swap the tile URL at runtime,
    invert the raster: a light street map inverted and hue-rotated back lands on
    a credible dark basemap, and the vector overlays (campus markers, loop lines)
    are drawn by Leaflet above the tile pane, so they keep their token colours. */
