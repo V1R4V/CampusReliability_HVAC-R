@@ -34,7 +34,9 @@ type RiskModel {
    * L2 logistic regression on eight condition features; a 1,000-path Monte Carlo drift simulation
    * (also yields p10/p50/p90 days to failure); and an ASHRAE-based Weibull age baseline. The two
    * trained methods use leave-one-failure-out so no asset is scored by a model that saw its own
-   * failure. Returns the number of rows written.
+   * failure. Every row is made horizon-consistent before it is written (`p_fail_7d ≤ p_fail_14d
+   * ≤ p_fail_30d`, running max — the independently fitted logistic horizons can otherwise cross).
+   * Returns the number of rows written.
    */
   forecast_all: function(): int py
 }

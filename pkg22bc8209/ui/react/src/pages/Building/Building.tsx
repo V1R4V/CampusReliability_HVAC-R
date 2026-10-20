@@ -39,7 +39,6 @@ import { useAsOf } from '@/contexts/AsOfProvider';
 import {
   ENERGY_USD_PER_KWH,
   formatCompact,
-  formatDate,
   formatNumber,
   formatPct,
   formatRisk,
@@ -47,10 +46,15 @@ import {
   worstStatus,
   type Status,
 } from '@/shared/api';
-import { approveWorkOrder, dismissWorkOrder, fetchBuildingDashboard } from '@/shared/api/anuva';
+import { approveWorkOrder, dismissWorkOrder, editWorkOrder, fetchBuildingDashboard } from '@/shared/api/anuva';
 import type { BuildingDashboard, SystemCard as SystemCardData, SystemType } from '@/Interfaces';
+import { dedupe } from '@/pages/WorkOrders/dedupe';
 
 const SYSTEMS: SystemType[] = ['cooling', 'heating', 'air'];
+/** Energy more than this over weather-expected is called out as a finding (matches the Overview KPI's ">5%"). */
+const ENERGY_FINDING_PCT = 5;
+/** Days of energy history the dashboard returns; the footer needs it for a denominator. */
+const ENERGY_WINDOW_DAYS = 90;
 
 function SystemCard({ system, card, asOf, threshold }: { system: SystemType; card: SystemCardData | null; asOf: string; threshold: number }) {
   return (
@@ -75,6 +79,15 @@ function SystemCard({ system, card, asOf, threshold }: { system: SystemType; car
               energy vs weather-expected
             </div>
           </div>
+          {card.energy_over_expected_pct > ENERGY_FINDING_PCT ? (
+            <p className="inline-flex items-start gap-1.5 rounded-[6px] bg-[var(--bib-canvas)] px-2.5 py-1.5 text-[13px] leading-4 text-[var(--bib-ink-soft)]">
+              <Zap className="mt-px size-3.5 shrink-0 text-[var(--bib-ink-muted)]" aria-hidden />
+              <span>
+                Energy finding: {formatPct(card.energy_over_expected_pct)} over weather-expected. Worth a look even though it is not a failure
+                signal.
+              </span>
+            </p>
+          ) : null}
           <Sparkline points={card.sparkline} threshold={threshold} height={44} />
           <ForecastBadge assetId={card.via_asset_id} asOf={asOf} />
           <Link
@@ -117,7 +130,7 @@ function EnergyTooltip({ active, payload, label }: EnergyTooltipProps) {
 /** Building dashboard (FRONTEND §5.3). */
 export default function Building() {
   const { buildingId } = useParams<{ buildingId: string }>();
-  const { asOf, threshold } = useAsOf();
+  const { asOf, threshold, buildingsById } = useAsOf();
   const { reportError } = useErrorReporter();
 
   const [dashboard, setDashboard] = useState<BuildingDashboard | null>(null);
@@ -159,6 +172,8 @@ export default function Building() {
     [dashboard],
   );
   const excessKwh = useMemo(() => energyData.reduce((sum, p) => sum + p.excess, 0), [energyData]);
+  const expectedKwh = useMemo(() => energyData.reduce((sum, p) => sum + p.expected, 0), [energyData]);
+  const excessPct = expectedKwh > 0 ? (excessKwh / expectedKwh) * 100 : null;
 
   const worst = useMemo<Status | null>(() => {
     if (!dashboard) return null;
@@ -223,12 +238,6 @@ export default function Building() {
             </Link>
           </>,
         ]}
-        actions={
-          <div className="rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-canvas)] px-3 py-1.5 text-right">
-            <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.08em] text-[var(--bib-ink-muted)]">As of</div>
-            <div className="bib-num text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{formatDate(asOf)}</div>
-          </div>
-        }
       />
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -245,7 +254,9 @@ export default function Building() {
         footer={
           energyData.length > 0 ? (
             <span>
-              Excess over the period shown ≈ <span className="bib-num font-semibold text-[var(--bib-ink)]">{formatNumber(excessKwh)} kWh</span> ·{' '}
+              Excess ≈ <span className="bib-num font-semibold text-[var(--bib-ink)]">{formatNumber(excessKwh)} kWh</span> over{' '}
+              {Math.min(energyData.length, ENERGY_WINDOW_DAYS)} days
+              {excessPct != null ? ` (≈ ${formatPct(excessPct, { signed: false })} of weather-expected use)` : ''} ·{' '}
               <span className="bib-num font-semibold text-[var(--bib-ink)]">{formatUsd(excessKwh * ENERGY_USD_PER_KWH)}</span> at $
               {ENERGY_USD_PER_KWH.toFixed(2)}/kWh (estimate)
             </span>
@@ -260,8 +271,8 @@ export default function Building() {
               <ComposedChart data={energyData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="bib-energy-excess" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--bib-accent)" stopOpacity={0.32} />
-                    <stop offset="100%" stopColor="var(--bib-accent)" stopOpacity={0.1} />
+                    <stop offset="0%" stopColor="var(--bib-accent)" stopOpacity={0.55} />
+                    <stop offset="100%" stopColor="var(--bib-accent)" stopOpacity={0.3} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke={GRID_STROKE} vertical={false} />
@@ -270,7 +281,7 @@ export default function Building() {
                 <RechartsTooltip content={<EnergyTooltip />} cursor={{ stroke: AXIS_STROKE }} />
                 <Area type="monotone" dataKey="expected" stackId="kwh" stroke="none" fill="transparent" isAnimationActive={false} legendType="none" />
                 <Area type="monotone" dataKey="excess" stackId="kwh" stroke="none" fill="url(#bib-energy-excess)" isAnimationActive={false} legendType="none" />
-                <Line type="monotone" dataKey="expected" name="Weather-expected" stroke={INK_MUTED} strokeDasharray="4 3" strokeWidth={2} dot={false} isAnimationActive={false} />
+                <Line type="monotone" dataKey="expected" name="Weather-expected" stroke={INK_MUTED} strokeWidth={2} dot={false} isAnimationActive={false} />
                 <Line type="monotone" dataKey="actual" name="Actual" stroke={RISK_STROKE} strokeWidth={2.25} dot={false} isAnimationActive={false} />
               </ComposedChart>
             </ResponsiveContainer>
@@ -307,7 +318,7 @@ export default function Building() {
                       <Link to={`/asset/${a.asset_id}`} className="font-medium text-[var(--bib-ink)] underline-offset-2 hover:underline">
                         {a.name}
                       </Link>
-                      <div className="bib-num text-[12px] text-[var(--bib-ink-muted)]">{a.asset_id}</div>
+                      <div className="bib-num text-[13px] text-[var(--bib-ink-muted)]">{a.asset_id}</div>
                     </TableCell>
                     <TableCell>
                       <SystemIcon system={a.system} size="sm" withLabel />
@@ -326,7 +337,11 @@ export default function Building() {
 
         <Panel
           title="If cooling fails"
-          subtitle={plan_b ? `Where this building sits in the dispatch order for loop ${plan_b.segment_id}` : 'Outage plan'}
+          subtitle={
+            plan_b
+              ? `Where this building sits in the dispatch order for loop ${plan_b.segment_id}, sized at peak load (95°F design day)`
+              : 'Outage plan'
+          }
           icon={<ShieldAlert />}
           className="h-full"
         >
@@ -338,13 +353,14 @@ export default function Building() {
                   <dd className="bib-kpi mt-1">#{plan_b.priority_rank}</dd>
                 </div>
                 <div>
-                  <dt className="bib-eyebrow">Chillers</dt>
+                  <dt className="bib-eyebrow">Rental units</dt>
                   <dd className="bib-kpi mt-1">{plan_b.chillers_needed}</dd>
+                  <dd className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">400-ton chillers</dd>
                 </div>
                 <div>
                   <dt className="bib-eyebrow">Rental</dt>
                   <dd className="bib-kpi mt-1 text-[32px] leading-[44px]">{formatUsd(plan_b.cost_per_day_usd)}</dd>
-                  <dd className="text-[12px] leading-4 text-[var(--bib-ink-muted)]">per day (estimate)</dd>
+                  <dd className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">per day (estimate)</dd>
                 </div>
               </dl>
               <Button asChild appearance="accent" size="lg" className="mt-auto w-full">
@@ -368,16 +384,25 @@ export default function Building() {
           <PanelState state="empty" message="No work orders pending for this building." />
         ) : (
           <div className="grid gap-4 xl:grid-cols-2">
-            {work_orders.map((wo) => (
+            {dedupe(work_orders).map((wo) => (
               <WorkOrderCard
                 key={wo.wo_id}
                 workOrder={wo}
+                asOf={asOf}
+                buildings={(wo.building_ids ?? [])
+                  .map((id) => buildingsById.get(id))
+                  .filter((b): b is NonNullable<typeof b> => Boolean(b))
+                  .map((b) => ({ name: b.name, criticality: b.criticality }))}
                 onApprove={async () => {
-                  await approveWorkOrder(wo.wo_id, 'Facilities manager');
+                  await approveWorkOrder(wo.wo_id, 'Facilities manager', asOf);
                   setRefreshKey((k) => k + 1);
                 }}
                 onDismiss={async (reason) => {
-                  await dismissWorkOrder(wo.wo_id, reason);
+                  await dismissWorkOrder(wo.wo_id, reason, asOf);
+                  setRefreshKey((k) => k + 1);
+                }}
+                onEdit={async (fields) => {
+                  await editWorkOrder(wo.wo_id, fields, asOf);
                   setRefreshKey((k) => k + 1);
                 }}
               />

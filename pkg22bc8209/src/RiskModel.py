@@ -63,7 +63,8 @@ def _label(driver, delta, pct):
     if driver == "pressure":
         return "pressure %s %.0f psi" % ("↓" if delta < 0 else "↑", abs(delta))
     if driver == "flow_imbalance":
-        return "flow imbalance %s %.1f%%" % ("↑" if delta > 0 else "↓", abs(delta))
+        # flow_imbalance_pct is already a percentage, so its change is in percentage points
+        return "flow imbalance %s %.1f pts" % ("↑" if delta > 0 else "↓", abs(delta))
     if driver == "delta_t":
         return "ΔT %s %.1f°F" % ("↓" if delta < 0 else "↑", abs(delta))
     return "vibration %s %.1f mm/s" % ("↑" if delta > 0 else "↓", abs(delta))
@@ -471,7 +472,22 @@ def _weibull(asset_type, age_years):
     return p, q, basis
 
 
+def _monotone(p):
+    """P(fail within h) is cumulative, so it cannot fall as the horizon grows. The three logistic
+    horizons are fitted independently and can cross (S3-PIPE read 94 % at 7 d but 78 % at 30 d),
+    so every method's row is made non-decreasing with a running max — p7 is kept, p14 and p30 are
+    raised to at least the shorter horizon — and clipped to [0, 1] before it is persisted."""
+    out = {}
+    run = 0.0
+    for h in HORIZONS:
+        v = float(p[h]) if p.get(h) is not None else 0.0
+        run = max(run, min(1.0, max(0.0, v)))
+        out[h] = run
+    return out
+
+
 def _row(aid, date, method, p, q, conf, basis):
+    p = _monotone(p)
     row = {
         "id": "%s_%s_%s" % (aid, date, method),
         "asset": {"id": aid},
@@ -536,10 +552,10 @@ def forecast_all(cls):
                 for m in ("heuristic", "classifier", "monte_carlo"):
                     rows.append(_row(aid, date, m, p1, None, "high", "asset is in a FAILED window (FailureEvent)"))
             else:
-                ph = {h: (0.0 if np.isnan(heur[h][i]) else heur[h][i]) for h in HORIZONS}
+                ph = _monotone({h: (0.0 if np.isnan(heur[h][i]) else heur[h][i]) for h in HORIZONS})
                 rows.append(_row(aid, date, "heuristic", ph, None, _confidence_basic(hist_days),
                                  "risk %.2f -> P(fail within 14 d) %.0f%% on the calibration curve" % (risk, 100 * ph[14])))
-                pc = {h: (0.0 if np.isnan(clf[h][i]) else clf[h][i]) for h in HORIZONS}
+                pc = _monotone({h: (0.0 if np.isnan(clf[h][i]) else clf[h][i]) for h in HORIZONS})
                 top = sorted(zip(CLF_FEATURES, contrib[i]), key=lambda kv: -abs(kv[1]))[:3]
                 rows.append(_row(aid, date, "classifier", pc, None, _confidence_basic(hist_days),
                                  "top drivers: " + ", ".join("%s %+.2f" % kv for kv in top)))

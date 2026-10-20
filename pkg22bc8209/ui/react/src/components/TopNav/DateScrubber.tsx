@@ -108,7 +108,7 @@ export default function DateScrubber() {
                     {real ? (
                       <span
                         aria-hidden
-                        className="mb-0.5 whitespace-nowrap rounded-[3px] bg-[var(--bib-ink)] px-1.5 text-[10px] font-semibold uppercase leading-4 tracking-[0.06em] text-white shadow-sm"
+                        className="mb-0.5 whitespace-nowrap rounded-[3px] bg-[var(--bib-ink)] px-1.5 text-[12px] font-semibold uppercase leading-4 tracking-[0.08em] text-white shadow-sm"
                       >
                         Real break
                       </span>
@@ -158,7 +158,7 @@ export default function DateScrubber() {
             <span
               key={tick.iso}
               style={{ left: positionOf(tick.index) }}
-              className="absolute -translate-x-1/2 whitespace-nowrap text-[12px] font-medium leading-4 text-[var(--bib-ink-muted)] max-xl:even:hidden"
+              className="absolute -translate-x-1/2 whitespace-nowrap text-[13px] font-medium leading-4 text-[var(--bib-ink-muted)] max-xl:even:hidden"
             >
               {tick.label}
             </span>
@@ -171,7 +171,7 @@ export default function DateScrubber() {
       </Button>
 
       <div className="min-w-[136px] rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-canvas)] px-3 py-1.5 text-right">
-        <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.08em] text-[var(--bib-ink-muted)]">As of</div>
+        <div className="text-[13px] font-semibold uppercase leading-4 tracking-[0.08em] text-[var(--bib-ink-muted)]">As of</div>
         <div className="bib-num text-[18px] font-semibold leading-6 text-[var(--bib-ink)]">{formatDate(asOf)}</div>
       </div>
 

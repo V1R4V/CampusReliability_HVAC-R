@@ -58,16 +58,10 @@ export default function PlanB() {
   const segmentLabel = segment ? `${segment.segment_id} · ${segment.name}` : segmentId;
   const realHigh = snapshot?.weather ? clampTemp(snapshot.weather.tmax_f) : null;
 
-  // Default to today's real high; the 95°F preset is the heat-emergency case.
+  // Default to the 95°F design day: it is the basis every other page quotes for "if it fails"
+  // (18 chillers · $67K/day for S3), so the numbers line up. Today's real high is one click away.
   const [tempF, setTempF] = useState<number>(HEAT_EMERGENCY_F);
-  const [tempTouched, setTempTouched] = useState(false);
-  useEffect(() => {
-    if (!tempTouched && realHigh != null) setTempF(realHigh);
-  }, [realHigh, tempTouched]);
-  const pickTemp = (value: number) => {
-    setTempTouched(true);
-    setTempF(clampTemp(value));
-  };
+  const pickTemp = (value: number) => setTempF(clampTemp(value));
 
   const [priorityOnly, setPriorityOnly] = useState(false);
 
@@ -232,11 +226,11 @@ export default function PlanB() {
                 appearance="secondary"
                 onClick={() => pickTemp(HEAT_EMERGENCY_F)}
               >
-                {HEAT_EMERGENCY_F}°F heat emergency
+                {HEAT_EMERGENCY_F}°F design day
               </Button>
               {result ? (
                 <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
-                  load factor {result.load_factor.toFixed(2)} · one 400-ton rental chiller per 400 tons of load
+                  load factor {result.load_factor.toFixed(2)} at {tempF}°F · sized in 400-ton rental units (assumption)
                 </span>
               ) : null}
             </div>

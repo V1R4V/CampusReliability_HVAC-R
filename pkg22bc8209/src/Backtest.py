@@ -115,6 +115,89 @@ def _evaluate(by_asset, events, systems, thr):
     return failures, false_alarm_days, missed, statuses, failures_by_asset
 
 
+def _median(xs):
+    xs = sorted(xs)
+    n = len(xs)
+    if not n:
+        return None
+    return float(xs[n // 2]) if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2.0
+
+
+def _asset_day_metrics(statuses, failures_by_asset, failures):
+    """Honest asset-day scoring at this threshold. A flagged day (INSPECTION_DUE) is a true positive
+    when a failure starts on that asset within the next FALSE_ALARM_HORIZON_DAYS days, otherwise a
+    false alarm; a positive day is any non-FAILED asset-day inside that window before a failure, so
+    recall says how much of the warning window the model actually covered."""
+    tp = fp = fn = 0
+    asset_days = 0
+    for aid, st in statuses.items():
+        fails = [_d(e.date) for e in failures_by_asset.get(aid, [])]
+        for d, s in st.items():
+            if s == "FAILED":
+                continue
+            asset_days += 1
+            dd = _d(d)
+            positive = any(0 < (f - dd).days <= FALSE_ALARM_HORIZON_DAYS for f in fails)
+            flagged = s == "INSPECTION_DUE"
+            if flagged and positive:
+                tp += 1
+            elif flagged:
+                fp += 1
+            elif positive:
+                fn += 1
+    leads = [f["lead_days"] for f in failures if f["lead_days"] is not None]
+    return {
+        "asset_days": asset_days,
+        "true_positive_days": tp,
+        "false_alarm_days": fp,
+        "missed_positive_days": fn,
+        "precision": round(tp / float(tp + fp), 3) if tp + fp else None,
+        "recall": round(tp / float(tp + fn), 3) if tp + fn else None,
+        "false_alarms_per_1000_asset_days": round(fp / float(asset_days) * 1000.0, 2) if asset_days else None,
+        "failures_detected": len(leads),
+        "failures_total": len(failures),
+        "lead_days": {
+            "min": min(leads) if leads else None,
+            "mean": round(sum(leads) / float(len(leads)), 1) if leads else None,
+            "median": _median(leads),
+        },
+    }
+
+
+def _brier_14d(failures_by_asset):
+    """Brier score of each method's stored `p_fail_14d` against 'a failure on this asset starts within
+    the next 14 days', over every asset-day outside FAILED windows (where every method writes 1.0 by
+    construction). Lower is better; `base_rate` is the score of always predicting the average
+    positive rate, the bar a method has to beat to carry any information."""
+    rows = _fetch("RiskForecast", "asset.id, date, method, p_fail_14d")
+    fails = {aid: [_d(e.date) for e in evs] for aid, evs in failures_by_asset.items()}
+    windows = {aid: [(e.date, e.end_date or e.date) for e in evs] for aid, evs in failures_by_asset.items()}
+    acc = {}
+    pos = n_days = 0
+    seen_days = set()
+    for r in rows:
+        if r.asset is None or r.p_fail_14d is None:
+            continue
+        aid = r.asset.id
+        if any(lo <= r.date <= hi for lo, hi in windows.get(aid, [])):
+            continue
+        dd = _d(r.date)
+        y = 1.0 if any(0 < (f - dd).days <= 14 for f in fails.get(aid, [])) else 0.0
+        key = (aid, r.date)
+        if key not in seen_days:
+            seen_days.add(key)
+            n_days += 1
+            pos += int(y)
+        s, n = acc.get(r.method, (0.0, 0))
+        acc[r.method] = (s + (float(r.p_fail_14d) - y) ** 2, n + 1)
+    out = {m: round(s / n, 4) for m, (s, n) in acc.items() if n}
+    rate = pos / float(n_days) if n_days else None
+    out["base_rate"] = round(rate * (1.0 - rate), 4) if rate is not None else None
+    out["positive_rate"] = round(rate, 4) if rate is not None else None
+    out["asset_days"] = n_days
+    return out
+
+
 def run(cls, threshold):
     thr = float(threshold) if threshold is not None else 3.0
     by_asset = _series_by_asset()
@@ -161,6 +244,14 @@ def run(cls, threshold):
                 points.append({"days_before": k, "risk": round(rows[d], 2)})
         curves.append({"event_id": f["event_id"], "asset_id": f["asset_id"], "points": points})
 
+    # Additive (docs/ML.md §9): asset-day precision/recall, false alarms per 1,000 asset-days,
+    # lead-time spread, and the per-method Brier score of the stored 14-day probabilities.
+    metrics = _asset_day_metrics(statuses, failures_by_asset, failures)
+    metrics["brier_14d"] = _brier_14d(failures_by_asset)
+    metrics["note"] = ("Scored against the planted failures F1-F5 (synthetic): a flagged asset-day counts as correct "
+                       "only if that asset fails within %d days. This proves the pipeline, not that the real break was predictable."
+                       % FALSE_ALARM_HORIZON_DAYS)
+
     return {
         "threshold": thr,
         "failures": failures,
@@ -169,4 +260,5 @@ def run(cls, threshold):
         "decoys": decoys,
         "sweep": sweep,
         "aligned_curves": curves,
+        "metrics": metrics,
     }

@@ -9,7 +9,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Zap } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,8 +19,11 @@ import StatusPill from '@/components/StatusPill/StatusPill';
 import WorkOrderPill from '@/components/StatusPill/WorkOrderPill';
 import SystemIcon from '@/components/SystemIcon/SystemIcon';
 import type { SystemFilter } from '@/contexts/AsOfProvider';
-import { formatDate, formatUsd, withAsOf, type QueueItem } from '@/shared/api';
+import { formatDate, formatPct, formatUsd, withAsOf, type QueueItem } from '@/shared/api';
 import RiskBar from './RiskBar';
+
+/** Energy more than this over weather-expected is called out as a finding (matches the KPI's ">5%"). */
+const ENERGY_FINDING_PCT = 5;
 
 const FILTERS: { value: SystemFilter; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -102,7 +105,21 @@ function QueueRow({
             {item.buildings_served} {item.buildings_served === 1 ? 'building' : 'buildings'}
           </span>
           {item.cost_per_day_usd != null ? (
-            <span className="bib-num font-medium text-[var(--bib-ink)]">{formatUsd(item.cost_per_day_usd, { perDay: true })}</span>
+            <span
+              className="bib-num font-medium text-[var(--bib-ink)]"
+              title="Rental chillers if this cooling fails, sized at peak load (95°F design day) · $3,704 per 400-ton unit per day (estimate)"
+            >
+              {formatUsd(item.cost_per_day_usd, { perDay: true })}
+            </span>
+          ) : null}
+          {item.energy_over_expected_pct > ENERGY_FINDING_PCT ? (
+            <span
+              className="inline-flex items-center gap-1 rounded-full bg-[var(--bib-canvas)] px-2 py-0.5 text-[13px] font-medium text-[var(--bib-ink-soft)]"
+              title="Energy finding: over the weather-expected baseline. Worth a look; not by itself a failure signal."
+            >
+              <Zap className="size-3.5 text-[var(--bib-ink-muted)]" aria-hidden />
+              {formatPct(item.energy_over_expected_pct)} energy
+            </span>
           ) : null}
         </div>
       </Link>
@@ -110,10 +127,16 @@ function QueueRow({
       <div className="flex flex-col items-end gap-2 pt-0.5">
         {item.work_order_status ? (
           <WorkOrderPill status={item.work_order_status} size="sm" />
-        ) : (
+        ) : attention ? (
           <Button asChild variant="outline" appearance="secondary" size="sm">
             <Link to={assetHref}>
               Draft work order <ArrowRight className="size-3.5" aria-hidden />
+            </Link>
+          </Button>
+        ) : (
+          <Button asChild variant="ghost" appearance="secondary" size="sm">
+            <Link to={assetHref}>
+              Open <ArrowRight className="size-3.5" aria-hidden />
             </Link>
           </Button>
         )}

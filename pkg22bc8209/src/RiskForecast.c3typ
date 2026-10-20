@@ -32,10 +32,10 @@ entity type RiskForecast {
   /** Probability (0–1) that the asset fails within the next 7 days. 1.0 while the asset is in a `FAILED` window. */
   p_fail_7d: double
 
-  /** Probability (0–1) that the asset fails within the next 14 days — the headline number the UI compares across methods. */
+  /** Probability (0–1) that the asset fails within the next 14 days — the headline number the UI compares across methods. Never below {@link #p_fail_7d}. */
   p_fail_14d: double
 
-  /** Probability (0–1) that the asset fails within the next 30 days. */
+  /** Probability (0–1) that the asset fails within the next 30 days. Never below {@link #p_fail_14d} (the horizons are cumulative; {@link RiskModel#forecast_all} enforces it). */
   p_fail_30d: double
 
   /** 10th percentile of days until failure. Only `monte_carlo` (first-crossing day) and `weibull` (conditional quantile) produce one; null otherwise or when too few paths cross within 30 days. */

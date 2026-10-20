@@ -64,9 +64,15 @@ export default function Overview() {
       <SnapshotBanner />
 
       <div className={cn('flex flex-col gap-5 transition-opacity', snapshotLoading && snapshot ? 'opacity-70' : 'opacity-100')}>
-        <MorningBrief brief={snapshot?.morning_brief ?? null} asOf={asOf} loading={firstLoad} />
+        <MorningBrief brief={snapshot?.morning_brief ?? null} asOf={asOf} loading={firstLoad} topItem={snapshot?.queue[0] ?? null} />
 
-        <KpiRow kpis={snapshot?.kpis ?? null} pendingWorkOrders={pendingWorkOrders} loading={firstLoad} error={hardError} />
+        <KpiRow
+          kpis={snapshot?.kpis ?? null}
+          pendingWorkOrders={pendingWorkOrders}
+          buildingsDue={snapshot ? snapshot.buildings.filter((b) => b.worst_status === 'INSPECTION_DUE' || b.worst_status === 'FAILED').length : 0}
+          loading={firstLoad}
+          error={hardError}
+        />
 
         <div className="grid gap-5 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
           <Panel

@@ -16,6 +16,15 @@ type Backtest {
    * A decoy is `ignored` if its asset never went due within ±5 days of the decoy. `sweep` runs
    * thresholds 2.0 → 4.0 step 0.25 from the stored {@link RiskScore#risk} series;
    * `aligned_curves` give risk from −21 to 0 days before each failure.
+   *
+   * Additive key `metrics` (`docs/ML.md` §9): `{ asset_days, true_positive_days, false_alarm_days,
+   * missed_positive_days, precision, recall, false_alarms_per_1000_asset_days, failures_detected,
+   * failures_total, lead_days{min,mean,median}, brier_14d{heuristic, classifier, monte_carlo,
+   * weibull, base_rate, positive_rate, asset_days}, note }`. An `INSPECTION_DUE` asset-day is a true
+   * positive when a failure starts on that asset within the next 21 days; a positive day is any
+   * non-`FAILED` asset-day inside that window. `brier_14d` scores each method's stored
+   * {@link RiskForecast#p_fail_14d} against "fails within 14 days" outside `FAILED` windows;
+   * `base_rate` is the Brier score of always predicting the average positive rate.
    */
   run: function(threshold: double): json py
 }

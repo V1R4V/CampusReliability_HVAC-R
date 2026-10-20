@@ -207,6 +207,27 @@ export default function Buildings() {
     [cardRows, systemFilter],
   );
 
+  // One loop-level asset can put many buildings in the same state: say so once instead of
+  // letting nine identical red cards imply nine separate problems.
+  const sharedCause = useMemo(() => {
+    const groups = new Map<string, BuildingRow[]>();
+    for (const row of filtered) {
+      const status = displayStatus(row, systemFilter);
+      if (!status || status === 'HEALTHY' || !row.peakAssetId) continue;
+      const list = groups.get(row.peakAssetId) ?? [];
+      list.push(row);
+      groups.set(row.peakAssetId, list);
+    }
+    let best: { assetId: string; rows: BuildingRow[] } | null = null;
+    groups.forEach((rows, assetId) => {
+      if (rows.length >= 3 && (!best || rows.length > best.rows.length)) best = { assetId, rows };
+    });
+    if (!best) return null;
+    const first = best.rows[0];
+    const asset = (snapshot?.queue ?? []).find((q) => q.asset_id === best!.assetId) ?? null;
+    return { assetId: best.assetId, asset, rows: best.rows, segment: first.segment, status: displayStatus(first, systemFilter) ?? first.building.worst_status };
+  }, [filtered, systemFilter, snapshot]);
+
   const firstLoad = snapshotLoading && !snapshot;
   const emptyMessage =
     query || statusFilter
@@ -310,6 +331,37 @@ export default function Buildings() {
       </PageHeader>
 
       <SnapshotBanner />
+
+      {sharedCause && view !== 'map' ? (
+        <div
+          data-status={sharedCause.status}
+          className="bib-card relative flex flex-wrap items-center justify-between gap-x-6 gap-y-3 overflow-hidden px-5 py-4 pl-6"
+          role="note"
+        >
+          <span aria-hidden className="absolute inset-y-0 left-0 w-[4px] bg-[var(--bib-status-color)]" />
+          <p className="min-w-0 text-[16px] leading-6 text-[var(--bib-ink)]">
+            <span className="font-semibold">
+              {sharedCause.rows.length} buildings{sharedCause.segment ? ` on ${sharedCause.segment.segment_id} · ${sharedCause.segment.name}` : ''}
+            </span>{' '}
+            are {STATUS_LABEL[sharedCause.status].toLowerCase()} because of one asset:{' '}
+            <span className="bib-num font-semibold">{sharedCause.assetId}</span>
+            {sharedCause.asset ? ` (${sharedCause.asset.name.toLowerCase()}, risk ${formatRisk(sharedCause.asset.risk)})` : ''}. Fix the asset and the
+            buildings clear together.
+          </p>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Button asChild size="md" variant="solid" appearance="secondary">
+              <Link to={`/asset/${sharedCause.assetId}`}>
+                Open asset <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </Button>
+            {sharedCause.segment ? (
+              <Button asChild size="md" variant="outline" appearance="secondary">
+                <Link to={`/planb/${sharedCause.segment.segment_id}`}>Outage plan for {sharedCause.segment.segment_id}</Link>
+              </Button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
 
       {firstLoad ? (
         <PanelState state="loading" lines={6} />

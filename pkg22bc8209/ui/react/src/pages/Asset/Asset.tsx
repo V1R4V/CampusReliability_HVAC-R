@@ -10,10 +10,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Activity, ArrowRight, Building2, Check, Sparkles } from 'lucide-react';
-import { Line, LineChart, ReferenceArea, ResponsiveContainer, YAxis } from 'recharts';
+import { Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, YAxis } from 'recharts';
 
 import { useErrorReporter } from '@/components/ErrorBoundary/ErrorBoundary';
-import { RISK_STROKE } from '@/components/Chart/chartTheme';
+import { INK_MUTED, RISK_STROKE } from '@/components/Chart/chartTheme';
 import ForecastPanel from '@/components/ForecastPanel/ForecastPanel';
 import PageHeader from '@/components/PageHeader/PageHeader';
 import { Panel, PanelState } from '@/components/Panel/Panel';
@@ -24,10 +24,11 @@ import StatusPill from '@/components/StatusPill/StatusPill';
 import SystemIcon, { systemLabel } from '@/components/SystemIcon/SystemIcon';
 import WorkOrderCard from '@/components/WorkOrderCard/WorkOrderCard';
 import { useAsOf } from '@/contexts/AsOfProvider';
-import { formatDate, formatNumber, formatPct, formatRisk, formatUsd } from '@/shared/api';
-import { approveWorkOrder, dismissWorkOrder, fetchAssetHistory, fetchBriefing } from '@/shared/api/anuva';
+import { WATCH_THRESHOLD, formatDate, formatNumber, formatPct, formatRisk, formatUsd } from '@/shared/api';
+import { approveWorkOrder, dismissWorkOrder, editWorkOrder, fetchAssetHistory, fetchBriefing } from '@/shared/api/anuva';
 import type { AssetHistory, Briefing, RiskSeriesPoint, SensorMap } from '@/Interfaces';
 
+/** Sensor tiles. Energy is plotted as the model sees it (vs weather-expected), not as raw kWh. */
 const SENSORS: { key: keyof SensorMap; label: string; unit: string }[] = [
   { key: 'pressure_psi', label: 'Pressure', unit: 'psi' },
   { key: 'flow_imbalance_pct', label: 'Flow imbalance', unit: '%' },
@@ -38,15 +39,24 @@ const SENSORS: { key: keyof SensorMap; label: string; unit: string }[] = [
 
 /** Days of sensor history drawn in each small multiple. */
 const SENSOR_WINDOW_DAYS = 90;
+/** Energy more than this far from weather-expected is worth a look (matches the KPI's ">5%"). */
+const ENERGY_BAND_PCT = 5;
+/** Scrubbing / Play changes the date every few hundred ms; only brief the date the user settles on. */
+const BRIEFING_DEBOUNCE_MS = 400;
 
 /** Readable names for the contract's asset types; anything new falls back to "snake_case" → "Snake case". */
 const TYPE_LABEL: Record<string, string> = {
-  chw_main: 'Chilled-water main',
+  chw_main: 'Chilled water main',
+  chw_pump: 'Chilled water pump',
+  isolation_valve: 'Isolation valve',
   chiller: 'Chiller',
   ahu: 'Air handler',
   unit_heater: 'Unit heater',
   heat_exchanger: 'Heat exchanger',
   hx: 'Heat exchanger',
+  steam_line: 'Steam line',
+  steam_trap: 'Steam trap',
+  condensate_pump: 'Condensate pump',
   pump: 'Pump',
   boiler: 'Boiler',
   cooling_tower: 'Cooling tower',
@@ -60,26 +70,28 @@ function humanize(value: string | null | undefined): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
+/** Value and unit glued the way engineers write them: "2.3%", "67.1 psi", "16,463 kWh". */
 function formatSensor(value: number, unit: string): string {
-  const digits = unit === 'kWh' ? 0 : Math.abs(value) >= 100 ? 0 : 1;
-  return formatNumber(value, digits);
+  const digits = unit === 'kWh' ? 0 : unit === 'mm/s' ? 2 : Math.abs(value) >= 100 ? 0 : 1;
+  const text = formatNumber(value, digits);
+  return unit === '%' ? `${text}%` : `${text} ${unit}`;
 }
 
-function SensorMultiple({
-  label,
-  unit,
-  sensorKey,
-  series,
-  band,
-  asOf,
-}: {
+/** The copy was written when the page was called "Plan B"; the nav now says "Outage plan". */
+function normaliseCopy(text: string): string {
+  return text.replace(/\bPlan B\b/g, 'Outage plan');
+}
+
+interface MultipleProps {
   label: string;
   unit: string;
   sensorKey: keyof SensorMap;
   series: RiskSeriesPoint[];
   band: [number, number] | null | undefined;
   asOf: string;
-}) {
+}
+
+function SensorMultiple({ label, unit, sensorKey, series, band, asOf }: MultipleProps) {
   const data = useMemo(
     () =>
       series
@@ -102,7 +114,7 @@ function SensorMultiple({
       <div className="flex items-baseline justify-between gap-2">
         <span className="text-[14px] font-medium text-[var(--bib-ink)]">{label}</span>
         <span className={`bib-num text-[16px] font-semibold ${outside ? 'text-[var(--bib-status-due)]' : 'text-[var(--bib-ink)]'}`}>
-          {formatSensor(last, unit)} <span className="text-[12px] font-normal text-[var(--bib-ink-muted)]">{unit}</span>
+          {formatSensor(last, unit)}
         </span>
       </div>
       <div className="h-[56px]">
@@ -114,19 +126,61 @@ function SensorMultiple({
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <div className="text-[12px] leading-4 text-[var(--bib-ink-muted)]">
-        {band ? `30-day normal ${formatSensor(band[0], unit)}–${formatSensor(band[1], unit)} ${unit}` : `Last ${SENSOR_WINDOW_DAYS} days`}
+      <div className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+        {band ? `30-day normal ${formatSensor(band[0], unit)} to ${formatSensor(band[1], unit)}` : `Last ${SENSOR_WINDOW_DAYS} days`}
       </div>
     </div>
   );
 }
 
-function LegendSwatch({ kind, label }: { kind: 'risk' | 'threshold' | 'due' | 'future'; label: string }) {
+/** Energy against the weather-normalised baseline — the quantity the model actually scores. */
+function EnergyMultiple({ label, series, asOf }: { label: string; series: RiskSeriesPoint[]; asOf: string }) {
+  const data = useMemo(
+    () =>
+      series
+        .filter((p) => p.date <= asOf && typeof p.energy_over_expected_pct === 'number' && !Number.isNaN(p.energy_over_expected_pct))
+        .map((p) => ({ date: p.date, value: p.energy_over_expected_pct, kwh: p.sensors?.energy_kwh ?? null }))
+        .slice(-SENSOR_WINDOW_DAYS),
+    [series, asOf],
+  );
+  if (data.length === 0) return null;
+  const lastPoint = data[data.length - 1];
+  const values = data.map((d) => d.value);
+  const span = Math.max(ENERGY_BAND_PCT * 2, ...values.map((v) => Math.abs(v)));
+  const outside = Math.abs(lastPoint.value) > ENERGY_BAND_PCT;
+
+  return (
+    <div className="flex flex-col gap-1 rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-canvas)]/60 p-3">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="text-[14px] font-medium text-[var(--bib-ink)]">{label} vs weather-expected</span>
+        <span className={`bib-num text-[16px] font-semibold ${outside ? 'text-[var(--bib-status-due)]' : 'text-[var(--bib-ink)]'}`}>
+          {formatPct(lastPoint.value)}
+        </span>
+      </div>
+      <div className="h-[56px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 4, right: 2, left: 2, bottom: 4 }}>
+            <YAxis hide domain={[-span * 1.15, span * 1.15]} />
+            <ReferenceArea y1={-ENERGY_BAND_PCT} y2={ENERGY_BAND_PCT} fill="var(--bib-accent)" fillOpacity={0.12} stroke="none" />
+            <ReferenceLine y={0} stroke={INK_MUTED} strokeDasharray="3 3" />
+            <Line type="monotone" dataKey="value" stroke={RISK_STROKE} strokeWidth={1.75} dot={false} isAnimationActive={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+        ±{ENERGY_BAND_PCT}% band · today {lastPoint.kwh != null ? formatSensor(lastPoint.kwh, 'kWh') : '—'}
+      </div>
+    </div>
+  );
+}
+
+function LegendSwatch({ kind, label }: { kind: 'risk' | 'threshold' | 'due' | 'failed' | 'future'; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 text-[13px] leading-4 text-[var(--bib-ink-muted)]">
       {kind === 'risk' ? <span aria-hidden className="inline-block h-[3px] w-5 rounded-full bg-[var(--bib-accent)]" /> : null}
       {kind === 'threshold' ? <span aria-hidden className="inline-block w-5 border-t-2 border-dashed border-[var(--bib-status-due)]" /> : null}
       {kind === 'due' ? <span aria-hidden className="inline-block h-3 w-5 rounded-[2px] bg-[var(--bib-status-due-soft)]" /> : null}
+      {kind === 'failed' ? <span aria-hidden className="inline-block h-3 w-5 rounded-[2px] bg-[var(--bib-status-failed-soft)]" /> : null}
       {kind === 'future' ? <span aria-hidden className="inline-block w-5 border-t-2 border-dashed border-[var(--bib-ink-muted)]" /> : null}
       {label}
     </span>
@@ -143,40 +197,59 @@ export default function Asset() {
   const [briefing, setBriefing] = useState<Briefing | null>(null);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [briefingError, setBriefingError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [briefingLoading, setBriefingLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // The risk history does not depend on the date: fetch it once per asset.
   useEffect(() => {
     if (!assetId) return;
     let cancelled = false;
-    setLoading(true);
+    setHistoryLoading(true);
     setHistoryError(null);
-    setBriefingError(null);
-
-    Promise.all([
-      fetchAssetHistory(assetId).catch((err) => {
+    fetchAssetHistory(assetId)
+      .then((result) => {
+        if (!cancelled) setHistory(result);
+      })
+      .catch((err) => {
         if (!cancelled) {
           reportError(err);
           setHistoryError('Could not load this asset’s risk history.');
         }
-        return null;
-      }),
-      fetchBriefing(assetId, asOf).catch((err) => {
-        if (!cancelled) {
-          reportError(err);
-          setBriefingError('Agent briefing unavailable. The ranked queue is still current.');
-        }
-        return null;
-      }),
-    ]).then(([historyResult, briefingResult]) => {
-      if (cancelled) return;
-      setHistory(historyResult);
-      setBriefing(briefingResult);
-      setLoading(false);
-    });
-
+      })
+      .finally(() => {
+        if (!cancelled) setHistoryLoading(false);
+      });
     return () => {
       cancelled = true;
+    };
+  }, [assetId, reportError]);
+
+  // The briefing drafts a work order server-side, so it is debounced: Play and scrubbing never
+  // draft one per tick, only the date the user settles on.
+  useEffect(() => {
+    if (!assetId) return;
+    let cancelled = false;
+    setBriefingLoading(true);
+    setBriefingError(null);
+    const timer = window.setTimeout(() => {
+      fetchBriefing(assetId, asOf)
+        .then((result) => {
+          if (!cancelled) setBriefing(result);
+        })
+        .catch((err) => {
+          if (!cancelled) {
+            reportError(err);
+            setBriefingError('Agent briefing unavailable. The ranked queue is still current.');
+          }
+        })
+        .finally(() => {
+          if (!cancelled) setBriefingLoading(false);
+        });
+    }, BRIEFING_DEBOUNCE_MS);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
     };
   }, [assetId, asOf, refreshKey, reportError]);
 
@@ -194,7 +267,7 @@ export default function Asset() {
     );
   }
 
-  if (loading) {
+  if (historyLoading) {
     return (
       <div className="flex flex-col gap-5 p-6 xl:px-8">
         <PanelState state="loading" lines={3} />
@@ -219,10 +292,13 @@ export default function Asset() {
   }
 
   const { asset } = history;
-  const bullets = briefing?.bullets ?? [];
+  const bullets = (briefing?.bullets ?? []).map(normaliseCopy);
+  const isMain = asset.type === 'chw_main';
+  const energyLabel = isMain ? 'Pumping energy' : asset.system === 'air' ? 'Fan energy' : 'Energy';
   const backTo = asset.building_id
     ? { to: `/building/${asset.building_id}`, label: 'Back to building' }
     : { to: '/overview', label: 'Back to overview' };
+  const workOrderBuildings = asset.buildings_served.map((b) => ({ name: b.name, criticality: b.criticality }));
 
   return (
     <div className="flex min-h-full flex-col gap-5 p-6 xl:px-8">
@@ -243,10 +319,13 @@ export default function Asset() {
         ]}
         actions={
           <div className="rounded-[6px] border border-[var(--bib-border)] bg-[var(--bib-canvas)] px-3 py-1.5 text-right">
-            <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.08em] text-[var(--bib-ink-muted)]">Risk as of {formatDate(asOf)}</div>
+            <div className="text-[13px] font-semibold uppercase leading-4 tracking-[0.08em] text-[var(--bib-ink-muted)]">Risk as of {formatDate(asOf)}</div>
             <div className="bib-num text-[22px] font-semibold leading-7 text-[var(--bib-ink)]">
               {pointAtAsOf ? formatRisk(pointAtAsOf.risk) : '—'}
-              <span className="text-[13px] font-normal text-[var(--bib-ink-muted)]"> / 5 · threshold {formatRisk(history.threshold)}</span>
+              <span className="text-[13px] font-normal text-[var(--bib-ink-muted)]">
+                {' '}
+                · inspection ≥ {formatRisk(history.threshold)} · watch ≥ {formatRisk(WATCH_THRESHOLD)}
+              </span>
             </div>
           </div>
         }
@@ -260,8 +339,9 @@ export default function Asset() {
         actions={
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <LegendSwatch kind="risk" label="Risk" />
-            <LegendSwatch kind="threshold" label={`Threshold ${formatRisk(history.threshold)}`} />
+            <LegendSwatch kind="threshold" label={`Inspection threshold ${formatRisk(history.threshold)}`} />
             <LegendSwatch kind="due" label="Inspection due" />
+            <LegendSwatch kind="failed" label="Failed / out of service" />
             <LegendSwatch kind="future" label="After as-of" />
           </div>
         }
@@ -272,15 +352,21 @@ export default function Asset() {
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
         <Panel
           title="What’s driving it"
-          subtitle={`Each signal’s share of today’s risk and its move against the 30-day normal band, as of ${formatDate(asOf)}`}
+          subtitle={`Each signal’s share of today’s risk and the direction it moved against its own 30-day normal, as of ${formatDate(asOf)}`}
           icon={<Activity />}
           className="h-full"
         >
           {pointAtAsOf ? (
             <div className="flex flex-col gap-5">
-              <SignalBars contrib={pointAtAsOf.contrib} z={pointAtAsOf.z} driverLabel={pointAtAsOf.driver} />
+              <SignalBars
+                contrib={pointAtAsOf.contrib}
+                z={pointAtAsOf.z}
+                driverLabel={pointAtAsOf.driver}
+                sensors={pointAtAsOf.sensors}
+                band={pointAtAsOf.band}
+              />
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {SENSORS.filter((s) => pointAtAsOf.sensors?.[s.key] != null).map((s) => (
+                {SENSORS.filter((s) => s.key !== 'energy_kwh' && pointAtAsOf.sensors?.[s.key] != null).map((s) => (
                   <SensorMultiple
                     key={s.key}
                     label={s.label}
@@ -291,6 +377,7 @@ export default function Asset() {
                     asOf={asOf}
                   />
                 ))}
+                {pointAtAsOf.sensors?.energy_kwh != null ? <EnergyMultiple label={energyLabel} series={history.series} asOf={asOf} /> : null}
               </div>
             </div>
           ) : (
@@ -311,13 +398,15 @@ export default function Asset() {
             ) : undefined
           }
         >
-          {briefingError ? (
+          {briefingLoading && !briefing ? (
+            <PanelState state="loading" lines={6} />
+          ) : briefingError ? (
             <PanelState state="error" title="Agent briefing unavailable" message={briefingError} onRetry={() => setRefreshKey((k) => k + 1)} />
           ) : briefing ? (
-            <div className="flex flex-col gap-4">
+            <div className={`flex flex-col gap-4 transition-opacity ${briefingLoading ? 'opacity-70' : 'opacity-100'}`}>
               <div>
-                <h3 className="text-[20px] font-semibold leading-7 tracking-[-0.01em] text-[var(--bib-ink)]">{briefing.headline}</h3>
-                <p className="mt-2 text-[16px] leading-7 text-[var(--bib-ink-soft)]">{briefing.text}</p>
+                <h3 className="text-[20px] font-semibold leading-7 tracking-[-0.01em] text-[var(--bib-ink)]">{normaliseCopy(briefing.headline)}</h3>
+                <p className="mt-2 text-[16px] leading-7 text-[var(--bib-ink-soft)]">{normaliseCopy(briefing.text)}</p>
               </div>
               {bullets.length > 0 ? (
                 <ul className="flex flex-col gap-1.5">
@@ -333,31 +422,37 @@ export default function Asset() {
                 <div>
                   <dt className="bib-eyebrow">Energy</dt>
                   <dd className="bib-num mt-1 text-[20px] font-semibold leading-6 text-[var(--bib-ink)]">{formatPct(briefing.energy_over_expected_pct)}</dd>
-                  <dd className="text-[12px] leading-4 text-[var(--bib-ink-muted)]">vs weather-expected</dd>
+                  <dd className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">vs weather-expected</dd>
                 </div>
                 <div>
                   <dt className="bib-eyebrow">Serves</dt>
                   <dd className="bib-num mt-1 text-[20px] font-semibold leading-6 text-[var(--bib-ink)]">{briefing.buildings_served.length}</dd>
-                  <dd className="text-[12px] leading-4 text-[var(--bib-ink-muted)]">buildings</dd>
+                  <dd className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">buildings</dd>
                 </div>
                 <div>
                   <dt className="bib-eyebrow">If it fails</dt>
                   <dd className="bib-num mt-1 text-[20px] font-semibold leading-6 text-[var(--bib-ink)]">
                     {briefing.cost_per_day_usd > 0 ? formatUsd(briefing.cost_per_day_usd, { perDay: true }) : '—'}
                   </dd>
-                  <dd className="text-[12px] leading-4 text-[var(--bib-ink-muted)]">rental chillers (estimate)</dd>
+                  <dd className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">rental chillers at peak load, 95°F design day (estimate)</dd>
                 </div>
               </dl>
               <div>
                 <div className="bib-eyebrow mb-2">Draft work order</div>
                 <WorkOrderCard
                   workOrder={briefing.work_order}
+                  asOf={asOf}
+                  buildings={workOrderBuildings}
                   onApprove={async () => {
-                    if (briefing.work_order) await approveWorkOrder(briefing.work_order.wo_id, 'Facilities manager');
+                    if (briefing.work_order) await approveWorkOrder(briefing.work_order.wo_id, 'Facilities manager', asOf);
                     setRefreshKey((k) => k + 1);
                   }}
                   onDismiss={async (reason) => {
-                    if (briefing.work_order) await dismissWorkOrder(briefing.work_order.wo_id, reason);
+                    if (briefing.work_order) await dismissWorkOrder(briefing.work_order.wo_id, reason, asOf);
+                    setRefreshKey((k) => k + 1);
+                  }}
+                  onEdit={async (fields) => {
+                    if (briefing.work_order) await editWorkOrder(briefing.work_order.wo_id, fields, asOf);
                     setRefreshKey((k) => k + 1);
                   }}
                 />

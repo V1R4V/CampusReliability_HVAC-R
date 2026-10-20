@@ -1,4 +1,5 @@
 import math
+import re
 
 CRITICALITY_WEIGHT = {"patient_care": 4, "research_lab": 3, "instruction": 2, "office": 1}
 CHILLER_RENTAL_USD_PER_DAY = 3704
@@ -32,6 +33,8 @@ def _wo_json(w):
         "approved_by": w.approved_by,
         "approved_on": w.approved_on,
         "dismiss_reason": w.dismiss_reason,
+        "dismissed_on": w.dismissed_on,
+        "edited_on": w.edited_on,
     }
 
 
@@ -70,18 +73,29 @@ def _crew(asset):
 
 
 def _next_wo_id():
-    n = len(_fetch("WorkOrder", "id"))
-    return "WO 26-0%05d" % (WO_SERIES_BASE + n)
+    # Next number after the highest existing id in the series. A count-based id could repeat an
+    # existing one after a deletion and silently overwrite that order on upsert.
+    n = WO_SERIES_BASE
+    for w in _fetch("WorkOrder", "id"):
+        m = re.match(r"^WO 26-0?(\d+)$", w.id or "")
+        if m:
+            n = max(n, int(m.group(1)) + 1)
+    return "WO 26-0%05d" % n
 
 
 def _draft_work_order(asset, q, served, as_of, priority, description):
-    # One open draft per asset: reuse a pending one, or whatever was drafted for this asset on
-    # this as-of date (so re-opening the page after an approval does not draft a duplicate).
-    existing = _fetch("WorkOrder", "this, asset.id",
-                      "asset.id == '" + asset.id + "' && (status == 'PENDING_APPROVAL' || drafted_on == '" + as_of + "')")
-    if existing:
-        existing.sort(key=lambda w: (w.status != "PENDING_APPROVAL", w.id))
-        return existing[0]
+    # One work-order truth per asset (WorkOrder.current): approved beats pending beats dismissed,
+    # newest among equals, and an order drafted after `as_of` does not exist yet from the replay's
+    # point of view. A live (approved or pending) order is reused as-is, so an older pending draft
+    # is never shown beside an approval. After a dismissal a new draft is made, except on the day
+    # the dismissed order was drafted or dismissed, so a "Dismiss" click is not answered with a
+    # fresh draft on the same screen.
+    cur = c3.WorkOrder.current(asset.id, as_of)
+    if cur is not None:
+        if cur.status in ("APPROVED", "PENDING_APPROVAL"):
+            return cur
+        if as_of in (cur.drafted_on, cur.dismissed_on):
+            return cur
     wo = c3.WorkOrder.make({
         "id": _next_wo_id(),
         "asset": {"id": asset.id},
@@ -96,11 +110,15 @@ def _draft_work_order(asset, q, served, as_of, priority, description):
         "drafted_on": as_of,
     })
     wo.upsert()
-    return c3.WorkOrder.forId(wo.id).get("this, asset.id")
+    return _fetch("WorkOrder", "this, asset.id", "id == '" + wo.id + "'")[0]
 
 
 def generate(cls, asset_id, as_of):
-    asset = c3.Asset.forId(asset_id).get("this, segment.id, building.id")
+    # fetch, not forId().get(): forId returns None for an unknown id in this runtime.
+    found = _fetch("Asset", "this, segment.id, building.id", "id == '" + str(asset_id).replace("'", "\\'") + "'") if asset_id else []
+    if not found:
+        raise ValueError("Unknown asset_id %r." % (asset_id,))
+    asset = found[0]
     items = c3.CampusSnapshot.queue(as_of) or []
     q = next((i for i in items if i["asset_id"] == asset_id), None)
     if q is None:
@@ -171,7 +189,7 @@ def generate(cls, asset_id, as_of):
     else:
         bullets.append("Serves %d building%s" % (len(served), "" if len(served) == 1 else "s"))
     if is_cooling and cost:
-        bullets.append("Plan B if it fails: %d chillers · %s (estimate)" % (chillers, cost_k.replace(" a day", "/day")))
+        bullets.append("Outage plan if it fails: %d chillers · %s (estimate)" % (chillers, cost_k.replace(" a day", "/day")))
 
     work_order = None
     if status in ("WATCH", "INSPECTION_DUE", "FAILED"):

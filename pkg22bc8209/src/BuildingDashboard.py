@@ -29,13 +29,14 @@ def _check_as_of(as_of):
 
 
 def _building(building_id):
-    b = None
-    if building_id is not None and str(building_id).strip():
-        b = c3.Building.forId(str(building_id).strip()).get("this, segment.id")
-    if b is None:
+    bid = str(building_id).strip() if building_id is not None else ""
+    # fetch, not forId().get(): forId returns None for an unknown id in this runtime, which
+    # turned a bad building_id into an AttributeError instead of this message.
+    rows = _fetch("Building", "this, segment.id", "id == '" + bid.replace("'", "\\'") + "'") if bid else []
+    if not rows:
         known = sorted(x.id for x in _fetch("Building", "id"))
         raise ValueError("Unknown building_id %r. Known buildings: %s." % (building_id, ", ".join(known) if known else "none loaded"))
-    return b
+    return rows[0]
 
 
 def _shift(as_of, days):
@@ -58,7 +59,8 @@ def _wo_json(w):
         "approved_by": w.approved_by,
         "approved_on": w.approved_on,
         "dismiss_reason": w.dismiss_reason,
-        "edited_on": getattr(w, "edited_on", None),
+        "dismissed_on": w.dismissed_on,
+        "edited_on": w.edited_on,
     }
 
 
@@ -111,8 +113,11 @@ def compute(cls, building_id, as_of):
     energy_series = [{"date": d, "actual_kwh": int(round(v["actual"])), "expected_kwh": int(round(v["expected"]))}
                      for d, v in sorted(by_date.items())]
 
-    work_orders = [_wo_json(w) for w in _fetch("WorkOrder", "this, asset.id")
-                   if w.asset is not None and w.asset.id in serving_ids and (w.drafted_on or "") <= as_of]
+    # One work-order truth per asset (WorkOrder.current_all, shared with Briefing and
+    # CampusSnapshot): the order that represents each serving asset as of this date, so a pending
+    # draft is never listed beside its own approval and future drafts stay invisible.
+    work_orders = [_wo_json(w) for w in (c3.WorkOrder.current_all(as_of) or [])
+                   if w is not None and w.asset is not None and w.asset.id in serving_ids]
     work_orders.sort(key=lambda w: w["drafted_on"] or "", reverse=True)
 
     plan_b = None

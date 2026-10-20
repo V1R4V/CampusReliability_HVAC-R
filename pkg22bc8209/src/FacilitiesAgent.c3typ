@@ -11,9 +11,13 @@ type FacilitiesAgent {
    * proposed_actions[{kind: "draft_work_order", work_order: WorkOrder}], generated_by }`.
    *
    * The template answer ranks the as-of queue and proposes inspections for the top due/watch
-   * assets ("What should 2 crews inspect this week?" → top 2). An LLM path (`generated_by =
-   * llm`) may rephrase using tool results only; on any LLM failure the template answer is
-   * returned so the drawer never errors out.
+   * assets ("What should 2 crews inspect this week?" → top 2). When fewer assets are flagged
+   * than crews asked for, every remaining crew still gets an answer: the next asset on the same
+   * ranked queue with an explicit hedge ("nothing else is due or on watch; best use is …,
+   * otherwise scheduled preventive maintenance"), described only with that queue row's numbers,
+   * and with no work order drafted for it. Segment entities are labelled "Loop S3". An LLM path
+   * (`generated_by = llm`) may rephrase using tool results only; on any LLM failure the template
+   * answer is returned so the drawer never errors out.
    */
   ask: function(question: string, as_of: string): json py
 }

@@ -79,17 +79,19 @@ def _queue_items(as_of):
     assets = _fetch("Asset", "this, segment.id, building.id")
     buildings = _fetch("Building", "this, segment.id")
     scores = _fetch("RiskScore", "this, asset.id", "date == '" + as_of + "'")
-    wos = _fetch("WorkOrder", "this, asset.id", "drafted_on <= '" + as_of + "'")
 
     buildings_by_id = {b.id: b for b in buildings}
     buildings_by_segment = {}
     for b in buildings:
         buildings_by_segment.setdefault(_ref_id(b.segment), []).append(b)
     score_by_asset = {_ref_id(s.asset): s for s in scores}
-    # One status per asset: the live order (pending/approved) wins over a dismissed one; newest among equals.
+    # One work-order truth per asset (WorkOrder.current_all, shared with Briefing and
+    # BuildingDashboard): only orders drafted on or before as_of exist; approved beats pending
+    # beats dismissed; newest among equals.
     wo_by_asset = {}
-    for w in sorted(wos, key=lambda w: ((w.status or "") != "DISMISSED", w.drafted_on or "")):
-        wo_by_asset[_ref_id(w.asset)] = w.status
+    for w in (c3.WorkOrder.current_all(as_of) or []):
+        if w is not None and w.asset is not None:
+            wo_by_asset[_ref_id(w.asset)] = w.status
 
     items = []
     for a in assets:

@@ -33,8 +33,8 @@ export default function LoadShedTable({ rows, shown, totals, priorityOnly }: Loa
         <TableRow>
           <TableHead className="w-12 pl-4">#</TableHead>
           <TableHead>Building</TableHead>
-          <TableHead className="text-right">Peak load</TableHead>
-          <TableHead className="text-right">Chillers</TableHead>
+          <TableHead className="text-right">Peak cooling load</TableHead>
+          <TableHead className="text-right">Rental units</TableHead>
           <TableHead className="text-right">$/day</TableHead>
           <TableHead className="pr-4 text-right">Staged</TableHead>
         </TableRow>
@@ -63,7 +63,7 @@ export default function LoadShedTable({ rows, shown, totals, priorityOnly }: Loa
                   <CriticalityBadge criticality={row.criticality} />
                 </div>
               </TableCell>
-              <TableCell className="bib-num text-right text-[15px]">{formatNumber(row.peak_load_tons)} t</TableCell>
+              <TableCell className="bib-num text-right text-[15px]">{formatNumber(row.peak_load_tons)} tons</TableCell>
               <TableCell className="bib-num text-right text-[15px] font-medium text-[var(--bib-ink)]">{muted ? '—' : row.chillers_needed}</TableCell>
               <TableCell className="bib-num text-right text-[15px] font-medium text-[var(--bib-ink)]">{muted ? '—' : formatUsd(row.cost_per_day_usd)}</TableCell>
               <TableCell className="pr-4 text-right">

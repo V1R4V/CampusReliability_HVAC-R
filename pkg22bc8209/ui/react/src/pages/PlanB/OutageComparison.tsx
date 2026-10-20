@@ -118,7 +118,7 @@ export default function OutageComparison({
             <div className="min-w-0">
               <div className="bib-eyebrow">This scenario</div>
               <p className="mt-0.5 text-[15px] leading-5 text-[var(--bib-ink)]">
-                {segmentLabel} fails on a {tempF}°F day · rental chillers staged for{' '}
+                {segmentLabel} fails at {tempF}°F · rental chillers staged for{' '}
                 {priorityOnly ? 'priority buildings only' : 'every building'}
                 {!complete ? ' · dispatching…' : ''}
               </p>
@@ -135,11 +135,11 @@ export default function OutageComparison({
               label={`rental chillers · ${running.buildings} ${running.buildings === 1 ? 'building' : 'buildings'}`}
             />
             <Big value={formatUsd(running.cost_per_day_usd)} unit="/day" label="rental burn rate" />
-            <Big value={formatUsd(weekly)} label="saved by one week of warning" />
+            <Big value={formatUsd(weekly)} label="one week of rental burn: what a week unprepared costs" />
           </div>
         )}
         <p className="mt-auto border-t border-[var(--bib-border)] pt-3 text-[13px] leading-4 text-[var(--bib-ink-muted)]">
-          ${formatNumber(CHILLER_RENTAL_USD_PER_DAY)} per {TONS_PER_RENTAL_CHILLER}-ton rental chiller per day
+          ${formatNumber(CHILLER_RENTAL_USD_PER_DAY)} per {TONS_PER_RENTAL_CHILLER}-ton rental unit per day (estimate)
           {result ? ` · load factor ${result.load_factor.toFixed(2)} at ${result.temp_f}°F` : ''}
         </p>
       </section>

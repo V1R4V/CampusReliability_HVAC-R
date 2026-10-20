@@ -290,9 +290,10 @@ export default function AgentDrawer({ asOf, open, onOpenChange }: AgentDrawerPro
                         <WorkOrderCard
                           key={action.work_order.wo_id}
                           workOrder={action.work_order}
-                          onApprove={() => approveWorkOrder(action.work_order.wo_id, APPROVER)}
-                          onDismiss={(reason) => dismissWorkOrder(action.work_order.wo_id, reason)}
-                          onEdit={(fields) => editWorkOrder(action.work_order.wo_id, fields)}
+                          onApprove={() => approveWorkOrder(action.work_order.wo_id, APPROVER, asOf)}
+                          onDismiss={(reason) => dismissWorkOrder(action.work_order.wo_id, reason, asOf)}
+                          onEdit={(fields) => editWorkOrder(action.work_order.wo_id, fields, asOf)}
+                          asOf={asOf}
                         />
                       ))}
                     </div>

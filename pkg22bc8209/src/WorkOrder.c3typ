@@ -4,6 +4,13 @@
  * Report). **Nothing is ever auto-executed**: every agent-drafted order is created as
  * `PENDING_APPROVAL` and only {@link #approve} / {@link #dismiss} / {@link #edit}, invoked from
  * the UI, move or change it.
+ *
+ * **One work-order truth per asset.** {@link #current} / {@link #current_all} implement the single
+ * rule every page uses to decide which order represents an asset on a replay date: only orders
+ * with {@link #drafted_on} on or before the date exist; an `APPROVED` order is the live one (an
+ * older pending draft is never shown beside it); else the newest `PENDING_APPROVAL` draft; else
+ * the newest `DISMISSED` one. {@link Briefing#generate}, {@link CampusSnapshot#compute}
+ * (`work_order_status`) and {@link BuildingDashboard#compute} (`work_orders`) all call it.
  */
 entity type WorkOrder {
   /** The asset to inspect. */
@@ -33,40 +40,63 @@ entity type WorkOrder {
   /** Who drafted it — `agent` for all drafts produced by {@link Briefing#generate} / {@link FacilitiesAgent#ask}. */
   drafted_by: string
 
-  /** ISO date the draft was created (the as-of date in replay). */
+  /** ISO date the draft was created (the as-of date in replay). Orders drafted after a replay date do not exist yet on that date. */
   drafted_on: string
 
   /** Approver display name; null until approved. */
   approved_by: string
 
-  /** ISO date of approval; null until approved. */
+  /** ISO date of approval — the replay date passed to {@link #approve} (today's date if none); null until approved. */
   approved_on: string
 
   /** Required reason when dismissed; null otherwise. */
   dismiss_reason: string
 
-  /** ISO date of the last manual edit while pending; null if the draft was never edited. */
+  /** ISO date of dismissal — the replay date passed to {@link #dismiss} (today's date if none); null unless dismissed. */
+  dismissed_on: string
+
+  /** ISO date of the last manual edit while pending — the replay date passed to {@link #edit}; null if the draft was never edited. */
   edited_on: string
 
   /**
-   * Approve this work order: sets status `APPROVED`, {@link #approved_by} = `approver` and
-   * {@link #approved_on} = today, persists the change and returns the updated order.
-   * Idempotent on an already-approved order; throws on a dismissed one.
+   * Approve this work order: sets status `APPROVED`, {@link #approved_by} = `approver` (default
+   * "Facilities manager") and {@link #approved_on} = `as_of` (the replay date on screen; null →
+   * today's date), persists the change and returns the updated order. Idempotent on an
+   * already-approved order (nothing is rewritten); throws on a dismissed one, on an unknown id,
+   * or when `as_of` is before {@link #drafted_on}.
    */
-  approve: member function(approver: string): WorkOrder py
+  approve: member function(approver: string, as_of: string): WorkOrder py
 
   /**
-   * Dismiss this work order with a mandatory `reason`: sets status `DISMISSED` and
-   * {@link #dismiss_reason}, persists and returns the updated order. Throws if `reason` is empty.
+   * Dismiss this work order with a mandatory `reason`: sets status `DISMISSED`,
+   * {@link #dismiss_reason} and {@link #dismissed_on} = `as_of` (null → today), persists and
+   * returns the updated order. Idempotent on an already-dismissed order; throws if `reason` is
+   * empty, if the order is `APPROVED`, or when `as_of` is before {@link #drafted_on}.
    */
-  dismiss: member function(reason: string): WorkOrder py
+  dismiss: member function(reason: string, as_of: string): WorkOrder py
 
   /**
-   * Edit a `PENDING_APPROVAL` work order from the UI. Any argument may be null, meaning
+   * Edit a `PENDING_APPROVAL` work order from the UI. Any field argument may be null, meaning
    * unchanged; at least one must be given. Validates title / description / crew non-empty,
-   * `priority` 1–3 and `est_hours` 1–40, sets {@link #edited_on} = today, persists and returns
-   * the updated order. Throws if the order is `APPROVED` or `DISMISSED` (those are immutable
-   * records) or if the id is unknown.
+   * `priority` 1–3 and `est_hours` 1–40, sets {@link #edited_on} = `as_of` (null → today),
+   * persists and returns the updated order. Throws if the order is `APPROVED` or `DISMISSED`
+   * (those are immutable records), if the id is unknown, or when `as_of` is before {@link #drafted_on}.
    */
-  edit: member function(title: string, description: string, priority: int, crew: string, est_hours: int): WorkOrder py
+  edit: member function(title: string, description: string, priority: int, crew: string, est_hours: int, as_of: string): WorkOrder py
+
+  /**
+   * The one order that represents `asset_id` as of `as_of` (null → today), by the rule in the
+   * type comment: visible = {@link #drafted_on} ≤ `as_of`; `APPROVED` wins, else newest
+   * `PENDING_APPROVAL`, else newest `DISMISSED`; null if the asset has no visible order.
+   * {@link Briefing#generate} drafts a new order only when this returns null or a dismissed order.
+   */
+  current: function(asset_id: string, as_of: string): WorkOrder py
+
+  /**
+   * {@link #current} for every asset that has at least one order visible on `as_of` — one
+   * {@link WorkOrder} per asset. Used by {@link CampusSnapshot#compute} for `work_order_status`
+   * and by {@link BuildingDashboard#compute} for `work_orders`, so the whole campus is judged by
+   * one rule in one query.
+   */
+  current_all: function(as_of: string): [WorkOrder] py
 }

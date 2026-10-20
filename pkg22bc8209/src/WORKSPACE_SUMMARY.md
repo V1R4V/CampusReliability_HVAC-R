@@ -91,11 +91,40 @@ drives every page); Anuva's temporary `StatusTag`/`ProvenanceTag` replaced by Ar
   Screenshots in `.playwright/shots/` (gitignored); `ui/react/playwright-payloads.tmp.json` is the untracked
   payload file the harness fetches through Vite.
 
+**Critique pass (2026-10-20) — an HVAC-engineer + UI-lead review agent inspected every page; its 25 findings drove this:**
+- Backend (one work-order truth): `WorkOrder.current(asset_id, as_of)` / `current_all(as_of)` is the single rule behind
+  `queue[].work_order_status`, `briefing.work_order` and `building.work_orders[]` (visible = `drafted_on ≤ as_of`;
+  APPROVED wins, else newest PENDING, else newest DISMISSED; Briefing drafts only when nothing live exists).
+  `approve/dismiss/edit` take a trailing `as_of` and stamp `approved_on` / `dismissed_on` / `edited_on` with the replay
+  date (no more "approved Oct 20" on a Jun 9 screen); `WorkOrder.edit` (pending only, priority 1–3, hours 1–40).
+  `RiskModel.forecast_all` enforces p7 ≤ p14 ≤ p30 per method (71 non-monotone rows → 0; S3-PIPE consensus 14 d 0.87).
+  `FacilitiesAgent.ask` fills "N crews" from the ranked queue with an explicit hedge. `Backtest.run().metrics`
+  (asset-day precision/recall, false alarms per 1,000 asset-days, lead stats, per-method Brier; ML.md §9).
+  Driver label "flow imbalance ↑ 1.5 pts" (percentage points). pytest: `test/py/test_WorkOrder.py`,
+  `test_RiskForecast.py`, `test_FacilitiesAgent.py`, `test_planb.py` (26 cases, `runTest`).
+- Frontend: SignalBars arrows point the *physical* way (pressure ↓ falling, ΔT shrinking) with σ and the raw
+  deviation vs the 30-day band; the energy tile plots % over weather-expected (±5% band) and is labelled
+  "Pumping energy" on mains; RiskChart shades FAILED separately from INSPECTION_DUE, month ticks, even y ticks;
+  risk is no longer written "/ 5" (unbounded; RiskBar stretches); "Likely when" is withheld under 20% and framed
+  "if the trend holds"; Outage plan defaults to the 95°F design day so "$67K/day · 18 chillers" matches the
+  queue/briefing, with the basis named wherever $/day appears; healthy queue rows get a quiet "Open →" and an
+  energy-finding tag when > 5% over expected; Buildings shows a shared-cause banner ("9 buildings … because of
+  one asset: S3-PIPE"); table view drops the redundant Status column; Work orders respect the replay clock
+  (`dedupe.ts`: approved supersedes pending; future drafts hidden with a count), carry the buildings at stake, and
+  Edit works from every page via `WorkOrder.edit`; morning brief has a "Start here" CTA; Backtest states that the
+  failures were planted; copy/unit fixes (tons, rental units, Outage plan, Loop). Jest suites for the pure modules
+  (`shared/api/format`, `WorkOrders/dedupe`, `Buildings/buildingRows`, `ForecastPanel/probability`).
+- Data: `data/RiskScore/S3-PIPE_fixture.json` deleted — it was re-upserted on every `upsertSeedData` and
+  overwrote 31 computed S3-PIPE rows. Work-order seed is exactly three rows again (Jun 9 S3-PIPE draft pending).
+- Screenshots `.playwright/shots/d1-*…d9-*.png`; harness payloads rebuilt from the new backend output.
+
 **Open items:** Devansh's generator replaces the interim seed by overwriting the same file names / ids
-(rerun `score_all` → `forecast_all` after). The map view needs the browser to reach `tile.openstreetmap.org`;
-dots and tooltips still render without tiles. A dark theme (`styles/theme-dark.css`, `TopNav/ThemeToggle`,
-pre-paint class in `main.tsx`) landed in parallel with this pass; `App.tsx` still strips `.dark` on mount
-(FRONTEND §2 "light only"), so the toggle and the page can disagree after a reload until that effect is removed.
+(rerun `score_all` → `forecast_all` after any upsert). The map view needs the browser to reach
+`tile.openstreetmap.org`; dots and tooltips still render without tiles. Monotone forecasts are a running-max floor,
+not a recalibration (a single hazard per method would be the principled fix). Roadmap from the HVAC review:
+interties / isolation valves on `LoopSegment`, plant make-up-water as a `Signal`, rental lead time per building —
+none exist in the contract yet. Branches `arnav/ui-pages` and `vibhrav/scratchpad` were superseded by main
+(their ideas — system dots, table view, work-order dedupe — were ported); their PRs can be closed.
 
 **Key decisions:** one package; contract snake_case kept; API methods return `json` (keeps the `type`
 key, avoids ~25 result types); seed JSON omits null keys; `RiskScore` precomputed; merge-not-rebase.

@@ -24,7 +24,7 @@ import {
 
 import ChartTooltip from '@/components/Chart/ChartTooltip';
 import { AXIS_STROKE, AXIS_TICK, GRID_STROKE, INK, INK_MUTED, RISK_STROKE, STATUS_STROKE, shortDate } from '@/components/Chart/chartTheme';
-import { STATUS_LABEL, formatRisk } from '@/shared/api';
+import { MONTH_TICKS, STATUS_LABEL, formatRisk } from '@/shared/api';
 import type { AssetEvent, AssetStatus, RiskSeriesPoint } from '@/Interfaces';
 
 export interface RiskChartProps {
@@ -130,26 +130,37 @@ export default function RiskChart({ series, threshold, events, asOf, height = 30
 
   const riskByDate = useMemo(() => new Map(chartData.map((d) => [d.date, d.risk])), [chartData]);
 
-  const inspectionDueSpans = useMemo(() => {
+  // Contiguous runs of one status, so "inspection due" and "failed / out of service" shade differently.
+  const spansOf = (match: (status: AssetStatus) => boolean) => {
     const spans: { x1: string; x2: string }[] = [];
     let start: string | null = null;
     chartData.forEach((d, i) => {
-      const due = d.status === 'INSPECTION_DUE' || d.status === 'FAILED';
-      if (due && start === null) start = d.date;
+      const hit = match(d.status);
+      if (hit && start === null) start = d.date;
       const next = chartData[i + 1];
-      const nextDue = next ? next.status === 'INSPECTION_DUE' || next.status === 'FAILED' : false;
-      if (due && !nextDue && start !== null) {
+      const nextHit = next ? match(next.status) : false;
+      if (hit && !nextHit && start !== null) {
         spans.push({ x1: start, x2: d.date });
         start = null;
       }
     });
     return spans;
-  }, [chartData]);
+  };
+  const inspectionDueSpans = useMemo(() => spansOf((s) => s === 'INSPECTION_DUE'), [chartData]); // eslint-disable-line react-hooks/exhaustive-deps
+  const failedSpans = useMemo(() => spansOf((s) => s === 'FAILED'), [chartData]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Even integer ceiling so the y ticks read 0 · 2 · 4 · 6 · 8, never 0 · 2 · 4 · 7.
   const yMax = useMemo(() => {
     const maxRisk = chartData.reduce((m, d) => Math.max(m, d.risk), 0);
-    return Math.max(5, Math.ceil(Math.max(maxRisk, threshold) + 0.5));
+    const raw = Math.max(5, Math.ceil(Math.max(maxRisk, threshold) + 0.5));
+    return raw % 2 === 0 ? raw : raw + 1;
   }, [chartData, threshold]);
+  const yTicks = useMemo(() => Array.from({ length: yMax / 2 + 1 }, (_, i) => i * 2), [yMax]);
+  // First of each month that the series covers — the scrubber uses the same ticks.
+  const xTicks = useMemo(() => {
+    const dates = new Set(chartData.map((d) => d.date));
+    return MONTH_TICKS.map((t) => t.iso).filter((iso) => dates.has(iso));
+  }, [chartData]);
 
   const failureEvents = (events ?? []).filter((e) => e.kind === 'failure');
   const realRefEvents = (events ?? []).filter((e) => e.kind === 'real_reference');
@@ -175,24 +186,37 @@ export default function RiskChart({ series, threshold, events, asOf, height = 30
         <CartesianGrid stroke={GRID_STROKE} vertical={false} />
         <XAxis
           dataKey="date"
+          ticks={xTicks.length > 1 ? xTicks : undefined}
           tickFormatter={shortDate}
-          minTickGap={48}
+          minTickGap={32}
           tick={AXIS_TICK}
           axisLine={{ stroke: AXIS_STROKE }}
           tickLine={false}
         />
-        <YAxis domain={[0, yMax]} tick={AXIS_TICK} width={28} axisLine={false} tickLine={false} />
+        <YAxis domain={[0, yMax]} ticks={yTicks} tick={AXIS_TICK} width={28} axisLine={false} tickLine={false} />
         <Tooltip content={<RiskTooltip />} cursor={{ stroke: AXIS_STROKE }} />
 
         {inspectionDueSpans.map((span) => (
           <ReferenceArea
-            key={`${span.x1}-${span.x2}`}
+            key={`due-${span.x1}-${span.x2}`}
             x1={span.x1}
             x2={span.x2}
             y1={0}
             y2={yMax}
             fill={STATUS_STROKE.INSPECTION_DUE}
             fillOpacity={0.08}
+            stroke="none"
+          />
+        ))}
+        {failedSpans.map((span) => (
+          <ReferenceArea
+            key={`failed-${span.x1}-${span.x2}`}
+            x1={span.x1}
+            x2={span.x2}
+            y1={0}
+            y2={yMax}
+            fill={STATUS_STROKE.FAILED}
+            fillOpacity={0.07}
             stroke="none"
           />
         ))}

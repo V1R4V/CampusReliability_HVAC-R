@@ -8,13 +8,15 @@
  */
 
 import { c3Action, c3MemberAction } from '@/c3Action';
-import { errorMessage } from '@/shared/api/contract';
 import type { AskResponse, AssetHistory, Briefing, BuildingDashboard, WorkOrder, WorkOrderEditFields, WorkOrderStatus } from '@/Interfaces';
 
 /**
  * Anuva's data-access functions — Building dashboard, Asset detail, Work
  * Orders, Agent drawer. One function per docs/CONTRACT.md §5.2 call; her
  * pages import from here and never call `c3Action` directly (brief §7).
+ *
+ * Work-order actions take the replay date (`asOf`) so the record is stamped with the date on
+ * screen, not the wall clock: a Jun 9 approval must read "approved Jun 9", not "Oct 20".
  */
 
 /** `BuildingDashboard.compute(building_id, as_of)`. */
@@ -27,7 +29,7 @@ export async function fetchAssetHistory(assetId: string): Promise<AssetHistory> 
   return c3Action('AssetHistory', 'get', [assetId]);
 }
 
-/** `Briefing.generate(asset_id, as_of)` — also drafts a PENDING_APPROVAL work order server-side. */
+/** `Briefing.generate(asset_id, as_of)` — reuses the asset's live work order or drafts a PENDING_APPROVAL one server-side. */
 export async function fetchBriefing(assetId: string, asOf: string): Promise<Briefing> {
   return c3Action('Briefing', 'generate', [assetId, asOf]);
 }
@@ -48,6 +50,8 @@ interface RawWorkOrderRow {
   approved_by: string | null;
   approved_on: string | null;
   dismiss_reason: string | null;
+  dismissed_on?: string | null;
+  edited_on?: string | null;
 }
 
 /**
@@ -74,53 +78,39 @@ export async function fetchWorkOrders(): Promise<WorkOrder[]> {
     approved_by: row.approved_by,
     approved_on: row.approved_on,
     dismiss_reason: row.dismiss_reason,
+    dismissed_on: row.dismissed_on ?? null,
+    edited_on: row.edited_on ?? null,
   }));
 }
 
 /**
- * Member `WorkOrder.approve(approver)`. Callers should re-fetch/optimistically
- * update rather than rely on the resolved value's shape (member actions
- * return the platform entity, not the contract's flat JSON).
+ * Member `WorkOrder.approve(approver, as_of)`. Idempotent on an approved order; the backend
+ * refuses a dismissed one. Callers re-fetch rather than rely on the resolved value's shape
+ * (member actions return the platform entity, not the contract's flat JSON).
  */
-export async function approveWorkOrder(woId: string, approver: string): Promise<void> {
-  await c3MemberAction('WorkOrder', 'approve', { id: woId }, [approver]);
+export async function approveWorkOrder(woId: string, approver: string, asOf?: string): Promise<void> {
+  await c3MemberAction('WorkOrder', 'approve', { id: woId }, [approver, asOf ?? null]);
 }
 
-/** Member `WorkOrder.dismiss(reason)`. */
-export async function dismissWorkOrder(woId: string, reason: string): Promise<void> {
-  await c3MemberAction('WorkOrder', 'dismiss', { id: woId }, [reason]);
-}
-
-/** True when the server rejected the call because the action itself does not exist (yet). */
-function isUnknownActionError(err: unknown, action: string): boolean {
-  const text = errorMessage(err).toLowerCase();
-  return (
-    text.includes(action) &&
-    /unknown|not found|no such|no action|not defined|does not (exist|have)|undefined|invalid action|cannot find|not a (member|function|method)|unrecognized/.test(
-      text,
-    )
-  );
+/** Member `WorkOrder.dismiss(reason, as_of)` — a reason is required; stamps `dismissed_on`. */
+export async function dismissWorkOrder(woId: string, reason: string, asOf?: string): Promise<void> {
+  await c3MemberAction('WorkOrder', 'dismiss', { id: woId }, [reason, asOf ?? null]);
 }
 
 /**
- * Member `WorkOrder.edit(title, description, priority, crew, est_hours)`: nulls leave a field
- * unchanged and only `PENDING_APPROVAL` orders can be edited (the backend enforces both).
- * Until that member is live the server rejects `edit` as an unknown action and we fall back
- * to the built-in `WorkOrder.merge` with the same fields (no pending-only guard). To drop the
- * fallback once `edit` has landed: delete the `catch` block below.
+ * Member `WorkOrder.edit(title, description, priority, crew, est_hours, as_of)`: nulls leave a
+ * field unchanged, only `PENDING_APPROVAL` orders can be edited, priority 1–3, est_hours 1–40
+ * (the backend enforces all of it and stamps `edited_on`).
  */
-export async function editWorkOrder(woId: string, fields: WorkOrderEditFields): Promise<void> {
-  const args = [fields.title ?? null, fields.description ?? null, fields.priority ?? null, fields.crew ?? null, fields.est_hours ?? null];
-  try {
-    await c3MemberAction('WorkOrder', 'edit', { id: woId }, args);
-  } catch (err) {
-    if (!isUnknownActionError(err, 'edit')) throw err;
-    const patch: Record<string, unknown> = { id: woId };
-    (Object.keys(fields) as (keyof WorkOrderEditFields)[]).forEach((key) => {
-      if (fields[key] != null) patch[key] = fields[key];
-    });
-    await c3Action('WorkOrder', 'merge', [patch]);
-  }
+export async function editWorkOrder(woId: string, fields: WorkOrderEditFields, asOf?: string): Promise<void> {
+  await c3MemberAction('WorkOrder', 'edit', { id: woId }, [
+    fields.title ?? null,
+    fields.description ?? null,
+    fields.priority ?? null,
+    fields.crew ?? null,
+    fields.est_hours ?? null,
+    asOf ?? null,
+  ]);
 }
 
 /** `FacilitiesAgent.ask(question, as_of)`. */

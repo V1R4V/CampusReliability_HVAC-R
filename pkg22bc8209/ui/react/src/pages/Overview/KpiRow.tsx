@@ -20,12 +20,17 @@ import {
 export interface KpiRowProps {
   kpis: SnapshotKpis | null;
   pendingWorkOrders: number;
+  /** Buildings whose worst system is INSPECTION_DUE — one asset can put nine buildings at risk. */
+  buildingsDue?: number;
   loading: boolean;
   error: string | null;
 }
 
-export default function KpiRow({ kpis, pendingWorkOrders, loading, error }: KpiRowProps) {
+export default function KpiRow({ kpis, pendingWorkOrders, buildingsDue = 0, loading, error }: KpiRowProps) {
   const workOrders = `${pendingWorkOrders} work order${pendingWorkOrders === 1 ? '' : 's'} awaiting approval`;
+  const dueSub = kpis
+    ? `${kpis.inspection_due === 1 ? '1 asset' : `${kpis.inspection_due} assets`} · ${buildingsDue} ${buildingsDue === 1 ? 'building' : 'buildings'} affected · ${workOrders}`
+    : undefined;
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <KpiTile
@@ -34,7 +39,7 @@ export default function KpiRow({ kpis, pendingWorkOrders, loading, error }: KpiR
         icon={<ShieldAlert />}
         tone={kpis && kpis.inspection_due > 0 ? 'INSPECTION_DUE' : 'neutral'}
         delta={kpis ? { value: kpis.inspection_due_delta, vsLabel: 'vs yesterday', upIsBad: true } : undefined}
-        sub={kpis ? `${kpis.failed} failed · ${workOrders}` : undefined}
+        sub={dueSub}
         loading={loading}
         error={error}
       />
@@ -43,7 +48,7 @@ export default function KpiRow({ kpis, pendingWorkOrders, loading, error }: KpiR
         value={kpis ? formatNumber(kpis.watch) : '—'}
         icon={<Eye />}
         tone={kpis && kpis.watch > 0 ? 'WATCH' : 'neutral'}
-        sub={`Risk ≥ ${WATCH_THRESHOLD.toFixed(1)} but not yet persistent`}
+        sub={`Risk ≥ ${WATCH_THRESHOLD.toFixed(1)}, under the inspection threshold`}
         loading={loading}
         error={error}
       />
@@ -65,7 +70,7 @@ export default function KpiRow({ kpis, pendingWorkOrders, loading, error }: KpiR
         value={kpis ? formatUsd(kpis.cooling_exposure_usd_per_day) : '—'}
         unit="/day"
         icon={<Snowflake />}
-        sub={`Rental chillers if at-risk cooling fails · $${formatNumber(CHILLER_RENTAL_USD_PER_DAY)}/chiller/day`}
+        sub={`Rental chillers if at-risk cooling fails, sized at peak load (95°F design day) · $${formatNumber(CHILLER_RENTAL_USD_PER_DAY)}/chiller/day`}
         loading={loading}
         error={error}
       />

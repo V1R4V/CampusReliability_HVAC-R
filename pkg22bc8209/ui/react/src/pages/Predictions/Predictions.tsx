@@ -53,9 +53,14 @@ function methodRange(a: ForecastCampusAsset): { lo: number; hi: number } | null 
   return { lo: Math.min(...values), hi: Math.max(...values) };
 }
 
-function daysLabel(days: number | null): string {
-  if (days == null) return '';
-  return days < 1 ? 'under a day' : `about ${Math.round(days)} days`;
+/**
+ * Monte Carlo median first-crossing time. It is only meaningful when the asset is actually at
+ * risk: for a healthy asset the median is "among the few paths that cross" and would read as a
+ * forecast, so it is withheld under 20% and framed as conditional above it.
+ */
+function daysLabel(days: number | null, consensus: number | null): string {
+  if (days == null || probabilityStatus(consensus) === 'HEALTHY') return '';
+  return days < 1 ? 'if the trend holds: under a day' : `if the trend holds: ~${Math.round(days)} days`;
 }
 
 function SystemSummary({ system, assets }: { system: SystemType; assets: ForecastCampusAsset[] }) {
@@ -93,7 +98,7 @@ function SystemSummary({ system, assets }: { system: SystemType; assets: Forecas
           <div className="flex flex-wrap items-center justify-between gap-2 text-[14px] leading-5 text-[var(--bib-ink-muted)]">
             <span>
               chance of failure within 14 days
-              {top.days_to_failure_p50 != null ? ` · likely in ${daysLabel(top.days_to_failure_p50)}` : ''}
+              {daysLabel(top.days_to_failure_p50, top.consensus_14d) ? ` · ${daysLabel(top.days_to_failure_p50, top.consensus_14d)}` : ''}
             </span>
             {top.status ? <StatusPill status={top.status} size="sm" /> : null}
           </div>
@@ -237,7 +242,7 @@ export default function Predictions() {
                         ) : (
                           <TableHead className="text-right">Methods range</TableHead>
                         )}
-                        <TableHead className="pr-4 text-right">Likely when</TableHead>
+                        <TableHead className="pr-4 text-right">Time to failure if trend holds</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -274,7 +279,9 @@ export default function Predictions() {
                                 {range ? `${formatProbability(range.lo)} to ${formatProbability(range.hi)}` : ''}
                               </TableCell>
                             )}
-                            <TableCell className="pr-4 text-right text-[var(--bib-ink-muted)]">{daysLabel(a.days_to_failure_p50)}</TableCell>
+                            <TableCell className="pr-4 text-right text-[var(--bib-ink-muted)]">
+                              {daysLabel(a.days_to_failure_p50, a.consensus_14d).replace('if the trend holds: ', '') || '—'}
+                            </TableCell>
                           </TableRow>
                         );
                       })}

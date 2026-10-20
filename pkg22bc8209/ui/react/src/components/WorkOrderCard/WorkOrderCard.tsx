@@ -9,7 +9,7 @@
  */
 
 import React, { useEffect, useId, useRef, useState } from 'react';
-import { Check, Clock3, Hash, Pencil, Users, X as XIcon } from 'lucide-react';
+import { Building2, Check, Clock3, Hash, Pencil, Users, X as XIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +25,11 @@ import WorkOrderPill from '@/components/StatusPill/WorkOrderPill';
 import { formatDate } from '@/shared/api';
 import type { WorkOrder, WorkOrderEditFields, WorkOrderStatus } from '@/Interfaces';
 
+export interface WorkOrderBuilding {
+  name: string;
+  criticality: string;
+}
+
 export interface WorkOrderCardProps {
   workOrder: WorkOrder | null | undefined;
   onApprove: () => Promise<void>;
@@ -34,7 +39,21 @@ export interface WorkOrderCardProps {
   loading?: boolean;
   /** Extra context line, e.g. the asset or building name when the list mixes assets. */
   context?: string;
+  /** What is at stake: the buildings this order protects (resolved from `building_ids` by the page). */
+  buildings?: WorkOrderBuilding[];
+  /** Replay date; an approval stamped after it (a real click today) is shown without its date. */
+  asOf?: string;
   className?: string;
+}
+
+/** "9 buildings · Chemistry, Birge, Sterling +6 · 3 research labs" */
+function buildingsLine(buildings: WorkOrderBuilding[]): string {
+  const names = buildings.map((b) => b.name.replace(/\s+(Hall|Building)$/i, ''));
+  const shown = names.slice(0, 3).join(', ') + (names.length > 3 ? ` +${names.length - 3}` : '');
+  const labs = buildings.filter((b) => b.criticality === 'research_lab').length;
+  const care = buildings.filter((b) => b.criticality === 'patient_care').length;
+  const critical = [care ? `${care} patient care` : null, labs ? `${labs} research ${labs === 1 ? 'lab' : 'labs'}` : null].filter(Boolean).join(', ');
+  return `${buildings.length} ${buildings.length === 1 ? 'building' : 'buildings'} · ${shown}${critical ? ` · ${critical}` : ''}`;
 }
 
 const PRIORITY_LABEL: Record<number, string> = { 1: 'Priority 1 · urgent', 2: 'Priority 2', 3: 'Priority 3' };
@@ -82,7 +101,17 @@ function changedFields(wo: WorkOrder, form: EditForm): WorkOrderEditFields | nul
   return Object.keys(fields).length > 0 ? fields : null;
 }
 
-export default function WorkOrderCard({ workOrder, onApprove, onDismiss, onEdit, loading = false, context, className }: WorkOrderCardProps) {
+export default function WorkOrderCard({
+  workOrder,
+  onApprove,
+  onDismiss,
+  onEdit,
+  loading = false,
+  context,
+  buildings,
+  asOf,
+  className,
+}: WorkOrderCardProps) {
   const { reportError } = useErrorReporter();
   const ids = useId();
   const [status, setStatus] = useState<WorkOrderStatus | null>(workOrder?.status ?? null);
@@ -241,6 +270,16 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, onEdit,
 
       <p className="text-[15px] leading-6 text-[var(--bib-ink-soft)]">{shown.description}</p>
 
+      {buildings && buildings.length > 0 ? (
+        <p className="inline-flex items-start gap-1.5 text-[13px] leading-5 text-[var(--bib-ink-soft)]">
+          <Building2 className="mt-0.5 size-3.5 shrink-0 text-[var(--bib-ink-muted)]" aria-hidden />
+          <span>
+            <span className="sr-only">At stake: </span>
+            {buildingsLine(buildings)}
+          </span>
+        </p>
+      ) : null}
+
       <dl className="flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] leading-5 text-[var(--bib-ink-muted)]">
         <div className="inline-flex items-center gap-1.5">
           <Hash className="size-3.5" aria-hidden />
@@ -266,7 +305,7 @@ export default function WorkOrderCard({ workOrder, onApprove, onDismiss, onEdit,
             <dt className="sr-only">Approved</dt>
             <dd>
               Approved by {shown.approved_by}
-              {shown.approved_on ? ` on ${formatDate(shown.approved_on)}` : ''}
+              {shown.approved_on && (!asOf || shown.approved_on <= asOf) ? ` on ${formatDate(shown.approved_on)}` : ''}
             </dd>
           </div>
         ) : null}

@@ -81,11 +81,12 @@ function MethodRow({ row }: { row: ForecastMethodRow }) {
             </Badge>
           ) : null}
           {dtf && dtf.p50 != null ? (
-            <span className="text-[13px] text-[var(--bib-ink-muted)]" title="Median (10th–90th percentile) days to failure">
-              fails in ~<span className="bib-num font-semibold text-[var(--bib-ink)]">{formatDays(dtf.p50)}</span>{' '}
+            <span className="text-[13px] text-[var(--bib-ink-muted)]" title="Median and 10th–90th percentile of the simulated time to failure, if the trend holds">
+              median <span className="bib-num font-semibold text-[var(--bib-ink)]">~{formatDays(dtf.p50)}</span> · p10–p90{' '}
               <span className="bib-num">
-                ({formatDays(dtf.p10)}–{formatDays(dtf.p90)})
+                {formatDays(dtf.p10)}–{formatDays(dtf.p90)}
               </span>
+              {row.method === 'monte_carlo' ? ' (Monte Carlo)' : ''}
             </span>
           ) : null}
         </div>

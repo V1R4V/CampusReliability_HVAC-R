@@ -176,6 +176,10 @@ export interface WorkOrder {
   approved_by: string | null;
   approved_on: string | null;
   dismiss_reason: string | null;
+  /** Replay date of the dismissal (`WorkOrder.dismiss(reason, as_of)`); null unless dismissed. */
+  dismissed_on?: string | null;
+  /** Replay date of the last edit while pending (`WorkOrder.edit(..., as_of)`); null if never edited. */
+  edited_on?: string | null;
 }
 
 /**

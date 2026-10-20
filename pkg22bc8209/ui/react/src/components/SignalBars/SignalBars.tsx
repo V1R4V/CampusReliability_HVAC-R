@@ -11,12 +11,16 @@ import React from 'react';
 import { ArrowDown, ArrowRight, ArrowUp } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import type { DriverMap } from '@/Interfaces';
+import type { DriverMap, SensorBandMap, SensorMap } from '@/Interfaces';
 
 export interface SignalBarsProps {
   contrib: DriverMap;
+  /** Sign-adjusted z-scores (positive = worse) from the model. */
   z: DriverMap;
   driverLabel?: string;
+  /** Today's raw readings and their 30-day normal bands — enables "67.1 psi · −1.9 vs normal". */
+  sensors?: SensorMap | null;
+  band?: SensorBandMap | null;
 }
 
 const DRIVER_LABEL: Record<keyof DriverMap, string> = {
@@ -25,6 +29,23 @@ const DRIVER_LABEL: Record<keyof DriverMap, string> = {
   delta_t: 'ΔT',
   vibration: 'Vibration',
   energy: 'Energy',
+};
+
+/** Which physical direction is the bad one: a leak drops pressure and shrinks ΔT; the rest rise. */
+const BAD_DIRECTION: Record<keyof DriverMap, 'up' | 'down'> = {
+  pressure: 'down',
+  flow_imbalance: 'up',
+  delta_t: 'down',
+  vibration: 'up',
+  energy: 'up',
+};
+
+const SENSOR_FOR_DRIVER: Record<keyof DriverMap, { key: keyof SensorMap; unit: string; digits: number }> = {
+  pressure: { key: 'pressure_psi', unit: 'psi', digits: 1 },
+  flow_imbalance: { key: 'flow_imbalance_pct', unit: '%', digits: 1 },
+  delta_t: { key: 'delta_t_f', unit: '°F', digits: 1 },
+  vibration: { key: 'vibration_mm_s', unit: 'mm/s', digits: 2 },
+  energy: { key: 'energy_kwh', unit: 'kWh', digits: 0 },
 };
 
 /** |z| below this reads as "within the normal band". */
@@ -36,18 +57,50 @@ interface Row {
   zValue: number | null | undefined;
 }
 
-/** `z +1.6` / `z −0.4` — direction-adjusted distance from the 30-day normal band (positive = worse). */
-export function formatZ(z: number): string {
-  const sign = z > 0 ? '+' : z < 0 ? '−' : '';
-  return `z ${sign}${Math.abs(z).toFixed(1)}`;
+/** `1.6 σ` — distance from the 30-day normal band in standard deviations. */
+export function formatSigma(z: number): string {
+  return `${Math.abs(z).toFixed(1)} σ`;
+}
+
+/**
+ * The physical move behind a sign-adjusted z: positive z means "worse", and worse is a fall for
+ * pressure and ΔT (leak signature) but a rise for flow imbalance, vibration and energy.
+ */
+export function physicalDirection(key: keyof DriverMap, z: number | null | undefined): 'up' | 'down' | 'flat' | null {
+  if (z == null) return null;
+  if (Math.abs(z) <= FLAT_Z) return 'flat';
+  const worse = z > 0;
+  const bad = BAD_DIRECTION[key];
+  if (worse) return bad;
+  return bad === 'up' ? 'down' : 'up';
+}
+
+function directionWord(key: keyof DriverMap, direction: 'up' | 'down' | 'flat'): string {
+  if (direction === 'flat') return 'steady';
+  if (key === 'delta_t') return direction === 'up' ? 'widening' : 'shrinking';
+  return direction === 'up' ? 'rising' : 'falling';
+}
+
+/** `−1.9 psi vs normal` — today's reading against the midpoint of its 30-day normal band. */
+export function formatDeviation(key: keyof DriverMap, sensors?: SensorMap | null, band?: SensorBandMap | null): string | null {
+  const spec = SENSOR_FOR_DRIVER[key];
+  const value = sensors?.[spec.key];
+  const range = band?.[spec.key];
+  if (value == null || !range) return null;
+  const mid = (range[0] + range[1]) / 2;
+  const delta = value - mid;
+  const sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
+  const unit = spec.unit === '%' ? ' pts' : ` ${spec.unit}`;
+  return `${sign}${Math.abs(delta).toFixed(spec.digits)}${unit} vs normal`;
 }
 
 /**
  * "What's driving it" — each signal's share of today's risk, sorted largest first, with the
- * direction of its move against the 30-day normal band and the raw z-score behind the arrow.
+ * physical direction of its move (an arrow that points the way the reading actually went),
+ * the size of the move in standard deviations, and the raw deviation from the 30-day normal.
  * The largest contributor is drawn in ink; the rest in the accent so the eye lands on the driver.
  */
-export default function SignalBars({ contrib, z, driverLabel }: SignalBarsProps) {
+export default function SignalBars({ contrib, z, driverLabel, sensors, band }: SignalBarsProps) {
   const rows: Row[] = (Object.keys(DRIVER_LABEL) as (keyof DriverMap)[])
     .map((key) => ({ key, value: contrib?.[key], zValue: z?.[key] }))
     .filter((r): r is Row => typeof r.value === 'number')
@@ -68,16 +121,21 @@ export default function SignalBars({ contrib, z, driverLabel }: SignalBarsProps)
         ) : (
           <span />
         )}
-        <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">share of risk · z vs 30-day normal</span>
+        <span className="text-[13px] leading-4 text-[var(--bib-ink-muted)]">share of risk · move vs 30-day normal</span>
       </div>
-      <ul className="flex flex-col gap-2.5">
+      <ul className="flex flex-col gap-3">
         {rows.map((row, index) => {
           const pct = Math.round(row.value * 100);
-          const direction = row.zValue == null ? null : row.zValue > FLAT_Z ? 'up' : row.zValue < -FLAT_Z ? 'down' : 'flat';
+          const direction = physicalDirection(row.key, row.zValue);
           const Arrow = direction === 'up' ? ArrowUp : direction === 'down' ? ArrowDown : ArrowRight;
-          const directionText = direction === 'up' ? 'above normal' : direction === 'down' ? 'below normal' : 'within normal';
+          const word = direction ? directionWord(row.key, direction) : null;
+          const worse = row.zValue != null && row.zValue > FLAT_Z;
+          const deviation = formatDeviation(row.key, sensors, band);
+          const detail = [word, row.zValue != null && direction !== 'flat' ? formatSigma(row.zValue) : null, deviation]
+            .filter(Boolean)
+            .join(' · ');
           return (
-            <li key={row.key} className="grid grid-cols-[minmax(96px,132px)_minmax(0,1fr)_56px_76px] items-center gap-3">
+            <li key={row.key} className="grid grid-cols-[minmax(96px,132px)_minmax(0,1fr)_56px] items-center gap-x-3 gap-y-1">
               <span className={cn('text-[15px] leading-5', index === 0 ? 'font-semibold text-[var(--bib-ink)]' : 'text-[var(--bib-ink-soft)]')}>
                 {DRIVER_LABEL[row.key]}
               </span>
@@ -88,7 +146,7 @@ export default function SignalBars({ contrib, z, driverLabel }: SignalBarsProps)
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={Math.min(100, Math.max(0, pct))}
-                aria-valuetext={`${pct}% of risk${row.zValue != null ? `, ${formatZ(row.zValue)} ${directionText}` : ''}`}
+                aria-valuetext={`${pct}% of risk${detail ? `, ${detail}` : ''}`}
               >
                 <div
                   className={cn('h-full rounded-full', index === 0 ? 'bg-[var(--bib-ink)]' : 'bg-[var(--bib-accent)] opacity-70')}
@@ -96,16 +154,15 @@ export default function SignalBars({ contrib, z, driverLabel }: SignalBarsProps)
                 />
               </div>
               <span className="bib-num text-right text-[15px] font-semibold text-[var(--bib-ink)]">{pct}%</span>
-              <span
-                className="bib-num inline-flex items-center justify-end gap-1 text-[13px] leading-4 text-[var(--bib-ink-muted)]"
-                title={
-                  row.zValue == null
-                    ? undefined
-                    : `Standard deviations from the 30-day normal band, sign-adjusted so positive means worse: ${directionText}`
-                }
-              >
-                {row.zValue != null ? formatZ(row.zValue) : ''}
-                {direction ? <Arrow className="size-3.5" role="img" aria-label={directionText} /> : null}
+              <span className="col-start-2 col-span-2 inline-flex items-center gap-1.5 text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+                {direction ? (
+                  <Arrow
+                    className={cn('size-3.5 shrink-0', worse ? 'text-[var(--bib-status-due)]' : 'text-[var(--bib-ink-faint)]')}
+                    role="img"
+                    aria-label={word ?? ''}
+                  />
+                ) : null}
+                <span className="bib-num">{detail || 'no 30-day normal yet'}</span>
               </span>
             </li>
           );

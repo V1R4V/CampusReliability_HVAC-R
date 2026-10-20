@@ -159,7 +159,7 @@ export default function Backtest() {
         eyebrow="How we know"
         title="Backtest"
         icon={<History />}
-        description="Five planted failures and four decoys, replayed through the same pipeline the Overview uses. Move the threshold to trade warning time against false alarms."
+        description="Five planted failures and four decoys, replayed through the same pipeline the Overview uses, on synthetic sensors over real NOAA weather. Move the threshold to trade warning time against false alarms. The failures were planted: this proves the pipeline, not that the real June 17 break was predictable."
         meta={[
           `Inspection due = risk ≥ threshold on 2 consecutive days`,
           `Watch from ${formatThreshold(WATCH_THRESHOLD)}`,
@@ -320,7 +320,7 @@ export default function Backtest() {
               node: (
                 <Panel
                   title="Planted failures"
-                  subtitle={`At threshold ${formatThreshold(threshold)}`}
+                  subtitle={`At threshold ${formatThreshold(threshold)} · synthetic sensors on real NOAA weather`}
                   contentClassName="-mx-4 -mb-4 overflow-x-auto"
                 >
                   {result ? (

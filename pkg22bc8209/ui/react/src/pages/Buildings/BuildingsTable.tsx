@@ -128,8 +128,7 @@ export default function BuildingsTable({ rows, system, threshold, sort, onSortCh
                 }
               />
             ))}
-            <SortHeader label={riskLabel} name={riskLabel.toLowerCase()} columnKey="risk" sort={sort} onSort={onSortChange} />
-            <SortHeader label="Status" name="status" columnKey="status" sort={sort} onSort={onSortChange} className="pr-4" />
+            <SortHeader label={riskLabel} name={riskLabel.toLowerCase()} columnKey="risk" sort={sort} onSort={onSortChange} className="pr-4" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -168,25 +167,24 @@ export default function BuildingsTable({ rows, system, threshold, sort, onSortCh
                 <TableCell className="whitespace-nowrap">
                   <CriticalityBadge criticality={building.criticality} />
                 </TableCell>
-                <TableCell className="whitespace-nowrap text-[13px] leading-4 text-[var(--bib-ink-muted)]">
+                <TableCell className="whitespace-nowrap text-[13px] leading-4 text-[var(--bib-ink-muted)]" title={plant ? `Fed from ${plant.name}` : undefined}>
                   <span className="text-[14px] font-medium text-[var(--bib-ink)]">{building.segment_id}</span>
                   {segment ? ` · ${segment.name}` : ''}
-                  {plant ? <div className="mt-0.5">{plant.name}</div> : null}
                 </TableCell>
                 {SYSTEMS.map((s) => (
                   <TableCell key={s}>
                     <SystemCell summary={row.systems[s]} emphasised={system === s} />
                   </TableCell>
                 ))}
-                <TableCell>
+                <TableCell className="pr-4">
                   {risk != null ? (
-                    <RiskBar risk={risk} threshold={threshold} status={status} />
+                    <span className="inline-flex flex-wrap items-center gap-2">
+                      <RiskBar risk={risk} threshold={threshold} status={status} />
+                      {status !== 'HEALTHY' ? <StatusPill status={status} size="sm" /> : null}
+                    </span>
                   ) : (
                     <span className="text-[13px] text-[var(--bib-ink-muted)]">—</span>
                   )}
-                </TableCell>
-                <TableCell className="pr-4">
-                  <StatusPill status={status} size="sm" />
                 </TableCell>
               </TableRow>
             );

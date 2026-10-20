@@ -64,7 +64,11 @@ def _consensus(by_method):
 
 
 def compare(cls, asset_id, as_of):
-    a = c3.Asset.forId(asset_id).get("this")
+    # fetch, not forId().get(): forId returns None for an unknown id in this runtime.
+    found = _fetch("Asset", "this", "id == '%s'" % str(asset_id).replace("'", "\\'")) if asset_id else []
+    if not found:
+        raise ValueError("Unknown asset_id %r." % (asset_id,))
+    a = found[0]
     lo = (_dt.date.fromisoformat(as_of) - _dt.timedelta(days=HISTORY_DAYS)).isoformat()
     rows = _fetch("RiskForecast", "this, asset.id",
                   "asset.id == '%s' && date >= '%s' && date <= '%s'" % (asset_id, lo, as_of))
